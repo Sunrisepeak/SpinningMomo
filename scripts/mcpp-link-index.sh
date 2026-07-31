@@ -1,22 +1,18 @@
 #!/usr/bin/env bash
-# Pre-create the links mcpp uses to register a `[indices] <name> = { path = ... }`
-# entry, as NTFS junctions.
+# Register a `[indices] <name> = { path = ... }` entry with xlings, the way a
+# working local checkout ends up registered.
 #
-# WHY. mcpp registers a path index by symlinking it into the project sandbox:
-#     <project>/.mcpp/data/<name>          -> <index dir>
-#     <project>/.mcpp/.xlings/data/<name>  -> <index dir>
-# On Windows a *directory symlink* needs SeCreateSymbolicLinkPrivilege, which
-# the GitHub runner account does not hold (Developer Mode off). The creation
-# fails silently, so xlings is never told about the index and every package in
-# it misses — the symptom is mcpp reporting
-#     1 index repo configured [sm -> D:/.../mcpp]
-# while xlings reports
+# WHY THIS EXISTS. mcpp reads `[indices]` and reports the index correctly —
+#     1 index repo configured [sm -> D:/a/SpinningMomo/SpinningMomo/mcpp]
+# — but on a Windows CI runner xlings never sees it:
 #     E_NOT_FOUND ... searched repos: [xim, mcpplibs]
-# which reads like a lookup bug and is really a filesystem-permission one.
+# The two halves disagree because the handoff is a file, `<project>/.mcpp/
+# .xlings.json`, plus a link of the index directory into the project sandbox;
+# on a runner neither reliably lands. Writing both explicitly, before mcpp is
+# ever invoked, makes the registration deterministic instead of a side effect.
 #
-# A junction (`mklink /J`) points at a directory with no privilege requirement
-# and is transparent to every reader. Creating it before mcpp runs means mcpp
-# finds the link already in place.
+# The shape is xlings' own (observed from a working local project):
+#     { "index_repos": [ { "name": "sm", "url": "<abs path>" } ], ... }
 #
 # Usage: mcpp-link-index.sh <project-dir> <index-name> <index-dir>
 set -euo pipefail
@@ -25,35 +21,59 @@ project=$1
 name=$2
 index=$3
 
+abs_index=$(cd "$index" && pwd)
 case "$(uname -s)" in
-  MINGW*|MSYS*|CYGWIN*) ;;
-  *) echo "link-index: not Windows, mcpp's own symlink works — nothing to do"; exit 0 ;;
+  MINGW*|MSYS*|CYGWIN*) win_index=$(cygpath -m "$abs_index"); windows=1 ;;
+  *)                    win_index=$abs_index;                 windows=0 ;;
 esac
 
-# NOTE: do NOT set MSYS2_ARG_CONV_EXCL='*' here. It would stop MSYS rewriting
-# `//c` -> `/c` and `//J` -> `/J`, so cmd.exe would receive literal `//c` and
-# do nothing — silently, which is how the first attempt "created" junctions
-# that were not there.
-abs_index=$(cd "$index" && pwd)
+mkdir -p "$project/.mcpp"
 
+# ── 1. the registration file xlings actually reads ──────────────────────────
+cfg="$project/.mcpp/.xlings.json"
+python3 - "$cfg" "$name" "$win_index" <<'PY'
+import json, pathlib, sys
+cfg, name, url = pathlib.Path(sys.argv[1]), sys.argv[2], sys.argv[3]
+data = {}
+if cfg.exists():
+    try:
+        data = json.loads(cfg.read_text())
+    except Exception:
+        data = {}
+repos = [r for r in data.get("index_repos", []) if r.get("name") != name]
+repos.insert(0, {"name": name, "url": url})
+data["index_repos"] = repos
+data.setdefault("lang", "en")
+data.setdefault("mirror", "auto")
+cfg.write_text(json.dumps(data, indent=2) + "\n")
+print(f"link-index: {cfg} -> {url}")
+PY
+
+# ── 2. the index directory, linked into both sandbox data dirs ──────────────
+# mcpp normally symlinks these. A *directory symlink* on Windows needs
+# SeCreateSymbolicLinkPrivilege, which the runner account does not hold, so use
+# a junction (no privilege) and fall back to a plain copy — the index is a
+# handful of .lua descriptors, duplicating it costs nothing.
 for rel in ".mcpp/data" ".mcpp/.xlings/data"; do
   dir="$project/$rel"
   mkdir -p "$dir"
   link="$dir/$name"
-  if [ -e "$link" ]; then
-    echo "link-index: $rel/$name already present"
-    continue
+  [ -e "$link/index.toml" ] && { echo "link-index: $rel/$name already present"; continue; }
+  rm -rf "$link"
+  if [ "$windows" = 1 ]; then
+    # NOTE: never set MSYS2_ARG_CONV_EXCL='*' around this — it also stops the
+    # `//c` -> `/c` and `//J` -> `/J` rewriting, so cmd.exe gets a literal
+    # `//c`, does nothing, and reports no error.
+    cmd //c mklink //J "$(cygpath -w "$(cd "$dir" && pwd)/$name")" "$(cygpath -w "$abs_index")" || true
+  else
+    ln -s "$abs_index" "$link" || true
   fi
-  cmd //c mklink //J "$(cygpath -w "$(cd "$dir" && pwd)/$name")" "$(cygpath -w "$abs_index")" || true
   if [ ! -f "$link/index.toml" ]; then
-    # Fall back to a plain copy. The index is a handful of .lua descriptors and
-    # one index.toml, so duplicating it costs nothing and removes the last
-    # dependency on filesystem link support.
-    echo "link-index: junction unavailable, copying instead"
+    echo "link-index: link unavailable, copying instead"
     rm -rf "$link"
     cp -r "$abs_index" "$link"
-    test -f "$link/index.toml" \
-      || { echo "link-index: copy of $abs_index has no index.toml" >&2; exit 1; }
   fi
+  test -f "$link/index.toml" \
+    || { echo "link-index: $rel/$name has no index.toml" >&2; exit 1; }
   echo "link-index: $rel/$name -> $abs_index"
 done

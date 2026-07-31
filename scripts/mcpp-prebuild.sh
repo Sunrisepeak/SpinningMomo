@@ -73,14 +73,16 @@ fi
 WEBVIEW2_VERSION="${WEBVIEW2_VERSION:-1.0.3485.44}"
 if [ ! -f gen/webview2/include/WebView2.h ]; then
   echo "prebuild: fetching WebView2 $WEBVIEW2_VERSION"
-  tmp=$(mktemp -d)
-  curl -fsSL -o "$tmp/wv2.zip" \
+  # Stage inside gen/ rather than $(mktemp -d): on the Windows runner curl
+  # failed with error 23 (write error) against the MSYS temp path.
+  rm -rf gen/.wv2 && mkdir -p gen/.wv2
+  curl -fsSL -o gen/.wv2/wv2.zip \
     "https://api.nuget.org/v3-flatcontainer/microsoft.web.webview2/${WEBVIEW2_VERSION}/microsoft.web.webview2.${WEBVIEW2_VERSION}.nupkg"
-  (cd "$tmp" && unzip -qo wv2.zip -d unpacked)
+  unzip -qo gen/.wv2/wv2.zip -d gen/.wv2/unpacked
   mkdir -p gen/webview2/include gen/webview2/lib
-  cp "$tmp/unpacked/build/native/include/"*.h gen/webview2/include/
-  cp "$tmp/unpacked/build/native/x64/WebView2LoaderStatic.lib" gen/webview2/lib/
-  rm -rf "$tmp"
+  cp gen/.wv2/unpacked/build/native/include/*.h gen/webview2/include/
+  cp gen/.wv2/unpacked/build/native/x64/WebView2LoaderStatic.lib gen/webview2/lib/
+  rm -rf gen/.wv2
   test -f gen/webview2/include/WebView2.h
   echo "prebuild: gen/webview2"
 else
