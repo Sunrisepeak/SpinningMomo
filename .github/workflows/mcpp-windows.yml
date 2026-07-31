@@ -44,6 +44,7 @@ jobs:
           - p3b-winrt-export   # module wrapping C++/WinRT (THE critical unknown)
           - p3c-gmf-direct     # consumer includes vendor headers in its own GMF
           - p4-importstd       # real project sources as modules + import std
+          - p5-index           # the project's own package index, five descriptors
     steps:
       - uses: actions/checkout@v4
 

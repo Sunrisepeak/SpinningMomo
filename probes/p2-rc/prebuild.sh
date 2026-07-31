@@ -11,21 +11,29 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-# Two Windows-isms, both load-bearing:
-#  1. MSYS rewrites any argument that looks like a POSIX path, so a bare
-#     `/nologo` reaches rc.exe as `C:/Program Files/Git/nologo`.
-#  2. rc.exe reads `/` as the option introducer, so a forward-slash output
-#     path is parsed as a switch (RC1107). Both arguments must be Windows form.
+# MSYS rewrites anything that looks like a POSIX path, so a bare `/nologo`
+# reaches rc.exe as C:/Program Files/Git/nologo. rc.exe also reads `/` as the
+# option introducer, so every path argument must be Windows form.
 export MSYS2_ARG_CONV_EXCL='*'
 
-rc=""
-for root in "/c/Program Files (x86)/Windows Kits/10/bin" "/c/Program Files/Windows Kits/10/bin"; do
-  [ -d "$root" ] || continue
-  cand=$(find "$root" -maxdepth 3 -name rc.exe -path '*/x64/*' 2>/dev/null | sort -V | tail -1)
-  [ -n "$cand" ] && rc="$cand" && break
+kit=""
+for root in "/c/Program Files (x86)/Windows Kits/10" "/c/Program Files/Windows Kits/10"; do
+  [ -d "$root/bin" ] && kit="$root" && break
 done
-[ -n "$rc" ] || { echo "prebuild: rc.exe not found under any Windows Kit" >&2; exit 1; }
+[ -n "$kit" ] || { echo "prebuild: no Windows Kit" >&2; exit 1; }
+
+rc=$(find "$kit/bin" -maxdepth 3 -name rc.exe -path '*/x64/*' 2>/dev/null | sort -V | tail -1)
+[ -n "$rc" ] || { echo "prebuild: rc.exe not found under $kit/bin" >&2; exit 1; }
 echo "prebuild: using $rc"
+
+# rc.exe resolves #include through INCLUDE, which nothing has set here — mcpp
+# synthesises INCLUDE for cl.exe only, and app.rc starts with <windows.h>.
+# Derive it from the same SDK version the rc.exe binary came from.
+ver=$(basename "$(dirname "$(dirname "$rc")")")
+inc="$kit/Include/$ver"
+[ -d "$inc/um" ] || { echo "prebuild: no Include/$ver/um under $kit" >&2; exit 1; }
+export INCLUDE="$(cygpath -w "$inc/um");$(cygpath -w "$inc/shared");$(cygpath -w "$inc/ucrt")"
+echo "prebuild: INCLUDE=$INCLUDE"
 
 mkdir -p gen
 "$rc" /nologo /fo "$(cygpath -w "$PWD/gen/app.res")" "$(cygpath -w "$PWD/app.rc")"
