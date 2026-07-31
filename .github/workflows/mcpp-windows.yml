@@ -61,8 +61,12 @@ jobs:
           # The index tree is part of the key: the sandbox remembers which
           # indices are registered, so a restored sandbox from before an index
           # rename keeps searching the old name and every package misses.
+          # Exact key only — NO restore-keys. The sandbox remembers which
+          # indices are registered and mcpp registers each one once, so a
+          # prefix-restored sandbox from before an index rename keeps searching
+          # the old name and every `sm:` package misses no matter how often the
+          # build is retried.
           key: mcpp-sandbox-windows-xl${{ env.XLINGS_VERSION }}-${{ hashFiles('.xlings.json', 'mcpp/**') }}
-          restore-keys: mcpp-sandbox-windows-xl${{ env.XLINGS_VERSION }}-
 
       - name: Bootstrap xlings + mcpp
         shell: bash
