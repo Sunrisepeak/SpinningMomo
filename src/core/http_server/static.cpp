@@ -8,11 +8,11 @@
 #include "core/async/async.hpp"
 #include "core/http_server/types.hpp"
 #include "core/state/app_state.hpp"
-#include "utils/file/file.hpp"
-#include "utils/file/mime.hpp"
+import utils.file.file;
+import utils.file.mime;
 #include "utils/logger/logger.hpp"
-#include "utils/path/path.hpp"
-#include "utils/time.hpp"
+import utils.path.path;
+import utils.time;
 
 namespace core::http_server::static_content {
 

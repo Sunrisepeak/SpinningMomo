@@ -18,8 +18,8 @@
 #include "features/gallery/types.hpp"
 #include "features/gallery/watcher/watcher.hpp"
 #include "utils/logger/logger.hpp"
-#include "utils/string/string.hpp"
-#include "utils/time.hpp"
+import utils.string.string;
+import utils.time;
 
 namespace features::gallery::watcher::sync {
 

@@ -11,7 +11,7 @@
 #include "core/state/app_state.hpp"
 #include "core/webview/state.hpp"
 #include "ui/webview_window/webview_window.hpp"
-#include "utils/string/string.hpp"
+import utils.string.string;
 
 namespace core::rpc::endpoints::webview {
 

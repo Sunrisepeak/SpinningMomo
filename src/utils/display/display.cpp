@@ -1,8 +1,10 @@
-#include "utils/display/display.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
+
+module utils.display.display;
+
+import std;
 
 namespace utils::display {
 

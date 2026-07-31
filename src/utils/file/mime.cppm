@@ -1,8 +1,10 @@
-#pragma once
+module;
 
-#include "vendor/std.hpp"
+export module utils.file.mime;
 
-namespace utils::file::mime {
+import std;
+
+export namespace utils::file::mime {
 
 // 根据文件扩展名获取MIME类型，未知类型返回"application/octet-stream"
 auto get_mime_type_by_extension(const std::string& extension) -> std::string;

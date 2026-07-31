@@ -1,11 +1,12 @@
-#include "utils/crash_dump/crash_dump.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 #include "vendor/windows/dbghelp.hpp"
 
-#include "utils/path/path.hpp"
+module utils.crash_dump.crash_dump;
+
+import std;
+import utils.path.path;
 
 namespace utils::crash_dump::detail {
 

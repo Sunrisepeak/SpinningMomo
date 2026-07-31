@@ -14,11 +14,11 @@
 #include "features/settings/state.hpp"
 #include "features/window_control/window_control.hpp"
 #include "ui/floating_window/events.hpp"
-#include "utils/graphics/hdr.hpp"
+import utils.graphics.hdr;
 #include "utils/logger/logger.hpp"
 #include "utils/media/audio_capture.hpp"
-#include "utils/path/path.hpp"
-#include "utils/string/string.hpp"
+import utils.path.path;
+import utils.string.string;
 
 namespace features::recording {
 

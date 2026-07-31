@@ -16,12 +16,12 @@
 #include "utils/graphics/capture.hpp"
 #include "utils/graphics/capture_region.hpp"
 #include "utils/graphics/d3d.hpp"
-#include "utils/graphics/hdr.hpp"
+import utils.graphics.hdr;
 #include "utils/graphics/photo_processing.hpp"
 #include "utils/image/image.hpp"
 #include "utils/logger/logger.hpp"
-#include "utils/path/path.hpp"
-#include "utils/string/string.hpp"
+import utils.path.path;
+import utils.string.string;
 
 namespace features::screenshot {
 

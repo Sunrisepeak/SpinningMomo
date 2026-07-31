@@ -20,11 +20,11 @@
 #include "features/update/types.hpp"
 #include "ui/floating_window/events.hpp"
 #include "ui/webview_window/webview_window.hpp"
-#include "utils/crypto/crypto.hpp"
+import utils.crypto.crypto;
 #include "utils/logger/logger.hpp"
-#include "utils/path/path.hpp"
-#include "utils/powershell/powershell.hpp"
-#include "utils/string/string.hpp"
+import utils.path.path;
+import utils.powershell.powershell;
+import utils.string.string;
 #include "utils/throttle/throttle.hpp"
 
 namespace features::update {

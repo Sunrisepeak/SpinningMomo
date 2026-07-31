@@ -15,8 +15,8 @@
 #include "features/gallery/types.hpp"
 #include "features/settings/state.hpp"
 #include "utils/logger/logger.hpp"
-#include "utils/path/path.hpp"
-#include "utils/string/string.hpp"
+import utils.path.path;
+import utils.string.string;
 
 namespace extensions::infinity_nikki::role_profile {
 

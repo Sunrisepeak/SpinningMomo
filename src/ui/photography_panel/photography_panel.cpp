@@ -11,7 +11,7 @@
 #include "ui/photography_panel/painter.hpp"
 #include "ui/photography_panel/render_context.hpp"
 #include "ui/photography_panel/state.hpp"
-#include "utils/string/string.hpp"
+import utils.string.string;
 
 namespace ui::photography_panel {
 

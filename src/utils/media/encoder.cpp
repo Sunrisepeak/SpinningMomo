@@ -1,6 +1,4 @@
-#include "utils/media/encoder.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
@@ -11,9 +9,12 @@
 #include "vendor/windows/mfidl.hpp"
 #include "vendor/windows/mfreadwrite.hpp"
 #include "vendor/windows/strmif.hpp"
-
 #include "utils/logger/logger.hpp"
 #include "utils/media/hdr_convert.hpp"
+
+module utils.media.encoder;
+
+import std;
 
 namespace utils::media::encoder {
 

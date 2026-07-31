@@ -10,7 +10,7 @@
 #include "core/state/app_state.hpp"
 #include "features/window_control/types.hpp"
 #include "features/window_control/window_control.hpp"
-#include "utils/string/string.hpp"
+import utils.string.string;
 
 namespace core::rpc::endpoints::window_control {
 

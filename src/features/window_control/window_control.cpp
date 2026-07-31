@@ -8,9 +8,9 @@
 #include "features/settings/state.hpp"
 #include "features/window_control/state.hpp"
 #include "ui/floating_window/state.hpp"
-#include "utils/display/display.hpp"
+import utils.display.display;
 #include "utils/logger/logger.hpp"
-#include "utils/string/string.hpp"
+import utils.string.string;
 
 namespace features::window_control {
 

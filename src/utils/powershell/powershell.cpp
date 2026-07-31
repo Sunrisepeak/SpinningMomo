@@ -1,8 +1,10 @@
-#include "utils/powershell/powershell.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
+
+module utils.powershell.powershell;
+
+import std;
 
 namespace utils::powershell::detail {
 

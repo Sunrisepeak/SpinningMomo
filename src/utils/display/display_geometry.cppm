@@ -1,10 +1,12 @@
-#pragma once
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 
-namespace utils::display_geometry {
+export module utils.display.display_geometry;
+
+import std;
+
+export namespace utils::display_geometry {
 
 // 根据目标可见视口与相对位置，计算窗口左上角。
 // 当窗口大于视口时，优先让该相对位置对应的窗口点落在视口中心，

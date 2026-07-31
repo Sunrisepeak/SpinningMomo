@@ -10,8 +10,8 @@
 #include "utils/graphics/capture.hpp"
 #include "utils/logger/logger.hpp"
 #include "utils/media/audio_capture.hpp"
-#include "utils/path/path.hpp"
-#include "utils/system/system.hpp"
+import utils.path.path;
+import utils.system.system;
 
 namespace core::runtime_info::detail {
 

@@ -16,8 +16,8 @@
 #include "features/overlay/types.hpp"
 #include "features/overlay/window.hpp"
 #include "ui/floating_window/state.hpp"
-#include "utils/display/display.hpp"
-#include "utils/graphics/hdr.hpp"
+import utils.display.display;
+import utils.graphics.hdr;
 #include "utils/logger/logger.hpp"
 
 namespace features::overlay {

@@ -1,10 +1,12 @@
-#pragma once
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/asio.hpp"
 
-namespace utils::network {
+export module utils.network.network;
+
+import std;
+
+export namespace utils::network {
 
 struct TcpProbeResult {
   bool reachable = false;

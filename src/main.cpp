@@ -5,9 +5,9 @@
 
 #include "app.hpp"
 #include "features/settings/settings.hpp"
-#include "utils/crash_dump/crash_dump.hpp"
+import utils.crash_dump.crash_dump;
 #include "utils/logger/logger.hpp"
-#include "utils/system/system.hpp"
+import utils.system.system;
 
 // Win32 入口
 auto __stdcall wWinMain(HINSTANCE hInstance, [[maybe_unused]] HINSTANCE hPrevInstance,

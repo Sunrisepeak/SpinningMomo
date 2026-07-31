@@ -14,10 +14,10 @@
 #include "features/gallery/types.hpp"
 #include "utils/image/image.hpp"
 #include "utils/logger/logger.hpp"
-#include "utils/media/video_asset.hpp"
-#include "utils/path/path.hpp"
-#include "utils/string/string.hpp"
-#include "utils/time.hpp"
+import utils.media.video_asset;
+import utils.path.path;
+import utils.string.string;
+import utils.time;
 
 namespace features::gallery::scanner::asset_pipeline {
 

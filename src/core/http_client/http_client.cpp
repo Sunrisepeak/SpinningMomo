@@ -10,7 +10,7 @@
 #include "core/http_client/types.hpp"
 #include "core/state/app_state.hpp"
 #include "utils/logger/logger.hpp"
-#include "utils/string/string.hpp"
+import utils.string.string;
 
 namespace core::http_client::detail {
 

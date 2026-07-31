@@ -11,8 +11,8 @@
 #include "features/gallery/original_locator.hpp"
 #include "features/gallery/state.hpp"
 #include "utils/logger/logger.hpp"
-#include "utils/path/path.hpp"
-#include "utils/string/string.hpp"
+import utils.path.path;
+import utils.string.string;
 
 namespace features::gallery::static_resolver {
 

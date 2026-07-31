@@ -17,7 +17,7 @@
 #include "ui/floating_window/state.hpp"
 #include "ui/tray_icon/state.hpp"
 #include "ui/tray_icon/types.hpp"
-#include "utils/string/string.hpp"
+import utils.string.string;
 
 namespace ui::tray_icon::detail {
 

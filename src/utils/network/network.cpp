@@ -1,10 +1,11 @@
-#include "utils/network/network.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/asio.hpp"
 
-#include "utils/string/string.hpp"
+module utils.network.network;
+
+import std;
+import utils.string.string;
 
 namespace utils::network::detail {
 

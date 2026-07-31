@@ -46,11 +46,17 @@ def module_name(rel: str) -> str:
     return rel.replace("/", ".")
 
 
-def split_top(lines: list[str]) -> tuple[list[str], list[str], int]:
-    """Split leading includes into (vendor facades, project headers) and return
-    the index of the first line of real content."""
-    vendor: list[str] = []
-    project: list[str] = []
+def split_top(lines: list[str], modules: set[str]) -> tuple[list[str], list[str], int]:
+    """Split the leading include block three ways and return where real content
+    starts.
+
+    A module unit may not `#include` in its purview, so anything that stays an
+    include has to move into the global module fragment. `modules` is the set of
+    src-relative paths that ARE modules by the end of this run; a project header
+    outside that set is still a header and keeps its `#include` — in the GMF.
+    That mixing is the whole reason an incremental migration is possible."""
+    gmf: list[str] = []
+    imports: list[str] = []
     i = 0
     while i < len(lines):
         line = lines[i]
@@ -64,18 +70,20 @@ def split_top(lines: list[str]) -> tuple[list[str], list[str], int]:
         if target == "vendor/std.hpp":
             pass  # becomes `import std;`
         elif target.startswith("vendor/"):
-            vendor.append(line.rstrip())
+            gmf.append(line.rstrip())
+        elif target.removesuffix(".hpp") in modules:
+            imports.append(target.removesuffix(".hpp"))
         else:
-            project.append(target)
+            gmf.append(line.rstrip())
         i += 1
-    return vendor, project, i
+    return gmf, imports, i
 
 
-def convert_header(rel: str) -> Path:
+def convert_header(rel: str, modules: set[str]) -> Path:
     src = SRC / f"{rel}.hpp"
     text = src.read_text(encoding="utf-8")
     lines = text.splitlines()
-    vendor, project, start = split_top(lines)
+    gmf, imports, start = split_top(lines, modules)
     body = lines[start:]
 
     # Export the top-level namespace. Nothing below it needs touching: `export`
@@ -86,14 +94,14 @@ def convert_header(rel: str) -> Path:
             break
 
     out: list[str] = ["module;", ""]
-    out += vendor
-    if vendor:
+    out += gmf
+    if gmf:
         out.append("")
     out.append(f"export module {module_name(rel)};")
     out.append("")
     out.append("import std;")
-    for p in project:
-        out.append(f"import {module_name(p.removesuffix('.hpp'))};")
+    for p in imports:
+        out.append(f"import {module_name(p)};")
     out.append("")
     out += body
 
@@ -103,7 +111,7 @@ def convert_header(rel: str) -> Path:
     return dst
 
 
-def convert_impl(rel: str) -> Path | None:
+def convert_impl(rel: str, modules: set[str]) -> Path | None:
     """Turn x.cpp into the module implementation unit for x."""
     src = SRC / f"{rel}.cpp"
     if not src.exists():
@@ -114,18 +122,18 @@ def convert_impl(rel: str) -> Path | None:
     self_inc = f"{rel}.hpp"
     lines = [l for l in lines if not (INCLUDE_RE.match(l) and INCLUDE_RE.match(l).group(1) == self_inc)]
 
-    vendor, project, start = split_top(lines)
+    gmf, imports, start = split_top(lines, modules)
     body = lines[start:]
 
     out: list[str] = ["module;", ""]
-    out += vendor
-    if vendor:
+    out += gmf
+    if gmf:
         out.append("")
     out.append(f"module {module_name(rel)};")
     out.append("")
     out.append("import std;")
-    for p in project:
-        out.append(f"import {module_name(p.removesuffix('.hpp'))};")
+    for p in imports:
+        out.append(f"import {module_name(p)};")
     out.append("")
     out += body
 
@@ -163,9 +171,10 @@ def main() -> int:
         n = rewrite_consumers(args[1:])
         print(f"rewrote includes in {n} files")
         return 0
+    modules = set(args)
     for rel in args:
-        h = convert_header(rel)
-        i = convert_impl(rel)
+        h = convert_header(rel, modules)
+        i = convert_impl(rel, modules)
         print(f"{rel}: {h.relative_to(ROOT)}" + (f" + {i.relative_to(ROOT)}" if i else " (header-only)"))
     rewrite_consumers(args)
     return 0

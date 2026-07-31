@@ -13,7 +13,7 @@
 #include "features/preview/rendering.hpp"
 #include "features/preview/state.hpp"
 #include "features/preview/types.hpp"
-#include "utils/display/display.hpp"
+import utils.display.display;
 #include "utils/graphics/capture.hpp"
 #include "utils/graphics/d3d.hpp"
 #include "utils/logger/logger.hpp"

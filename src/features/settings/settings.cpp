@@ -13,8 +13,8 @@
 #include "features/settings/state.hpp"
 #include "features/settings/types.hpp"
 #include "utils/logger/logger.hpp"
-#include "utils/path/path.hpp"
-#include "utils/system/system.hpp"
+import utils.path.path;
+import utils.system.system;
 
 namespace features::settings {
 

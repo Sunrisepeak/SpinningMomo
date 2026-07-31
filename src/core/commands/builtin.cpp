@@ -24,8 +24,8 @@
 #include "ui/floating_window/floating_window.hpp"
 #include "ui/webview_window/webview_window.hpp"
 #include "utils/logger/logger.hpp"
-#include "utils/path/path.hpp"
-#include "utils/system/system.hpp"
+import utils.path.path;
+import utils.system.system;
 
 namespace core::commands {
 

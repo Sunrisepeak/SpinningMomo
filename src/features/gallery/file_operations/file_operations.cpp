@@ -7,11 +7,11 @@
 #include "features/gallery/folder/repository.hpp"
 #include "features/gallery/types.hpp"
 #include "features/gallery/watcher/watcher.hpp"
-#include "utils/file/file.hpp"
+import utils.file.file;
 #include "utils/logger/logger.hpp"
-#include "utils/path/path.hpp"
-#include "utils/string/string.hpp"
-#include "utils/system/system.hpp"
+import utils.path.path;
+import utils.string.string;
+import utils.system.system;
 
 namespace features::gallery::file_operations {
 

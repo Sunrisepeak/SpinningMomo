@@ -1,9 +1,11 @@
-#pragma once
+module;
 
-#include "vendor/std.hpp"
+export module utils.path.path;
+
+import std;
 
 // 路径工具命名空间
-namespace utils::path {
+export namespace utils::path {
 
 // 应用运行模式
 enum class AppMode {

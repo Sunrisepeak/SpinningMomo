@@ -6,7 +6,7 @@
 #include "core/database/state.hpp"
 #include "core/state/app_state.hpp"
 #include "utils/logger/logger.hpp"
-#include "utils/path/path.hpp"
+import utils.path.path;
 
 namespace core::initializer::database {
 

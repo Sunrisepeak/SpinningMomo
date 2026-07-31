@@ -8,9 +8,9 @@
 #include "core/state/app_state.hpp"
 #include "core/state/runtime_info.hpp"
 #include "features/backup/types.hpp"
-#include "utils/path/path.hpp"
-#include "utils/powershell/powershell.hpp"
-#include "utils/string/string.hpp"
+import utils.path.path;
+import utils.powershell.powershell;
+import utils.string.string;
 
 namespace features::backup::detail {
 

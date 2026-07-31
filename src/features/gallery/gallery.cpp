@@ -18,7 +18,7 @@
 #include "features/gallery/types.hpp"
 #include "features/gallery/watcher/watcher.hpp"
 #include "utils/logger/logger.hpp"
-#include "utils/path/path.hpp"
+import utils.path.path;
 
 namespace features::gallery {
 

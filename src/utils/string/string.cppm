@@ -1,11 +1,13 @@
-#pragma once
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 
+export module utils.string.string;
+
+import std;
+
 // 字符串工具命名空间
-namespace utils::string {
+export namespace utils::string {
 
 // 将宽字符串转换为UTF-8编码字符串
 [[nodiscard]] inline auto ToUtf8(const std::wstring& wide_str) noexcept -> std::string {

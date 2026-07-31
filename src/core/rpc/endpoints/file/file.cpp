@@ -8,9 +8,9 @@
 #include "core/rpc/state.hpp"
 #include "core/rpc/types.hpp"
 #include "core/state/app_state.hpp"
-#include "utils/file/file.hpp"
-#include "utils/path/path.hpp"
-#include "utils/system/system.hpp"
+import utils.file.file;
+import utils.path.path;
+import utils.system.system;
 
 namespace core::rpc::endpoints::file {
 

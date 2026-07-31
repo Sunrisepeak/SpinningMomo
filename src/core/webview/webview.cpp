@@ -11,7 +11,7 @@
 #include "core/webview/host.hpp"
 #include "core/webview/state.hpp"
 #include "utils/logger/logger.hpp"
-#include "utils/string/string.hpp"
+import utils.string.string;
 
 namespace core::webview::detail {
 

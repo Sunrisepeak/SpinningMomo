@@ -1,10 +1,12 @@
-#pragma once
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 
-namespace utils::display {
+export module utils.display.display;
+
+import std;
+
+export namespace utils::display {
 
 struct MonitorInfo {
   RECT monitor_rect{};

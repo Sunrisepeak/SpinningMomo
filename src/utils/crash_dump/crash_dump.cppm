@@ -1,8 +1,10 @@
-#pragma once
+module;
 
-#include "vendor/std.hpp"
+export module utils.crash_dump.crash_dump;
 
-namespace utils::crash_dump {
+import std;
+
+export namespace utils::crash_dump {
 
 // 安装崩溃转储处理器（SEH + terminate）
 auto install() -> void;

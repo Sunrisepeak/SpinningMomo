@@ -12,7 +12,7 @@
 #include "ui/notification_window/render_context.hpp"
 #include "ui/notification_window/state.hpp"
 #include "ui/notification_window/types.hpp"
-#include "utils/display/display.hpp"
+import utils.display.display;
 #include "utils/logger/logger.hpp"
 
 namespace ui::notification_window::message_handler {

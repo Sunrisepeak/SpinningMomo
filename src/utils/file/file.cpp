@@ -1,14 +1,15 @@
-#include "utils/file/file.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/asio.hpp"
 #include "vendor/windows.hpp"
-
-#include "utils/file/mime.hpp"
 #include "utils/logger/logger.hpp"
-#include "utils/string/string.hpp"
-#include "utils/time.hpp"
+
+module utils.file.file;
+
+import std;
+import utils.file.mime;
+import utils.string.string;
+import utils.time;
 
 namespace utils::file {
 

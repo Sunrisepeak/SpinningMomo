@@ -1,8 +1,10 @@
-#pragma once
+module;
 
-#include "vendor/std.hpp"
+export module utils.powershell.powershell;
 
-namespace utils::powershell {
+import std;
+
+export namespace utils::powershell {
 
 // 同步执行 PowerShell 脚本并返回退出码，供调用方确认脚本结果。
 auto run_script_and_wait(const std::filesystem::path& script_path,

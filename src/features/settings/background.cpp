@@ -11,8 +11,8 @@
 #include "features/settings/types.hpp"
 #include "utils/image/image.hpp"
 #include "utils/logger/logger.hpp"
-#include "utils/path/path.hpp"
-#include "utils/string/string.hpp"
+import utils.path.path;
+import utils.string.string;
 
 namespace features::settings::background {
 

@@ -8,7 +8,7 @@
 #include "core/rpc/state.hpp"
 #include "core/rpc/types.hpp"
 #include "core/state/app_state.hpp"
-#include "utils/system/system.hpp"
+import utils.system.system;
 
 namespace core::rpc::endpoints::clipboard {
 

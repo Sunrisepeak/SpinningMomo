@@ -1,10 +1,12 @@
-#pragma once
-
-#include "vendor/std.hpp"
+module;
 
 #include "utils/image/image.hpp"
 
-namespace utils::media::video_asset {
+export module utils.media.video_asset;
+
+import std;
+
+export namespace utils::media::video_asset {
 
 // 单次扫描/监听内对单个视频文件的解析结果；thumbnail 仅在传入 short_edge 时填充。
 struct VideoAnalysis {

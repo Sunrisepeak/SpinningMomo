@@ -10,9 +10,9 @@
 #include "features/gallery/state.hpp"
 #include "features/gallery/types.hpp"
 #include "utils/logger/logger.hpp"
-#include "utils/network/network.hpp"
-#include "utils/path/path.hpp"
-#include "utils/string/string.hpp"
+import utils.network.network;
+import utils.path.path;
+import utils.string.string;
 
 namespace features::gallery::root_availability::detail {
 

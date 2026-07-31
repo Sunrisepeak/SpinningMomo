@@ -19,7 +19,7 @@
 #include "features/gallery/watcher/watcher.hpp"
 #include "features/settings/state.hpp"
 #include "utils/logger/logger.hpp"
-#include "utils/path/path.hpp"
+import utils.path.path;
 
 namespace extensions::infinity_nikki::photo_service {
 

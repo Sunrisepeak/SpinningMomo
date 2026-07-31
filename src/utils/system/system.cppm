@@ -1,8 +1,10 @@
-#pragma once
+module;
 
-#include "vendor/std.hpp"
+export module utils.system.system;
 
-namespace utils::system {
+import std;
+
+export namespace utils::system {
 
 // Windows 系统版本信息结构体
 struct WindowsVersionInfo {

@@ -1,10 +1,12 @@
-#pragma once
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 
-namespace utils::time {
+export module utils.time;
+
+import std;
+
+export namespace utils::time {
 
 // 获取当前毫秒时间戳
 inline auto current_millis() -> std::int64_t {

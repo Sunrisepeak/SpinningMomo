@@ -12,7 +12,7 @@
 #include "features/gallery/types.hpp"
 #include "utils/logger/logger.hpp"
 import utils.lru_cache;
-#include "utils/time.hpp"
+import utils.time;
 
 namespace features::gallery::asset::repository::detail {
 

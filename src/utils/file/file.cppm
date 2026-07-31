@@ -1,10 +1,12 @@
-#pragma once
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/asio.hpp"
 
-namespace utils::file {
+export module utils.file.file;
+
+import std;
+
+export namespace utils::file {
 
 // 文件读取结果结构（原始数据）
 struct FileReadResult {

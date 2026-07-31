@@ -1,15 +1,16 @@
-#pragma once
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 #include "vendor/windows/audioclient.hpp"
 #include "vendor/windows/d3d11.hpp"
-
 #include "utils/media/state.hpp"
 #include "utils/media/types.hpp"
 
-namespace utils::media::encoder {
+export module utils.media.encoder;
+
+import std;
+
+export namespace utils::media::encoder {
 
 // 创建编码器
 auto create_encoder(const utils::media::encoder::EncoderConfig& config, ID3D11Device* device,

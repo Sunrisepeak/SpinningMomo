@@ -1,12 +1,14 @@
-#pragma once
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 
+export module utils.graphics.hdr;
+
+import std;
+
 // 查询窗口所在 DXGI 输出的 HDR 描述：是否处于 HDR10/G2084 色彩空间、面板上报的峰值亮度等。
 
-namespace utils::graphics::hdr {
+export namespace utils::graphics::hdr {
 
 struct HdrMonitorInfo {
   // 当前输出色彩空间是否为典型 HDR10（PQ + BT.2020 容器）路径上的 RGB_FULL_G2084_NONE_P2020。

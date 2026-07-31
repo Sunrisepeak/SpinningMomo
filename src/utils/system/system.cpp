@@ -1,12 +1,13 @@
-#include "utils/system/system.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 #include "vendor/windows/shellapi.hpp"
 #include "vendor/windows/shlobj_core.hpp"
 
-#include "utils/string/string.hpp"
+module utils.system.system;
+
+import std;
+import utils.string.string;
 
 namespace utils::system {
 
