@@ -1,0 +1,12 @@
+[package]
+name      = "p3cgmf"
+standard  = "c++23"
+platforms = ["windows"]
+
+[toolchain]
+windows = "msvc@system"
+
+[build]
+include_dirs = ["src"]
+defines = ["NOMINMAX", "UNICODE", "_UNICODE", "WIN32_LEAN_AND_MEAN", "_WIN32_WINNT=0x0A00"]
+ldflags = ["user32.lib", "kernel32.lib"]

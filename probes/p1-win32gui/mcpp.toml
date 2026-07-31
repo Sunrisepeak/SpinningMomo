@@ -1,0 +1,14 @@
+[package]
+name      = "p1win32gui"
+standard  = "c++23"
+platforms = ["windows"]
+
+[toolchain]
+windows = "msvc@system"
+
+[build]
+defines = ["NOMINMAX", "UNICODE", "_UNICODE", "WIN32_LEAN_AND_MEAN", "_WIN32_WINNT=0x0A00"]
+# The two facts under test: a GUI subsystem entry point, and raw system-library
+# names reaching link.exe through the ldflags passthrough (mcpp has no
+# `system_libs` field — ldflags is the whole mechanism on the MSVC dialect).
+ldflags = ["/SUBSYSTEM:WINDOWS", "user32.lib", "gdi32.lib", "shell32.lib", "dwmapi.lib"]

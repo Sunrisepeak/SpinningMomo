@@ -1,0 +1,16 @@
+[package]
+name      = "p2rc"
+standard  = "c++23"
+platforms = ["windows"]
+
+[toolchain]
+windows = "msvc@system"
+
+[build]
+defines = ["NOMINMAX", "UNICODE", "_UNICODE", "WIN32_LEAN_AND_MEAN"]
+# build.mcpp compiles app.rc to this fixed path; link.exe takes a .res as a
+# plain input object. It CANNOT come through build.mcpp's own directive
+# channel: `mcpp:link-lib=` is hard-wired to emit `-l<name>`
+# (build_program.cppm:132), which the MSVC dialect does not understand.
+# So the path is a static ldflags entry and build.mcpp only has to produce it.
+ldflags = ["/SUBSYSTEM:WINDOWS", "user32.lib", "gen/app.res"]

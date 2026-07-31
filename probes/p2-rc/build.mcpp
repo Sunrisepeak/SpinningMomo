@@ -1,0 +1,62 @@
+// P2: drive rc.exe from a build program.
+//
+// mcpp has no .rc rule (the source whitelist is .cpp/.cc/.cxx/.c/.m plus
+// assembly), so resource compilation has to happen before the build and hand
+// link.exe a .res. rc.exe is not on PATH — mcpp synthesises INCLUDE/LIB for
+// the compile, not the SDK's bin directory — so locate it under the Windows
+// Kit and pick the newest versioned bin.
+#include <cstdio>
+#include <cstdlib>
+#include <algorithm>
+#include <filesystem>
+#include <string>
+#include <vector>
+
+namespace fs = std::filesystem;
+
+static std::string find_rc() {
+  const char* roots[] = {
+      "C:/Program Files (x86)/Windows Kits/10/bin",
+      "C:/Program Files/Windows Kits/10/bin",
+  };
+  std::vector<fs::path> found;
+  for (const char* root : roots) {
+    std::error_code ec;
+    if (!fs::is_directory(root, ec)) continue;
+    for (const auto& e : fs::directory_iterator(root, ec)) {
+      auto cand = e.path() / "x64" / "rc.exe";
+      if (fs::exists(cand, ec)) found.push_back(cand);
+    }
+  }
+  if (found.empty()) return {};
+  std::sort(found.begin(), found.end());          // version dirs sort lexically
+  return found.back().string();
+}
+
+int main() {
+  std::puts("mcpp:rerun-if-changed=app.rc");
+  std::puts("mcpp:rerun-if-changed=app.manifest");
+
+  auto rc = find_rc();
+  if (rc.empty()) {
+    std::fprintf(stderr, "build.mcpp: rc.exe not found under any Windows Kit\n");
+    return 1;
+  }
+  std::fprintf(stderr, "build.mcpp: using %s\n", rc.c_str());
+
+  std::error_code ec;
+  fs::create_directories("gen", ec);
+
+  std::string cmd = "\"\"" + rc + "\" /nologo /fo gen\\app.res app.rc\"";
+  int rv = std::system(cmd.c_str());
+  if (rv != 0) {
+    std::fprintf(stderr, "build.mcpp: rc.exe failed with %d\n", rv);
+    return 1;
+  }
+  if (!fs::exists("gen/app.res")) {
+    std::fprintf(stderr, "build.mcpp: rc.exe produced no gen/app.res\n");
+    return 1;
+  }
+  std::fprintf(stderr, "build.mcpp: gen/app.res ok\n");
+  return 0;
+}

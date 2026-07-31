@@ -1,0 +1,111 @@
+name: mcpp-windows
+
+# Windows-only CI for the mcpp migration.
+#
+# Local development happens on Linux, where mcpp's MSVC toolchain is hard-gated
+# off (`msvc is only available on Windows hosts`). So EVERY MSVC fact has to be
+# established here. The probe matrix exists to answer independent questions in
+# one round-trip instead of serialising them across pushes: each entry is a
+# self-contained mcpp project under `probes/`, and `fail-fast: false` keeps a
+# failing probe from hiding the others' answers.
+
+on:
+  push:
+    branches: ['mcpp/**']
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: mcpp-windows-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Pinned via .xlings.json + bare `xlings install` (passing a package name
+  # makes xlings resolve "newest in this runner's index copy" and silently
+  # ignore the workspace pin — mcpp's own CI learned this the hard way).
+  XLINGS_VERSION: '2026.7.28.4'
+  XLINGS_NON_INTERACTIVE: '1'
+
+jobs:
+  probe:
+    name: ${{ matrix.probe }}
+    runs-on: windows-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        probe:
+          - p0-hello           # mcpp installs, msvc detected, import std works
+          - p1-win32gui        # WinMain + /SUBSYSTEM:WINDOWS + system libs
+          - p2-rc              # build.mcpp drives rc.exe, .res reaches link.exe
+          - p3a-win32-export   # module wrapping windows.h, re-export to ::
+          - p3b-winrt-export   # module wrapping C++/WinRT (THE critical unknown)
+          - p3c-gmf-direct     # consumer includes vendor headers in its own GMF
+          - p4-importstd       # real project sources as modules + import std
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache xlings
+        uses: actions/cache@v4
+        with:
+          path: ~/.xlings
+          key: xlings-windows-xl${{ env.XLINGS_VERSION }}
+
+      - name: Cache mcpp sandbox
+        uses: actions/cache@v4
+        with:
+          path: ~/.mcpp
+          key: mcpp-sandbox-windows-xl${{ env.XLINGS_VERSION }}-${{ hashFiles('.xlings.json') }}
+          restore-keys: mcpp-sandbox-windows-xl${{ env.XLINGS_VERSION }}-
+
+      - name: Bootstrap xlings + mcpp
+        shell: bash
+        run: |
+          set -euo pipefail
+          REPO_DIR="$(pwd)"
+          WORK=$(mktemp -d)
+          zipfile="xlings-${XLINGS_VERSION}-windows-x86_64.zip"
+          curl -fsSL -o "${WORK}/${zipfile}" \
+            "https://github.com/d2learn/xlings/releases/download/v${XLINGS_VERSION}/${zipfile}"
+          (cd "${WORK}" && unzip -q "${zipfile}")
+          "$WORK/xlings-${XLINGS_VERSION}-windows-x86_64/subos/default/bin/xlings.exe" self install
+          echo "$USERPROFILE/.xlings/subos/default/bin" >> "$GITHUB_PATH"
+          XL="$USERPROFILE/.xlings/subos/default/bin/xlings.exe"
+          "$XL" --version
+          # Bare `install` — the version comes from .xlings.json's workspace pin.
+          cd "$REPO_DIR"
+          "$XL" install -y
+          MCPP="$USERPROFILE/.xlings/subos/default/bin/mcpp.exe"
+          test -x "$MCPP" || MCPP=$(command -v mcpp || true)
+          test -n "$MCPP" || { echo "FAIL: mcpp not on PATH after install"; exit 1; }
+          echo "MCPP=$MCPP" >> "$GITHUB_ENV"
+          "$MCPP" --version
+
+      - name: Diagnose environment
+        shell: bash
+        continue-on-error: true
+        run: |
+          "$MCPP" self doctor || true
+          "$MCPP" toolchain list || true
+
+      - name: Select MSVC toolchain
+        shell: bash
+        run: "$MCPP" toolchain default msvc
+
+      - name: Build probe
+        shell: bash
+        working-directory: probes/${{ matrix.probe }}
+        run: |
+          set -euo pipefail
+          "$MCPP" build -v 2>&1 | tail -200
+
+      - name: Run probe check
+        shell: bash
+        working-directory: probes/${{ matrix.probe }}
+        run: |
+          set -euo pipefail
+          if [ -f check.sh ]; then
+            bash check.sh
+          else
+            echo "no check.sh — build success is the whole assertion"
+          fi

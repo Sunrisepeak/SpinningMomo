@@ -1,0 +1,10 @@
+[package]
+name      = "p4importstd"
+standard  = "c++23"
+platforms = ["windows"]
+
+[toolchain]
+windows = "msvc@system"
+
+[build]
+include_dirs = ["src"]

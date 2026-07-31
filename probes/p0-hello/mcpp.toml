@@ -1,0 +1,7 @@
+[package]
+name      = "p0hello"
+standard  = "c++23"
+platforms = ["windows"]
+
+[toolchain]
+windows = "msvc@system"
