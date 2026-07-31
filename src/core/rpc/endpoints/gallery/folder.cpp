@@ -1,17 +1,18 @@
-#include "core/rpc/endpoints/gallery/folder.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
-
-#include "core/rpc/notification_hub.hpp"
-#include "core/rpc/rpc.hpp"
-#include "core/rpc/state.hpp"
-#include "core/rpc/types.hpp"
 #include "core/state/app_state.hpp"
+#include "vendor/asio.hpp"
+#include "core/rpc/types.hpp"
 #include "features/gallery/folder/repository.hpp"
 #include "features/gallery/folder/service.hpp"
 #include "features/gallery/types.hpp"
+
+module core.rpc.endpoints.gallery.folder;
+
+import std;
+import core.rpc.notification_hub;
+import core.rpc.rpc;
+import core.rpc.state;
 
 namespace core::rpc::endpoints::gallery::folder {
 

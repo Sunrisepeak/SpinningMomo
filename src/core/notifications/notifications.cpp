@@ -1,13 +1,15 @@
-#include "core/notifications/notifications.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "core/events/events.hpp"
-#include "core/notifications/events.hpp"
 #include "core/notifications/types.hpp"
 #include "core/state/app_state.hpp"
+#include "core/events/events.hpp"
 #include "ui/floating_window/state.hpp"
 #include "ui/notification_window/notification_window.hpp"
+
+module core.notifications.notifications;
+
+import std;
+import core.notifications.events;
 import utils.string.string;
 
 namespace core::notifications {

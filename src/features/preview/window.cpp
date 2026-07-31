@@ -7,7 +7,7 @@
 #include "vendor/windows/windowsx.hpp"
 
 #include "core/state/app_state.hpp"
-#include "core/state/runtime_info.hpp"
+import core.state.runtime_info;
 #include "features/preview/capture.hpp"
 #include "features/preview/interaction.hpp"
 #include "features/preview/rendering.hpp"

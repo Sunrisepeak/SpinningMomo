@@ -1,11 +1,13 @@
-#include "core/events/registrar.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "core/events/handlers/feature_handlers.hpp"
-#include "core/events/handlers/settings_handlers.hpp"
-#include "core/events/handlers/system_handlers.hpp"
 #include "core/state/app_state.hpp"
+
+module core.events.registrar;
+
+import std;
+import core.events.handlers.feature_handlers;
+import core.events.handlers.settings_handlers;
+import core.events.handlers.system_handlers;
 
 namespace core::events {
 

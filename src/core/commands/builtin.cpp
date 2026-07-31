@@ -4,8 +4,8 @@
 
 #include "vendor/windows.hpp"
 
-#include "core/commands/registry.hpp"
-#include "core/commands/state.hpp"
+import core.commands.registry;
+import core.commands.state;
 #include "core/commands/types.hpp"
 #include "core/state/app_state.hpp"
 #include "features/letterbox/state.hpp"

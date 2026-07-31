@@ -5,7 +5,7 @@
 #include "vendor/windows.hpp"
 
 #include "core/events/events.hpp"
-#include "core/i18n/state.hpp"
+import core.i18n.state;
 #include "core/state/app_state.hpp"
 #include "features/recording/recording.hpp"
 #include "features/recording/session.hpp"

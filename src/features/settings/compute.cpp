@@ -2,7 +2,7 @@
 
 #include "vendor/std.hpp"
 
-#include "core/i18n/state.hpp"
+import core.i18n.state;
 #include "core/i18n/types.hpp"
 #include "core/state/app_state.hpp"
 #include "features/settings/menu.hpp"

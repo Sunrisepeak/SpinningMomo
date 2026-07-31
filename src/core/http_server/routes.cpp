@@ -1,18 +1,19 @@
-#include "core/http_server/routes.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
 #include "vendor/uwebsockets.hpp"
-
-#include "core/async/async.hpp"
-#include "core/build_config.hpp"
-#include "core/http_server/sse_manager.hpp"
-#include "core/http_server/state.hpp"
-#include "core/http_server/static.hpp"
-#include "core/rpc/rpc.hpp"
 #include "core/state/app_state.hpp"
+#include "vendor/asio.hpp"
+#include "core/build_config.hpp"
+#include "core/http_server/state.hpp"
 #include "utils/logger/logger.hpp"
+
+module core.http_server.routes;
+
+import std;
+import core.async.async;
+import core.http_server.sse_manager;
+import core.http_server.static;
+import core.rpc.rpc;
 
 namespace core::http_server::routes {
 

@@ -4,7 +4,7 @@
 
 #include "vendor/asio.hpp"
 
-#include "core/async/async.hpp"
+import core.async.async;
 #include "core/state/app_state.hpp"
 #include "features/gallery/folder/repository.hpp"
 #include "features/gallery/state.hpp"

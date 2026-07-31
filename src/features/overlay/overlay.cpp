@@ -6,7 +6,7 @@
 #include "vendor/windows/dwmapi.hpp"
 
 #include "core/state/app_state.hpp"
-#include "core/state/runtime_info.hpp"
+import core.state.runtime_info;
 #include "features/overlay/capture.hpp"
 #include "features/overlay/geometry.hpp"
 #include "features/overlay/interaction.hpp"

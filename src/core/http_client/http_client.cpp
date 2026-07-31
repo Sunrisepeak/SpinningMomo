@@ -1,15 +1,16 @@
-#include "core/http_client/http_client.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/asio.hpp"
-#include "vendor/windows.hpp"
-#include "vendor/windows/winhttp.hpp"
-
-#include "core/http_client/state.hpp"
 #include "core/http_client/types.hpp"
 #include "core/state/app_state.hpp"
+#include "vendor/windows.hpp"
+#include "vendor/windows/winhttp.hpp"
 #include "utils/logger/logger.hpp"
+
+module core.http_client.http_client;
+
+import std;
+import core.http_client.state;
 import utils.string.string;
 
 namespace core::http_client::detail {

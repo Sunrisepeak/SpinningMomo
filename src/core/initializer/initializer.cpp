@@ -1,25 +1,8 @@
-#include "core/initializer/initializer.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "core/async/async.hpp"
-#include "core/commands/registry.hpp"
-#include "core/dialog_service/dialog_service.hpp"
-#include "core/events/events.hpp"
-#include "core/events/registrar.hpp"
-#include "core/events/state.hpp"
-#include "core/http_client/http_client.hpp"
-#include "core/http_server/http_server.hpp"
-#include "core/i18n/i18n.hpp"
-#include "core/i18n/state.hpp"
-#include "core/i18n/types.hpp"
-#include "core/initializer/database.hpp"
-#include "core/migration/migration.hpp"
-#include "core/notifications/notifications.hpp"
-#include "core/rpc/registry.hpp"
 #include "core/state/app_state.hpp"
-#include "core/state/runtime_info.hpp"
-#include "core/worker_pool/worker_pool.hpp"
+#include "core/events/events.hpp"
+#include "core/i18n/types.hpp"
 #include "extensions/infinity_nikki/map_service.hpp"
 #include "extensions/infinity_nikki/photo_service.hpp"
 #include "features/gallery/gallery.hpp"
@@ -36,6 +19,25 @@
 #include "ui/tray_icon/tray_icon.hpp"
 #include "ui/webview_window/webview_window.hpp"
 #include "utils/logger/logger.hpp"
+
+module core.initializer.initializer;
+
+import std;
+import core.async.async;
+import core.commands.registry;
+import core.dialog_service.dialog_service;
+import core.events.registrar;
+import core.events.state;
+import core.http_client.http_client;
+import core.http_server.http_server;
+import core.i18n.i18n;
+import core.i18n.state;
+import core.initializer.database;
+import core.migration.migration;
+import core.notifications.notifications;
+import core.rpc.registry;
+import core.state.runtime_info;
+import core.worker_pool.worker_pool;
 import utils.string.string;
 
 namespace core::initializer {

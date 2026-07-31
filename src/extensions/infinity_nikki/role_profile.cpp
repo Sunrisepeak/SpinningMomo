@@ -5,10 +5,10 @@
 #include "vendor/asio.hpp"
 #include "vendor/rfl.hpp"
 
-#include "core/async/async.hpp"
-#include "core/http_client/http_client.hpp"
+import core.async.async;
+import core.http_client.http_client;
 #include "core/http_client/types.hpp"
-#include "core/rpc/notification_hub.hpp"
+import core.rpc.notification_hub;
 #include "core/state/app_state.hpp"
 #include "features/gallery/folder/repository.hpp"
 #include "features/gallery/folder/service.hpp"

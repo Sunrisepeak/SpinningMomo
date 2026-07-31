@@ -1,25 +1,26 @@
-#include "core/webview/host.hpp"
+module;
 
-#include "vendor/std.hpp"
-
+#include "vendor/windows.hpp"
+#include "core/state/app_state.hpp"
 #include "vendor/rfl.hpp"
 #include "vendor/webview2.hpp"
 #include "vendor/wil.hpp"
-#include "vendor/windows.hpp"
 #include "vendor/windows/d3d11.hpp"
 #include "vendor/windows/dcomp.hpp"
 #include "vendor/windows/dxgi.hpp"
 #include "vendor/windows/shellapi.hpp"
 #include "vendor/windows/wrl.hpp"
-
 #include "core/build_config.hpp"
 #include "core/rpc/types.hpp"
-#include "core/state/app_state.hpp"
-#include "core/webview/rpc_bridge.hpp"
 #include "core/webview/state.hpp"
 #include "core/webview/static.hpp"
 #include "features/settings/state.hpp"
 #include "utils/logger/logger.hpp"
+
+module core.webview.host;
+
+import std;
+import core.webview.rpc_bridge;
 import utils.path.path;
 import utils.string.string;
 

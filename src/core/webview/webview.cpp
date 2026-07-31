@@ -1,16 +1,19 @@
-#include "core/webview/webview.hpp"
+module;
 
-#include "vendor/std.hpp"
-
+#include "vendor/windows.hpp"
+#include "core/state/app_state.hpp"
+#include "core/webview/state.hpp"
+#include "core/webview/static.hpp"
+#include "core/webview/types.hpp"
 #include "vendor/webview2.hpp"
 #include "vendor/wil.hpp"
-#include "vendor/windows.hpp"
 #include "vendor/windows/windowsx.hpp"
-
-#include "core/state/app_state.hpp"
-#include "core/webview/host.hpp"
-#include "core/webview/state.hpp"
 #include "utils/logger/logger.hpp"
+
+module core.webview.webview;
+
+import std;
+import core.webview.host;
 import utils.string.string;
 
 namespace core::webview::detail {

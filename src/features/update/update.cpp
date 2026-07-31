@@ -5,16 +5,16 @@
 #include "vendor/asio.hpp"
 #include "vendor/windows.hpp"
 
-#include "core/async/async.hpp"
+import core.async.async;
 #include "core/events/events.hpp"
-#include "core/http_client/http_client.hpp"
+import core.http_client.http_client;
 #include "core/http_client/types.hpp"
-#include "core/i18n/state.hpp"
-#include "core/notifications/notifications.hpp"
+import core.i18n.state;
+import core.notifications.notifications;
 #include "core/notifications/types.hpp"
 #include "core/state/app_state.hpp"
-#include "core/tasks/tasks.hpp"
-#include "core/version.hpp"
+import core.tasks.tasks;
+import core.version;
 #include "features/settings/state.hpp"
 #include "features/update/state.hpp"
 #include "features/update/types.hpp"

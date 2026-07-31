@@ -3,11 +3,11 @@
 #include "vendor/std.hpp"
 
 #include "core/build_config.hpp"
-#include "core/http_server/static.hpp"
+import core.http_server.static;
 #include "core/http_server/types.hpp"
 #include "core/state/app_state.hpp"
 #include "core/webview/state.hpp"
-#include "core/webview/webview.hpp"
+import core.webview.webview;
 #include "features/gallery/original_locator.hpp"
 #include "features/gallery/state.hpp"
 #include "utils/logger/logger.hpp"

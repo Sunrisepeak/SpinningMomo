@@ -1,22 +1,23 @@
-#include "core/rpc/endpoints/gallery/gallery.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
-
-#include "core/async/async.hpp"
-#include "core/rpc/endpoints/gallery/asset.hpp"
-#include "core/rpc/endpoints/gallery/folder.hpp"
-#include "core/rpc/endpoints/gallery/tag.hpp"
-#include "core/rpc/notification_hub.hpp"
-#include "core/rpc/rpc.hpp"
-#include "core/rpc/state.hpp"
-#include "core/rpc/types.hpp"
 #include "core/state/app_state.hpp"
-#include "core/tasks/tasks.hpp"
+#include "vendor/asio.hpp"
+#include "core/rpc/types.hpp"
 #include "features/gallery/gallery.hpp"
 #include "features/gallery/types.hpp"
 #include "utils/logger/logger.hpp"
+
+module core.rpc.endpoints.gallery.gallery;
+
+import std;
+import core.async.async;
+import core.rpc.endpoints.gallery.asset;
+import core.rpc.endpoints.gallery.folder;
+import core.rpc.endpoints.gallery.tag;
+import core.rpc.notification_hub;
+import core.rpc.rpc;
+import core.rpc.state;
+import core.tasks.tasks;
 
 namespace core::rpc::endpoints::gallery {
 

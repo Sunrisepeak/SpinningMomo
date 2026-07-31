@@ -1,11 +1,13 @@
-#include "core/initializer/database.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "core/database/database.hpp"
 #include "core/database/state.hpp"
 #include "core/state/app_state.hpp"
 #include "utils/logger/logger.hpp"
+
+module core.initializer.database;
+
+import std;
+import core.database.database;
 import utils.path.path;
 
 namespace core::initializer::database {

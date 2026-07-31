@@ -4,9 +4,9 @@
 
 #include "vendor/windows.hpp"
 
-#include "core/database/database.hpp"
+import core.database.database;
 #include "core/state/app_state.hpp"
-#include "core/state/runtime_info.hpp"
+import core.state.runtime_info;
 #include "features/backup/types.hpp"
 import utils.path.path;
 import utils.powershell.powershell;

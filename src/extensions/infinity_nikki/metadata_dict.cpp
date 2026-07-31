@@ -5,7 +5,7 @@
 #include "vendor/asio.hpp"
 #include "vendor/rfl.hpp"
 
-#include "core/http_client/http_client.hpp"
+import core.http_client.http_client;
 #include "core/http_client/types.hpp"
 #include "core/state/app_state.hpp"
 #include "extensions/infinity_nikki/types.hpp"

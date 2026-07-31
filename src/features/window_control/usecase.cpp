@@ -4,9 +4,9 @@
 
 #include "vendor/windows.hpp"
 
-#include "core/async/ui_awaitable.hpp"
-#include "core/i18n/state.hpp"
-#include "core/notifications/notifications.hpp"
+import core.async.ui_awaitable;
+import core.i18n.state;
+import core.notifications.notifications;
 #include "core/state/app_state.hpp"
 #include "features/letterbox/letterbox.hpp"
 #include "features/letterbox/state.hpp"

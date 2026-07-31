@@ -10,9 +10,9 @@
 #include "core/build_config.hpp"
 #include "core/http_server/state.hpp"
 #include "core/state/app_state.hpp"
-#include "core/state/runtime_info.hpp"
+import core.state.runtime_info;
 #include "core/webview/state.hpp"
-#include "core/webview/webview.hpp"
+import core.webview.webview;
 #include "features/settings/settings.hpp"
 #include "features/settings/state.hpp"
 #include "features/settings/types.hpp"

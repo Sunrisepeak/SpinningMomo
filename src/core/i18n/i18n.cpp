@@ -1,15 +1,16 @@
-#include "core/i18n/i18n.hpp"
-
-#include "vendor/std.hpp"
-
-#include "vendor/rfl.hpp"
+module;
 
 #include "core/i18n/embedded/en_us.hpp"
 #include "core/i18n/embedded/zh_cn.hpp"
-#include "core/i18n/state.hpp"
 #include "core/i18n/types.hpp"
 #include "core/state/app_state.hpp"
+#include "vendor/rfl.hpp"
 #include "utils/logger/logger.hpp"
+
+module core.i18n.i18n;
+
+import std;
+import core.i18n.state;
 
 namespace core::i18n {
 

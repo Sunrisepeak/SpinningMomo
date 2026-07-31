@@ -1,11 +1,13 @@
-#include "core/migration/migration.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "core/migration/scripts/scripts.hpp"
 #include "core/state/app_state.hpp"
-#include "core/version.hpp"
 #include "utils/logger/logger.hpp"
+
+module core.migration.migration;
+
+import std;
+import core.migration.scripts.scripts;
+import core.version;
 import utils.path.path;
 
 namespace core::migration {

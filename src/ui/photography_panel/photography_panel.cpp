@@ -5,7 +5,7 @@
 #include "vendor/windows.hpp"
 #include "vendor/windows/dwmapi.hpp"
 
-#include "core/i18n/state.hpp"
+import core.i18n.state;
 #include "core/state/app_state.hpp"
 #include "ui/photography_panel/message_handler.hpp"
 #include "ui/photography_panel/painter.hpp"

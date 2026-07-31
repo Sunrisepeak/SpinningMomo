@@ -1,15 +1,16 @@
-#include "core/rpc/endpoints/registry/registry.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
-
-#include "core/commands/registry.hpp"
-#include "core/commands/types.hpp"
-#include "core/rpc/rpc.hpp"
-#include "core/rpc/state.hpp"
-#include "core/rpc/types.hpp"
 #include "core/state/app_state.hpp"
+#include "vendor/asio.hpp"
+#include "core/commands/types.hpp"
+#include "core/rpc/types.hpp"
+
+module core.rpc.endpoints.registry.registry;
+
+import std;
+import core.commands.registry;
+import core.rpc.rpc;
+import core.rpc.state;
 
 namespace core::rpc::endpoints::registry {
 

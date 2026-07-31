@@ -1,12 +1,14 @@
-#include "core/rpc/notification_hub.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "core/events/events.hpp"
-#include "core/http_server/sse_manager.hpp"
 #include "core/state/app_state.hpp"
-#include "core/webview/events.hpp"
+#include "core/events/events.hpp"
 #include "utils/logger/logger.hpp"
+
+module core.rpc.notification_hub;
+
+import std;
+import core.http_server.sse_manager;
+import core.webview.events;
 
 namespace core::rpc::notification_hub {
 

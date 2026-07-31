@@ -4,7 +4,7 @@
 
 #include "vendor/windows.hpp"
 
-#include "core/events/state.hpp"
+import core.events.state;
 #include "core/state/app_state.hpp"
 
 namespace core::events {

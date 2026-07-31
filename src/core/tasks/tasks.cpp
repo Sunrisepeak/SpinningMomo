@@ -1,13 +1,14 @@
-#include "core/tasks/tasks.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/rfl.hpp"
-
-#include "core/rpc/notification_hub.hpp"
 #include "core/state/app_state.hpp"
 #include "core/tasks/state.hpp"
+#include "vendor/rfl.hpp"
 #include "utils/logger/logger.hpp"
+
+module core.tasks.tasks;
+
+import std;
+import core.rpc.notification_hub;
 
 namespace core::tasks {
 

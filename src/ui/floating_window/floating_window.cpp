@@ -6,10 +6,10 @@
 #include "vendor/windows/dwmapi.hpp"
 #include "vendor/windows/windowsx.hpp"
 
-#include "core/commands/registry.hpp"
+import core.commands.registry;
 #include "core/commands/types.hpp"
 #include "core/events/events.hpp"
-#include "core/i18n/state.hpp"
+import core.i18n.state;
 #include "core/i18n/types.hpp"
 #include "core/state/app_state.hpp"
 #include "features/settings/menu.hpp"

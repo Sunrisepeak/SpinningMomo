@@ -2,7 +2,7 @@
 
 #include "vendor/std.hpp"
 
-#include "core/database/database.hpp"
+import core.database.database;
 #include "core/state/app_state.hpp"
 #include "features/gallery/asset/repository.hpp"
 #include "features/gallery/asset/thumbnail.hpp"

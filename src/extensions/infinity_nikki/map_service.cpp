@@ -3,7 +3,7 @@
 #include "vendor/std.hpp"
 
 #include "core/state/app_state.hpp"
-#include "core/webview/webview.hpp"
+import core.webview.webview;
 #include "extensions/infinity_nikki/generated/map_injection_script.hpp"
 #include "utils/logger/logger.hpp"
 

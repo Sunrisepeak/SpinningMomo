@@ -5,9 +5,9 @@
 #include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
 
-#include "core/database/database.hpp"
+import core.database.database;
 #include "core/state/app_state.hpp"
-#include "core/worker_pool/worker_pool.hpp"
+import core.worker_pool.worker_pool;
 #include "features/gallery/asset/repository.hpp"
 #include "features/gallery/color/repository.hpp"
 #include "features/gallery/scanner/asset_pipeline.hpp"

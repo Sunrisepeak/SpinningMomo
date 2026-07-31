@@ -9,7 +9,7 @@
 #include "vendor/windows/winrt/windows_graphics_capture.hpp"
 
 #include "core/state/app_state.hpp"
-#include "core/state/runtime_info.hpp"
+import core.state.runtime_info;
 #include "features/screenshot/hdr_encoder.hpp"
 #include "features/screenshot/state.hpp"
 #include "features/settings/state.hpp"

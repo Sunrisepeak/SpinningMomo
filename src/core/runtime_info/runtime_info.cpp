@@ -1,15 +1,17 @@
-#include "core/runtime_info/runtime_info.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "core/build_config.hpp"
 #include "core/state/app_state.hpp"
-#include "core/state/runtime_info.hpp"
-#include "core/version.hpp"
-#include "core/webview/webview.hpp"
+#include "core/build_config.hpp"
 #include "utils/graphics/capture.hpp"
 #include "utils/logger/logger.hpp"
 #include "utils/media/audio_capture.hpp"
+
+module core.runtime_info.runtime_info;
+
+import std;
+import core.state.runtime_info;
+import core.version;
+import core.webview.webview;
 import utils.path.path;
 import utils.system.system;
 

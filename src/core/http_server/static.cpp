@@ -1,16 +1,18 @@
-#include "core/http_server/static.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
 #include "vendor/uwebsockets.hpp"
-
-#include "core/async/async.hpp"
+#include "core/http_server/state.hpp"
 #include "core/http_server/types.hpp"
 #include "core/state/app_state.hpp"
+#include "vendor/asio.hpp"
+#include "utils/logger/logger.hpp"
+
+module core.http_server.static;
+
+import std;
+import core.async.async;
 import utils.file.file;
 import utils.file.mime;
-#include "utils/logger/logger.hpp"
 import utils.path.path;
 import utils.time;
 

@@ -5,7 +5,7 @@
 #include "vendor/asio.hpp"
 
 #include "core/state/app_state.hpp"
-#include "core/worker_pool/worker_pool.hpp"
+import core.worker_pool.worker_pool;
 #include "extensions/infinity_nikki/photo_extract/infra.hpp"
 #include "extensions/infinity_nikki/photo_extract/scan.hpp"
 #include "extensions/infinity_nikki/types.hpp"

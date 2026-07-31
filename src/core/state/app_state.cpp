@@ -2,19 +2,19 @@
 
 #include "vendor/std.hpp"
 
-#include "core/async/state.hpp"
-#include "core/commands/state.hpp"
+import core.async.state;
+import core.commands.state;
 #include "core/database/state.hpp"
-#include "core/dialog_service/state.hpp"
-#include "core/events/state.hpp"
-#include "core/http_client/state.hpp"
+import core.dialog_service.state;
+import core.events.state;
+import core.http_client.state;
 #include "core/http_server/state.hpp"
-#include "core/i18n/state.hpp"
-#include "core/rpc/state.hpp"
-#include "core/state/runtime_info.hpp"
+import core.i18n.state;
+import core.rpc.state;
+import core.state.runtime_info;
 #include "core/tasks/state.hpp"
 #include "core/webview/state.hpp"
-#include "core/worker_pool/state.hpp"
+import core.worker_pool.state;
 #include "features/gallery/state.hpp"
 #include "features/letterbox/state.hpp"
 #include "features/overlay/state.hpp"

@@ -4,10 +4,10 @@
 
 #include "vendor/windows.hpp"
 
-#include "core/database/database.hpp"
+import core.database.database;
 #include "core/state/app_state.hpp"
 #include "core/webview/state.hpp"
-#include "core/webview/webview.hpp"
+import core.webview.webview;
 #include "features/gallery/asset/thumbnail.hpp"
 #include "features/gallery/folder/repository.hpp"
 #include "features/gallery/ignore/service.hpp"

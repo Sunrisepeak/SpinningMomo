@@ -1,14 +1,15 @@
-#include "core/commands/registry.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
-
-#include "core/commands/state.hpp"
 #include "core/commands/types.hpp"
 #include "core/state/app_state.hpp"
 #include "features/settings/state.hpp"
 #include "utils/logger/logger.hpp"
+
+module core.commands.registry;
+
+import std;
+import core.commands.state;
 
 namespace core::commands {
 

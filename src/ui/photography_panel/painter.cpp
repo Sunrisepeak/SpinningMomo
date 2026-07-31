@@ -5,7 +5,7 @@
 #include "vendor/windows.hpp"
 #include "vendor/windows/d2d1_3.hpp"
 
-#include "core/i18n/state.hpp"
+import core.i18n.state;
 #include "core/state/app_state.hpp"
 #include "features/photography/long_exposure.hpp"
 #include "features/photography/state.hpp"

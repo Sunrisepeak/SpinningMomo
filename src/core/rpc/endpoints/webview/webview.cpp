@@ -1,16 +1,17 @@
-#include "core/rpc/endpoints/webview/webview.hpp"
+module;
 
-#include "vendor/std.hpp"
-
+#include "core/state/app_state.hpp"
 #include "vendor/asio.hpp"
 #include "vendor/rfl.hpp"
-
-#include "core/rpc/rpc.hpp"
-#include "core/rpc/state.hpp"
 #include "core/rpc/types.hpp"
-#include "core/state/app_state.hpp"
 #include "core/webview/state.hpp"
 #include "ui/webview_window/webview_window.hpp"
+
+module core.rpc.endpoints.webview.webview;
+
+import std;
+import core.rpc.rpc;
+import core.rpc.state;
 import utils.string.string;
 
 namespace core::rpc::endpoints::webview {

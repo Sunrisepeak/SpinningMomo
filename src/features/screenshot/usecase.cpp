@@ -2,8 +2,8 @@
 
 #include "vendor/std.hpp"
 
-#include "core/i18n/state.hpp"
-#include "core/notifications/notifications.hpp"
+import core.i18n.state;
+import core.notifications.notifications;
 #include "core/notifications/types.hpp"
 #include "core/state/app_state.hpp"
 #include "features/photography/state.hpp"

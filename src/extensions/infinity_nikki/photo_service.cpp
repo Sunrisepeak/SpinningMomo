@@ -2,10 +2,10 @@
 
 #include "vendor/std.hpp"
 
-#include "core/database/database.hpp"
+import core.database.database;
 #include "core/state/app_state.hpp"
-#include "core/tasks/tasks.hpp"
-#include "core/worker_pool/worker_pool.hpp"
+import core.tasks.tasks;
+import core.worker_pool.worker_pool;
 #include "extensions/infinity_nikki/media_hardlinks.hpp"
 #include "extensions/infinity_nikki/role_profile.hpp"
 #include "extensions/infinity_nikki/task_service.hpp"

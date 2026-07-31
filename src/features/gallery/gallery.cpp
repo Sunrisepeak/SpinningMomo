@@ -5,8 +5,8 @@
 #include "vendor/asio.hpp"
 #include "vendor/windows/mfapi.hpp"
 
-#include "core/async/async.hpp"
-#include "core/rpc/notification_hub.hpp"
+import core.async.async;
+import core.rpc.notification_hub;
 #include "core/state/app_state.hpp"
 #include "features/gallery/asset/thumbnail.hpp"
 #include "features/gallery/folder/service.hpp"

@@ -1,15 +1,16 @@
-#include "core/http_server/http_server.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/uwebsockets.hpp"
-
-#include "core/build_config.hpp"
-#include "core/http_server/routes.hpp"
-#include "core/http_server/sse_manager.hpp"
-#include "core/http_server/state.hpp"
 #include "core/state/app_state.hpp"
+#include "vendor/uwebsockets.hpp"
+#include "core/build_config.hpp"
+#include "core/http_server/state.hpp"
 #include "utils/logger/logger.hpp"
+
+module core.http_server.http_server;
+
+import std;
+import core.http_server.routes;
+import core.http_server.sse_manager;
 
 namespace core::http_server {
 
