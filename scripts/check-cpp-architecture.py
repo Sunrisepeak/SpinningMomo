@@ -16,9 +16,12 @@ CPP_SUFFIXES = {".hpp", ".cpp"}
 FORBIDDEN_TEXT = {
     r"\b(?:Core|Features|UI|Utils|Extensions|Vendor)::": "旧的大驼峰命名空间",
     r"\b(?:State|Types|UseCase)::": "已移除的职责命名空间",
-    r"^\s*export\s+module\b": "C++ 命名模块声明",
-    r"^\s*import\s+(?:std|[A-Za-z_])": "C++ 模块导入",
-    r"\bbuild\.c\+\+\.modules\b": "Xmake 模块策略",
+    # `export module` / `import` are no longer forbidden — the mcpp migration
+    # converts the tree to C++23 named modules bottom-up. What still must not
+    # appear is a HEADER UNIT (`import <h>;` / `import "h";`): mcpp rejects
+    # those outright (modgraph/scanner.cppm:702), and they are what the
+    # previous, abandoned modularisation of this repo was built on.
+    r"^\s*import\s*[<\"]": "C++ 头文件单元（mcpp 明确禁止）",
     r"\bnamespace\s*\{": "匿名命名空间",
     r"\b(?:web_view|d3_d|power_shell)\b": "非规范的复合命名空间拼写",
 }

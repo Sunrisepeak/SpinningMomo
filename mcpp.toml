@@ -33,7 +33,12 @@ uwebsockets = "20.79.0"
 libwebp     = "1.5.0"
 
 [build]
-sources = ["src/**/*.cpp"]
+# Modules and their implementation units both live under src/. The migration
+# converts bottom-up: a leaf header becomes `<name>.cppm`, its consumers'
+# `#include "…hpp"` become `import …;`. `.hpp` files that have not been
+# converted yet keep working unchanged — a module and a header can coexist in
+# the same build, which is what makes an incremental migration possible at all.
+sources = ["src/**/*.cpp", "src/**/*.cppm"]
 
 include_dirs = [
   "src",

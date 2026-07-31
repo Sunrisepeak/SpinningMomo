@@ -3,7 +3,7 @@
 #include "vendor/std.hpp"
 
 #include "core/build_config.hpp"
-#include "utils/hash/xxhash.hpp"
+import utils.hash.xxhash;
 #include "utils/media/video_asset.hpp"
 #include "utils/string/string.hpp"
 

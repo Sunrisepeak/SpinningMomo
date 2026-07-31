@@ -1,8 +1,10 @@
-#pragma once
+module;
 
-#include "vendor/std.hpp"
+export module utils.lru_cache;
 
-namespace utils::lru_cache {
+import std;
+
+export namespace utils::lru_cache {
 
 // 缓存节点
 template <typename Key, typename Value>

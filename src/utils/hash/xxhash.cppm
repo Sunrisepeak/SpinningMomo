@@ -1,10 +1,12 @@
-#pragma once
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/xxhash.hpp"
 
-namespace utils::hash {
+export module utils.hash.xxhash;
+
+import std;
+
+export namespace utils::hash {
 
 constexpr std::size_t kReadBufferSize = 1024 * 1024;
 
