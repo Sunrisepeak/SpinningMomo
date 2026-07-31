@@ -1,0 +1,41 @@
+[package]
+name      = "p5index"
+version   = "0.1.0"
+standard  = "c++23"
+platforms = ["windows"]
+
+[toolchain]
+windows = "msvc@system"
+
+# The project's own path index — everything the official mcpp-index does not
+# carry lives here, which keeps the migration off cross-repo coordination.
+#
+# The index NAME must equal the descriptors' `package.namespace`. The dependency
+# sub-table below is read as both the namespace table and the index selector, so
+# an index called `spinningmomo` holding `sm`-namespaced packages is
+# unreachable: that spelling expands to `(spinningmomo, sm.reflectcpp)` and
+# every candidate misses.
+[indices]
+sm = { path = "../../mcpp" }
+
+# Explicit-table form: a single candidate `(sm, <name>)`, no guessing. Bare
+# names would not reach a third-party namespace at all (SPEC-001 §4.2).
+[dependencies.sm]
+xxhash     = "0.8.3"
+wil        = "1.0.260126.7"
+sqlite3    = "3.50.4"
+sqlitecpp  = "3.3.3"
+reflectcpp = "0.25.0"
+
+[build]
+defines = ["NOMINMAX", "UNICODE", "_UNICODE", "WIN32_LEAN_AND_MEAN", "_WIN32_WINNT=0x0A00"]
+ldflags = ["ole32.lib", "oleaut32.lib"]
+
+# `[build] linkage = "static"` alone does not reach the compile lines: every TU
+# still gets /MD while the `std` object mcpp caches is built /MT, so the link
+# dies with LNK2038 RuntimeLibrary mismatch plus a pile of LNK2005 out of
+# msvcprt.lib. Spell the CRT out so compiler and cached std agree. Scoped to
+# Windows — /MT is an MSVC spelling and gcc treats it as a linker input.
+[target.'cfg(windows)'.build]
+cflags   = ["/MT"]
+cxxflags = ["/MT"]

@@ -1,0 +1,33 @@
+[package]
+name      = "p3bwinrt"
+version   = "0.1.0"
+standard  = "c++23"
+platforms = ["windows"]
+
+[toolchain]
+windows = "msvc@system"
+
+[build]
+include_dirs = [
+  "src",
+  # Populated by prebuild.sh: a junction to the Windows SDK's C++/WinRT
+  # projection headers. It has to be a project-relative, space-free path for
+  # two independent reasons — mcpp does not add Include/<ver>/cppwinrt to the
+  # synthesised INCLUDE (msvc.cppm:457-460 covers ucrt/um/shared/winrt only,
+  # and that bare `winrt` dir is the ABI header set, not the C++ projection),
+  # and it emits an include_dirs entry containing spaces unquoted, so the SDK
+  # path split across three cl.exe arguments and the tail landed in the
+  # source-file position.
+  "gen/cppwinrt",
+]
+defines = ["NOMINMAX", "UNICODE", "_UNICODE", "WIN32_LEAN_AND_MEAN", "_WIN32_WINNT=0x0A00"]
+ldflags = ["windowsapp.lib", "user32.lib", "d3d11.lib", "dxgi.lib"]
+
+# `[build] linkage = "static"` alone does not reach the compile lines: every TU
+# still gets /MD while the `std` object mcpp caches is built /MT, so the link
+# dies with LNK2038 RuntimeLibrary mismatch plus a pile of LNK2005 out of
+# msvcprt.lib. Spell the CRT out so compiler and cached std agree. Scoped to
+# Windows — /MT is an MSVC spelling and gcc treats it as a linker input.
+[target.'cfg(windows)'.build]
+cflags   = ["/MT"]
+cxxflags = ["/MT"]
