@@ -4,7 +4,7 @@
 package = {
     spec        = "1",
     namespace   = "sm",
-    name        = "sm.sqlite3",
+    name        = "sqlite3",
     description = "SQLite: self-contained SQL database engine (official amalgamation)",
     licenses    = { "blessing" },
     repo        = "https://www.sqlite.org",

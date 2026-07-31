@@ -15,7 +15,7 @@ fail=0
 for manifest in probes/*/mcpp.toml "${@:-}"; do
   [ -f "$manifest" ] || continue
   dir=$(dirname "$manifest")
-  if grep -qriE '#include <(windows|winrt/|d3d11|dwmapi|dcomp)' "$dir" 2>/dev/null; then
+  if grep -qriE '#include <(windows|winrt/|wil/|WebView2|d3d11|dwmapi|dcomp)' "$dir" 2>/dev/null; then
     echo "SKIP  $dir  (windows-only — CI is the only judge)"
     continue
   fi

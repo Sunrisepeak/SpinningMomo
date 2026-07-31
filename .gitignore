@@ -91,3 +91,10 @@ web/src/assets/fonts/harmonyos-sans-sc/*.woff2
 web/src/assets/fonts/harmonyos-sans-sc/charset-generated.txt
 web/src/assets/fonts/harmonyos-sans-sc/manifest.json
 web/src/assets/fonts/harmonyos-sans-sc/LICENSE.txt
+
+# mcpp build outputs and the per-project index sandbox
+target/
+.mcpp/
+mcpp.lock
+mcpp/.xlings-index-cache.json
+probes/*/gen/

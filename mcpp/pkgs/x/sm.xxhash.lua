@@ -7,7 +7,7 @@
 package = {
     spec        = "1",
     namespace   = "sm",
-    name        = "sm.xxhash",
+    name        = "xxhash",
     description = "xxHash: extremely fast non-cryptographic hash algorithm",
     licenses    = { "BSD-2-Clause" },
     repo        = "https://github.com/Cyan4973/xxHash",

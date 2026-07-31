@@ -6,7 +6,7 @@
 package = {
     spec        = "1",
     namespace   = "sm",
-    name        = "sm.sqlitecpp",
+    name        = "sqlitecpp",
     description = "SQLiteCpp: smart and easy to use C++ SQLite3 wrapper",
     licenses    = { "MIT" },
     repo        = "https://github.com/SRombauts/SQLiteCpp",
@@ -34,6 +34,6 @@ package = {
         include_dirs = { "*/include" },
         sources      = { "*/src/*.cpp" },
         targets      = { ["SQLiteCpp"] = { kind = "lib" } },
-        deps         = { "sm.sqlite3" },
+        deps         = { ["sm.sqlite3"] = "3.50.4" },
     },
 }

@@ -13,7 +13,7 @@
 package = {
     spec        = "1",
     namespace   = "sm",
-    name        = "sm.reflectcpp",
+    name        = "reflectcpp",
     description = "reflect-cpp: C++ reflection-based serialization (core + JSON backend)",
     licenses    = { "MIT" },
     repo        = "https://github.com/getml/reflect-cpp",

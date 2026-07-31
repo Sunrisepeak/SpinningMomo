@@ -7,18 +7,25 @@ platforms = ["windows"]
 [toolchain]
 windows = "msvc@system"
 
-# The project's own path index. Everything the official mcpp-index does not
-# carry is described here; a path index keeps the migration off cross-repo
-# coordination entirely.
+# The project's own path index — everything the official mcpp-index does not
+# carry lives here, which keeps the migration off cross-repo coordination.
+#
+# The index NAME must equal the descriptors' `package.namespace`. The dependency
+# sub-table below is read as both the namespace table and the index selector, so
+# an index called `spinningmomo` holding `sm`-namespaced packages is
+# unreachable: that spelling expands to `(spinningmomo, sm.reflectcpp)` and
+# every candidate misses.
 [indices]
-spinningmomo = { path = "../../mcpp" }
+sm = { path = "../../mcpp" }
 
-[dependencies.spinningmomo]
-"sm.xxhash"     = "0.8.3"
-"sm.wil"        = "1.0.260126.7"
-"sm.sqlite3"    = "3.50.4"
-"sm.sqlitecpp"  = "3.3.3"
-"sm.reflectcpp" = "0.25.0"
+# Explicit-table form: a single candidate `(sm, <name>)`, no guessing. Bare
+# names would not reach a third-party namespace at all (SPEC-001 §4.2).
+[dependencies.sm]
+xxhash     = "0.8.3"
+wil        = "1.0.260126.7"
+sqlite3    = "3.50.4"
+sqlitecpp  = "3.3.3"
+reflectcpp = "0.25.0"
 
 [build]
 defines = ["NOMINMAX", "UNICODE", "_UNICODE", "WIN32_LEAN_AND_MEAN", "_WIN32_WINNT=0x0A00"]

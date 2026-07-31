@@ -7,7 +7,7 @@
 package = {
     spec        = "1",
     namespace   = "sm",
-    name        = "sm.wil",
+    name        = "wil",
     description = "Windows Implementation Library: header-only RAII wrappers for Win32 and COM",
     licenses    = { "MIT" },
     repo        = "https://github.com/microsoft/wil",
