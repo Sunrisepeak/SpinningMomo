@@ -120,6 +120,20 @@ jobs:
             echo "no prebuild.sh"
           fi
 
+      - name: Materialise project indices
+        shell: bash
+        working-directory: probes/${{ matrix.probe }}
+        continue-on-error: true
+        run: |
+          # A `[indices] x = { path = ... }` entry is visible to mcpp
+          # immediately (`index list` shows it) but is not handed to xlings
+          # within the same invocation that first reads the manifest — a cold
+          # checkout resolves against [xim, mcpplibs] only and every `sm:`
+          # package misses. Materialise the project index explicitly first.
+          "$MCPP" index list || true
+          "$MCPP" index update || true
+          "$MCPP" index status || true
+
       - name: Build probe
         shell: bash
         working-directory: probes/${{ matrix.probe }}
