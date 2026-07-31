@@ -10,9 +10,11 @@ name: mcpp-windows
 # failing probe from hiding the others' answers.
 
 on:
+  # push only. A PR's checks are resolved by head SHA, so the push run shows up
+  # on the PR anyway; adding a `pull_request` trigger would just double every
+  # matrix (14 cold bootstraps instead of 7) without adding a single fact.
   push:
     branches: ['mcpp/**']
-  pull_request:
   workflow_dispatch:
 
 concurrency:
@@ -72,9 +74,15 @@ jobs:
           echo "$USERPROFILE/.xlings/subos/default/bin" >> "$GITHUB_PATH"
           XL="$USERPROFILE/.xlings/subos/default/bin/xlings.exe"
           "$XL" --version
-          # Bare `install` — the version comes from .xlings.json's workspace pin.
+          # No package NAME on the command line: with one, xlings resolves
+          # "newest in this runner's index copy" and the .xlings.json workspace
+          # pin never applies. `-u` activates what was just installed (a plain
+          # install leaves the shim pointing at whatever was there before) and
+          # `-g` makes it global. This is mcpp's own CI invocation verbatim.
           cd "$REPO_DIR"
-          "$XL" install -y
+          echo "::group::xlings install"
+          "$XL" install -y -u -g
+          echo "::endgroup::"
           MCPP="$USERPROFILE/.xlings/subos/default/bin/mcpp.exe"
           test -x "$MCPP" || MCPP=$(command -v mcpp || true)
           test -n "$MCPP" || { echo "FAIL: mcpp not on PATH after install"; exit 1; }
