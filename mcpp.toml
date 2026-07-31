@@ -94,4 +94,8 @@ main = "src/main.cpp"
 # Windows — /MT is an MSVC spelling and gcc treats it as a linker input.
 [target.'cfg(windows)'.build]
 cflags   = ["/MT"]
-cxxflags = ["/MT"]
+# /bigobj: the xmake build carried it, and it is not optional here — reflect-cpp
+# instantiates enough templates per RPC endpoint to blow past the 65,536-section
+# object limit. (/utf-8 is already in mcpp's MSVC baseline, so it is not
+# repeated.)
+cxxflags = ["/MT", "/bigobj"]
