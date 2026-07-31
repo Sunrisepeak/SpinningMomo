@@ -224,6 +224,19 @@ jobs:
         shell: bash
         run: bash scripts/mcpp-link-index.sh . sm mcpp
 
+      - name: Diagnose index registration
+        shell: bash
+        continue-on-error: true
+        run: |
+          echo "--- project .mcpp/.xlings.json ---"
+          cat .mcpp/.xlings.json 2>/dev/null || echo "(absent)"
+          echo "--- project .mcpp tree ---"
+          find .mcpp -maxdepth 3 2>/dev/null | head -30 || true
+          echo "--- global ~/.mcpp/config.toml ---"
+          cat "$USERPROFILE/.mcpp/config.toml" 2>/dev/null || echo "(absent)"
+          echo "--- mcpp index list ---"
+          "$MCPP" index list || true
+
       - name: Pre-build (resources, cppwinrt, WebView2)
         shell: bash
         run: bash scripts/mcpp-prebuild.sh
