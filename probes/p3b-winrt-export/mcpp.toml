@@ -10,12 +10,15 @@ windows = "msvc@system"
 [build]
 include_dirs = [
   "src",
-  # C++/WinRT projection headers (winrt/Windows.*.h) ship in the Windows SDK
-  # under Include/<ver>/cppwinrt/, which mcpp does NOT add to the synthesised
-  # INCLUDE — src/toolchain/msvc.cppm:457-460 adds only {ucrt,um,shared,winrt},
-  # and that bare `winrt` dir is the ABI header set (lowercase
-  # windows.foundation.h), not the C++ projection. Upstream gap; glob around it.
-  "C:/Program Files (x86)/Windows Kits/10/Include/*/cppwinrt",
+  # Populated by prebuild.sh: a junction to the Windows SDK's C++/WinRT
+  # projection headers. It has to be a project-relative, space-free path for
+  # two independent reasons — mcpp does not add Include/<ver>/cppwinrt to the
+  # synthesised INCLUDE (msvc.cppm:457-460 covers ucrt/um/shared/winrt only,
+  # and that bare `winrt` dir is the ABI header set, not the C++ projection),
+  # and it emits an include_dirs entry containing spaces unquoted, so the SDK
+  # path split across three cl.exe arguments and the tail landed in the
+  # source-file position.
+  "gen/cppwinrt",
 ]
 defines = ["NOMINMAX", "UNICODE", "_UNICODE", "WIN32_LEAN_AND_MEAN", "_WIN32_WINNT=0x0A00"]
 ldflags = ["windowsapp.lib", "user32.lib", "d3d11.lib", "dxgi.lib"]
