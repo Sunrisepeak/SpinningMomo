@@ -1,5 +1,6 @@
 [package]
 name      = "p3bwinrt"
+version   = "0.1.0"
 standard  = "c++23"
 platforms = ["windows"]
 
