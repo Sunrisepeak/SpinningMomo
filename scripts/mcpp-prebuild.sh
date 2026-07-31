@@ -51,7 +51,7 @@ if [ ! -f gen/cppwinrt/winrt/Windows.Foundation.h ]; then
   if [ -n "$found" ]; then
     root=$(dirname "$(dirname "$found")")
     echo "prebuild: linking prebuilt projection from $root"
-    cmd //c mklink //J "$(cygpath -w "$PWD/gen/cppwinrt")" "$(cygpath -w "$root")"
+    MSYS2_ARG_CONV_EXCL= cmd //c mklink //J "$(cygpath -w "$PWD/gen/cppwinrt")" "$(cygpath -w "$root")"
   else
     cppwinrt=$(find "$kit/bin" -maxdepth 3 -name cppwinrt.exe 2>/dev/null | sort -V | tail -1)
     [ -n "$cppwinrt" ] || { echo "prebuild: neither a projection nor cppwinrt.exe" >&2; exit 1; }

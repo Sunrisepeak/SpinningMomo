@@ -30,7 +30,10 @@ case "$(uname -s)" in
   *) echo "link-index: not Windows, mcpp's own symlink works — nothing to do"; exit 0 ;;
 esac
 
-export MSYS2_ARG_CONV_EXCL='*'
+# NOTE: do NOT set MSYS2_ARG_CONV_EXCL='*' here. It would stop MSYS rewriting
+# `//c` -> `/c` and `//J` -> `/J`, so cmd.exe would receive literal `//c` and
+# do nothing — silently, which is how the first attempt "created" junctions
+# that were not there.
 abs_index=$(cd "$index" && pwd)
 
 for rel in ".mcpp/data" ".mcpp/.xlings/data"; do
@@ -41,8 +44,16 @@ for rel in ".mcpp/data" ".mcpp/.xlings/data"; do
     echo "link-index: $rel/$name already present"
     continue
   fi
-  cmd //c mklink //J "$(cygpath -w "$(cd "$dir" && pwd)/$name")" "$(cygpath -w "$abs_index")" >/dev/null
-  test -f "$link/index.toml" \
-    || { echo "link-index: junction $rel/$name does not expose index.toml" >&2; exit 1; }
+  cmd //c mklink //J "$(cygpath -w "$(cd "$dir" && pwd)/$name")" "$(cygpath -w "$abs_index")" || true
+  if [ ! -f "$link/index.toml" ]; then
+    # Fall back to a plain copy. The index is a handful of .lua descriptors and
+    # one index.toml, so duplicating it costs nothing and removes the last
+    # dependency on filesystem link support.
+    echo "link-index: junction unavailable, copying instead"
+    rm -rf "$link"
+    cp -r "$abs_index" "$link"
+    test -f "$link/index.toml" \
+      || { echo "link-index: copy of $abs_index has no index.toml" >&2; exit 1; }
+  fi
   echo "link-index: $rel/$name -> $abs_index"
 done

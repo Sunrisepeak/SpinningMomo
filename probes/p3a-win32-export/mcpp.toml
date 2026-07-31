@@ -12,5 +12,11 @@ windows = "msvc@system"
 # then fails to link with LNK2038 RuntimeLibrary mismatch. Static is also what
 # the project itself wants (xmake `set_runtimes("MT")`).
 linkage = "static"
+# `[build] linkage` alone does not reach the compile lines: every TU still gets
+# /MD while the `std` object mcpp caches is built /MT, so the link dies with
+# LNK2038 RuntimeLibrary mismatch (and a pile of LNK2005 from msvcprt.lib).
+# Spell the CRT out so compiler and cached std agree.
+cflags   = ["/MT"]
+cxxflags = ["/MT"]
 defines = ["NOMINMAX", "UNICODE", "_UNICODE", "WIN32_LEAN_AND_MEAN", "_WIN32_WINNT=0x0A00"]
 ldflags = ["user32.lib", "kernel32.lib"]
