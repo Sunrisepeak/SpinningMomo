@@ -90,7 +90,8 @@ jobs:
 
       - name: Select MSVC toolchain
         shell: bash
-        run: "$MCPP" toolchain default msvc
+        run: |
+          "$MCPP" toolchain default msvc
 
       - name: Build probe
         shell: bash
