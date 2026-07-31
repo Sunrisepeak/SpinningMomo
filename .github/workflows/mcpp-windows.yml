@@ -58,7 +58,10 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.mcpp
-          key: mcpp-sandbox-windows-xl${{ env.XLINGS_VERSION }}-${{ hashFiles('.xlings.json') }}
+          # The index tree is part of the key: the sandbox remembers which
+          # indices are registered, so a restored sandbox from before an index
+          # rename keeps searching the old name and every package misses.
+          key: mcpp-sandbox-windows-xl${{ env.XLINGS_VERSION }}-${{ hashFiles('.xlings.json', 'mcpp/**') }}
           restore-keys: mcpp-sandbox-windows-xl${{ env.XLINGS_VERSION }}-
 
       - name: Bootstrap xlings + mcpp
@@ -117,8 +120,17 @@ jobs:
         shell: bash
         working-directory: probes/${{ matrix.probe }}
         run: |
-          set -euo pipefail
-          "$MCPP" build -v 2>&1 | tail -200
+          set -uo pipefail
+          # A path index declared in [indices] is registered with xlings on the
+          # first invocation that reads the manifest, but the SAME invocation
+          # has already snapshotted the repo list — so a cold project resolves
+          # against [xim, mcpplibs] only and every `sm:` package misses. The
+          # second invocation sees [sm, xim, mcpplibs]. Retry once, and let the
+          # retry's exit code be the verdict.
+          if ! "$MCPP" build -v 2>&1 | tail -200; then
+            echo "--- first build failed; retrying once (index materialisation) ---"
+            "$MCPP" build -v 2>&1 | tail -200
+          fi
 
       - name: Run probe check
         shell: bash
