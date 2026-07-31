@@ -19,10 +19,17 @@ package = {
     type        = "package",
 
     xpm = {
+        -- Windows needs the symlink-free repack, not the tag archive: the
+        -- upstream tag tarball carries two POSIX symlinks
+        -- (asio/include -> ../include, asio/src -> ../src) that tar.exe cannot
+        -- materialise on a Windows runner, so `*/include` resolves to nothing
+        -- and every `#include <asio.hpp>` fails while the package still
+        -- reports as installed. Same repack (and same reasoning) as the
+        -- official chriskohlhoff.asio descriptor.
         windows = {
             ["1.38.1"] = {
-                url    = "https://github.com/chriskohlhoff/asio/archive/refs/tags/asio-1-38-1.tar.gz",
-                sha256 = "2827b229972be80cdb14e5497962fa393d1adf036b5869e2b9c99f644daadacc",
+                url    = "https://github.com/xlings-res/asio/releases/download/1.38.1/asio-1.38.1-nosymlinks.tar.gz",
+                sha256 = "77f74094bb12cd867a6edbf5736bbed816c6ce0906e880de8573097a81714d89",
             },
         },
         linux = {

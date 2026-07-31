@@ -33,11 +33,6 @@ uwebsockets = "20.79.0"
 libwebp     = "1.5.0"
 
 [build]
-# ≙ xmake `set_runtimes("MT")`. Also required for consistency with the shared
-# `std` object mcpp caches, which is built /MT; a /MD project fails to link it
-# with LNK2038.
-linkage = "static"
-
 sources = ["src/**/*.cpp"]
 
 include_dirs = [

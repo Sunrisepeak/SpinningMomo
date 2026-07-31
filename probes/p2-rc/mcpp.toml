@@ -8,10 +8,6 @@ platforms = ["windows"]
 windows = "msvc@system"
 
 [build]
-# The shared `std` object mcpp caches is built /MT; a default (/MD) project
-# then fails to link with LNK2038 RuntimeLibrary mismatch. Static is also what
-# the project itself wants (xmake `set_runtimes("MT")`).
-linkage = "static"
 defines = ["NOMINMAX", "UNICODE", "_UNICODE", "WIN32_LEAN_AND_MEAN"]
 # build.mcpp compiles app.rc to this fixed path; link.exe takes a .res as a
 # plain input object. It CANNOT come through build.mcpp's own directive

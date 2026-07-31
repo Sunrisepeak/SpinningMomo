@@ -8,10 +8,6 @@ platforms = ["windows"]
 windows = "msvc@system"
 
 [build]
-# The shared `std` object mcpp caches is built /MT; a default (/MD) project
-# then fails to link with LNK2038 RuntimeLibrary mismatch. Static is also what
-# the project itself wants (xmake `set_runtimes("MT")`).
-linkage = "static"
 include_dirs = ["src"]
 
 # `[build] linkage = "static"` alone does not reach the compile lines: every TU

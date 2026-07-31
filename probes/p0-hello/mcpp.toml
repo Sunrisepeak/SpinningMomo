@@ -8,7 +8,6 @@ platforms = ["windows"]
 windows = "msvc@system"
 
 [build]
-linkage = "static"
 
 # `[build] linkage = "static"` alone does not reach the compile lines: every TU
 # still gets /MD while the `std` object mcpp caches is built /MT, so the link

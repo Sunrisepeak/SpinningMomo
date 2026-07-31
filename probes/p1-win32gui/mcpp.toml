@@ -8,10 +8,6 @@ platforms = ["windows"]
 windows = "msvc@system"
 
 [build]
-# The shared `std` object mcpp caches is built /MT; a default (/MD) project
-# then fails to link with LNK2038 RuntimeLibrary mismatch. Static is also what
-# the project itself wants (xmake `set_runtimes("MT")`).
-linkage = "static"
 defines = ["NOMINMAX", "UNICODE", "_UNICODE", "WIN32_LEAN_AND_MEAN", "_WIN32_WINNT=0x0A00"]
 # The two facts under test: a GUI subsystem entry point, and raw system-library
 # names reaching link.exe through the ldflags passthrough (mcpp has no
