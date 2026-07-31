@@ -38,12 +38,6 @@ libwebp     = "1.5.0"
 # `std` object mcpp caches, which is built /MT; a /MD project fails to link it
 # with LNK2038.
 linkage = "static"
-# `[build] linkage` alone does not reach the compile lines: every TU still gets
-# /MD while the `std` object mcpp caches is built /MT, so the link dies with
-# LNK2038 RuntimeLibrary mismatch (and a pile of LNK2005 from msvcprt.lib).
-# Spell the CRT out so compiler and cached std agree.
-cflags   = ["/MT"]
-cxxflags = ["/MT"]
 
 sources = ["src/**/*.cpp"]
 
@@ -92,3 +86,12 @@ ldflags = ["/DEBUG:FULL", "/NODEFAULTLIB:libucrt.lib", "/DEFAULTLIB:ucrt.lib"]
 [targets.SpinningMomo]
 kind = "bin"
 main = "src/main.cpp"
+
+# `[build] linkage = "static"` alone does not reach the compile lines: every TU
+# still gets /MD while the `std` object mcpp caches is built /MT, so the link
+# dies with LNK2038 RuntimeLibrary mismatch plus a pile of LNK2005 out of
+# msvcprt.lib. Spell the CRT out so compiler and cached std agree. Scoped to
+# Windows — /MT is an MSVC spelling and gcc treats it as a linker input.
+[target.'cfg(windows)'.build]
+cflags   = ["/MT"]
+cxxflags = ["/MT"]
