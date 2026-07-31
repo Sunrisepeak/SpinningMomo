@@ -53,6 +53,9 @@ package = {
         cxxflags     = { "-DLIBUS_USE_LIBUV", "-DLIBUS_NO_SSL" },
         targets      = { ["uSockets"] = { kind = "lib" } },
         deps         = { ["sm.libuv"] = "1.52.1" },
-        windows      = { ldflags = { "ws2_32.lib" } },
+        -- The consuming project links /MT (and mcpp's cached `std` object is
+        -- /MT too), but a dependency package compiles with its own flags and
+        -- would otherwise default to /MD — LNK2038 at the final link.
+        windows      = { cflags = { "/MT" }, cxxflags = { "/MT" }, ldflags = { "ws2_32.lib" } },
     },
 }

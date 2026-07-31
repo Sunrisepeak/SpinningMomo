@@ -39,13 +39,20 @@ package = {
         language     = "c++23",
         import_std   = false,
         c_standard   = "c11",
-        include_dirs = { "*/include" },
+        -- include/ is the public surface (<rfl.hpp>, <rfl/json.hpp>).
+        -- include/rfl/thirdparty is needed too: src/yyjson.c includes
+        -- "yyjson.h" flat, and that is where the vendored copy sits.
+        include_dirs = { "*/include", "*/include/rfl/thirdparty" },
         sources      = {
             "*/src/reflectcpp.cpp",       -- umbrella: the five core rfl/*.cpp
             "*/src/reflectcpp_json.cpp",  -- umbrella: rfl/json/{Writer,to_schema}.cpp
             "*/src/yyjson.c",             -- vendored yyjson implementation
         },
         targets      = { ["reflectcpp"] = { kind = "lib" } },
+        -- The consuming project links /MT (and mcpp's cached `std` object is
+        -- /MT too), but a dependency package compiles with its own flags and
+        -- would otherwise default to /MD — LNK2038 at the final link.
+        windows      = { cflags = { "/MT" }, cxxflags = { "/MT" } },
         deps         = { },
     },
 }

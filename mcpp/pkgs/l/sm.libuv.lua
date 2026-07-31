@@ -41,7 +41,10 @@ package = {
         },
         targets      = { ["uv"] = { kind = "lib" } },
         deps         = { },
-        windows = {
+        -- The consuming project links /MT (and mcpp's cached `std` object is
+        -- /MT too), but a dependency package compiles with its own flags and
+        -- would otherwise default to /MD — LNK2038 at the final link.
+        windows = { cflags = { "/MT" }, cxxflags = { "/MT" },
             -- libuv's documented Windows link set.
             ldflags = {
                 "psapi.lib", "user32.lib", "advapi32.lib", "iphlpapi.lib",

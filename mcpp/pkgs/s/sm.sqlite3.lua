@@ -43,6 +43,9 @@ package = {
             "-DSQLITE_ENABLE_COLUMN_METADATA",
             "-DSQLITE_THREADSAFE=1",
         },
-        windows = { ldflags = { } },
+        -- The consuming project links /MT (and mcpp's cached `std` object is
+        -- /MT too), but a dependency package compiles with its own flags and
+        -- would otherwise default to /MD — LNK2038 at the final link.
+        windows = { cflags = { "/MT" }, cxxflags = { "/MT" }, ldflags = { } },
     },
 }
