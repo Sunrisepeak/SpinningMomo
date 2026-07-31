@@ -4,10 +4,10 @@ module;
 #include "vendor/windows/shellapi.hpp"
 #include "vendor/windows/shlobj_core.hpp"
 
-module sm.utils.system.system;
+module utils.system.system;
 
 import std;
-import sm.utils.string.string;
+import utils.string.string;
 
 namespace utils::system {
 

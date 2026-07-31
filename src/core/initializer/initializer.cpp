@@ -1,8 +1,25 @@
-module;
+#include "core/initializer/initializer.hpp"
 
-#include "core/state/app_state.hpp"
+#include "vendor/std.hpp"
+
+#include "core/async/async.hpp"
+#include "core/commands/registry.hpp"
+#include "core/dialog_service/dialog_service.hpp"
 #include "core/events/events.hpp"
+#include "core/events/registrar.hpp"
+#include "core/events/state.hpp"
+#include "core/http_client/http_client.hpp"
+#include "core/http_server/http_server.hpp"
+#include "core/i18n/i18n.hpp"
+#include "core/i18n/state.hpp"
 #include "core/i18n/types.hpp"
+#include "core/initializer/database.hpp"
+#include "core/migration/migration.hpp"
+#include "core/notifications/notifications.hpp"
+#include "core/rpc/registry.hpp"
+#include "core/state/app_state.hpp"
+#include "core/state/runtime_info.hpp"
+#include "core/worker_pool/worker_pool.hpp"
 #include "extensions/infinity_nikki/map_service.hpp"
 #include "extensions/infinity_nikki/photo_service.hpp"
 #include "features/gallery/gallery.hpp"
@@ -19,26 +36,7 @@ module;
 #include "ui/tray_icon/tray_icon.hpp"
 #include "ui/webview_window/webview_window.hpp"
 #include "utils/logger/logger.hpp"
-
-module sm.core.initializer.initializer;
-
-import std;
-import sm.core.async.async;
-import sm.core.commands.registry;
-import sm.core.dialog_service.dialog_service;
-import sm.core.events.registrar;
-import sm.core.events.state;
-import sm.core.http_client.http_client;
-import sm.core.http_server.http_server;
-import sm.core.i18n.i18n;
-import sm.core.i18n.state;
-import sm.core.initializer.database;
-import sm.core.migration.migration;
-import sm.core.notifications.notifications;
-import sm.core.rpc.registry;
-import sm.core.state.runtime_info;
-import sm.core.worker_pool.worker_pool;
-import sm.utils.string.string;
+import utils.string.string;
 
 namespace core::initializer {
 

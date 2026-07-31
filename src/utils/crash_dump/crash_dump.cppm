@@ -1,6 +1,6 @@
 module;
 
-export module sm.utils.crash_dump.crash_dump;
+export module utils.crash_dump.crash_dump;
 
 import std;
 

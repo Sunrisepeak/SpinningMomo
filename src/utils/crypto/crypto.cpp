@@ -3,7 +3,7 @@ module;
 #include "vendor/windows.hpp"
 #include "vendor/windows/bcrypt.hpp"
 
-module sm.utils.crypto.crypto;
+module utils.crypto.crypto;
 
 import std;
 

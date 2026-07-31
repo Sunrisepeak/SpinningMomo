@@ -2,7 +2,7 @@
 
 #include "vendor/std.hpp"
 
-import sm.core.i18n.state;
+#include "core/i18n/state.hpp"
 #include "core/i18n/types.hpp"
 #include "core/state/app_state.hpp"
 #include "features/settings/menu.hpp"
@@ -10,7 +10,7 @@ import sm.core.i18n.state;
 #include "features/settings/state.hpp"
 #include "features/settings/types.hpp"
 #include "utils/logger/logger.hpp"
-import sm.utils.string.string;
+import utils.string.string;
 
 namespace features::settings::compute {
 

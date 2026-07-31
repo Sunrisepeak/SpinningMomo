@@ -1,14 +1,13 @@
-module;
+#include "core/http_server/sse_manager.hpp"
+
+#include "vendor/std.hpp"
 
 #include "vendor/uwebsockets.hpp"
-#include "core/state/app_state.hpp"
+
 #include "core/http_server/state.hpp"
 #include "core/http_server/types.hpp"
+#include "core/state/app_state.hpp"
 #include "utils/logger/logger.hpp"
-
-module sm.core.http_server.sse_manager;
-
-import std;
 
 namespace core::http_server::sse_manager {
 

@@ -10,9 +10,9 @@
 #include "core/build_config.hpp"
 #include "core/http_server/state.hpp"
 #include "core/state/app_state.hpp"
-import sm.core.state.runtime_info;
+#include "core/state/runtime_info.hpp"
 #include "core/webview/state.hpp"
-import sm.core.webview.webview;
+#include "core/webview/webview.hpp"
 #include "features/settings/settings.hpp"
 #include "features/settings/state.hpp"
 #include "features/settings/types.hpp"

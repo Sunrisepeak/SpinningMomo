@@ -2,7 +2,7 @@ module;
 
 #include "vendor/windows.hpp"
 
-export module sm.utils.string.string;
+export module utils.string.string;
 
 import std;
 

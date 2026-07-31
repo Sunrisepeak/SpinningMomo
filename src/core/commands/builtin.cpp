@@ -4,8 +4,8 @@
 
 #include "vendor/windows.hpp"
 
-import sm.core.commands.registry;
-import sm.core.commands.state;
+#include "core/commands/registry.hpp"
+#include "core/commands/state.hpp"
 #include "core/commands/types.hpp"
 #include "core/state/app_state.hpp"
 #include "features/letterbox/state.hpp"
@@ -24,8 +24,8 @@ import sm.core.commands.state;
 #include "ui/floating_window/floating_window.hpp"
 #include "ui/webview_window/webview_window.hpp"
 #include "utils/logger/logger.hpp"
-import sm.utils.path.path;
-import sm.utils.system.system;
+import utils.path.path;
+import utils.system.system;
 
 namespace core::commands {
 

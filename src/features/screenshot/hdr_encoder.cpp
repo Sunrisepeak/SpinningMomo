@@ -3,7 +3,7 @@
 #include "vendor/std.hpp"
 
 #include "utils/logger/logger.hpp"
-import sm.utils.string.string;
+import utils.string.string;
 
 namespace features::screenshot::hdr_encoder {
 

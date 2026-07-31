@@ -7,7 +7,7 @@
 #include "vendor/windows/shobjidl.hpp"
 
 #include "utils/logger/logger.hpp"
-import sm.utils.string.string;
+import utils.string.string;
 
 namespace utils::dialog {
 

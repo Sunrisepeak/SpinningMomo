@@ -1,17 +1,15 @@
-module;
+#include "core/migration/scripts/scripts.hpp"
 
-#include "core/migration/generated/schema.hpp"
+#include "vendor/std.hpp"
 
-#include "core/state/app_state.hpp"
 #include "vendor/rfl.hpp"
+
+#include "core/database/database.hpp"
+#include "core/migration/generated/schema.hpp"
+#include "core/state/app_state.hpp"
 #include "features/settings/settings.hpp"
 #include "features/settings/types.hpp"
 #include "utils/logger/logger.hpp"
-
-module sm.core.migration.scripts.scripts;
-
-import std;
-import sm.core.database.database;
 
 namespace core::migration::scripts {
 

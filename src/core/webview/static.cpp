@@ -12,10 +12,10 @@
 #include "core/state/app_state.hpp"
 #include "core/webview/state.hpp"
 #include "core/webview/types.hpp"
-import sm.utils.file.mime;
+import utils.file.mime;
 #include "utils/logger/logger.hpp"
-import sm.utils.string.string;
-import sm.utils.time;
+import utils.string.string;
+import utils.time;
 
 namespace core::webview::static_content {
 

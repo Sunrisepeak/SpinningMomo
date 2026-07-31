@@ -9,8 +9,8 @@
 #include "features/gallery/scanner/progress.hpp"
 #include "features/gallery/types.hpp"
 #include "utils/logger/logger.hpp"
-import sm.utils.path.path;
-import sm.utils.time;
+import utils.path.path;
+import utils.time;
 
 namespace features::gallery::scanner::discovery {
 

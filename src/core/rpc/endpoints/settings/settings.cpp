@@ -1,17 +1,16 @@
-module;
+#include "core/rpc/endpoints/settings/settings.hpp"
 
-#include "core/state/app_state.hpp"
+#include "vendor/std.hpp"
+
 #include "vendor/asio.hpp"
+
+#include "core/rpc/rpc.hpp"
+#include "core/rpc/state.hpp"
 #include "core/rpc/types.hpp"
+#include "core/state/app_state.hpp"
 #include "features/settings/background.hpp"
 #include "features/settings/settings.hpp"
 #include "features/settings/types.hpp"
-
-module sm.core.rpc.endpoints.settings.settings;
-
-import std;
-import sm.core.rpc.rpc;
-import sm.core.rpc.state;
 
 namespace core::rpc::endpoints::settings {
 

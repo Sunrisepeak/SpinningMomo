@@ -8,8 +8,8 @@
 #include "vendor/windows/mfapi.hpp"
 
 #include "core/events/events.hpp"
-import sm.core.i18n.state;
-import sm.core.notifications.notifications;
+#include "core/i18n/state.hpp"
+#include "core/notifications/notifications.hpp"
 #include "core/notifications/types.hpp"
 #include "core/state/app_state.hpp"
 #include "features/recording/encoder_loop.hpp"
@@ -23,8 +23,8 @@ import sm.core.notifications.notifications;
 #include "utils/graphics/capture.hpp"
 #include "utils/logger/logger.hpp"
 #include "utils/media/audio_capture.hpp"
-import sm.utils.string.string;
-import sm.utils.system.system;
+import utils.string.string;
+import utils.system.system;
 
 namespace features::recording {
 

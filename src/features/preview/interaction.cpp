@@ -12,7 +12,7 @@
 #include "features/preview/state.hpp"
 #include "features/preview/types.hpp"
 #include "features/preview/window.hpp"
-import sm.utils.display.display_geometry;
+import utils.display.display_geometry;
 #include "utils/graphics/capture.hpp"
 #include "utils/logger/logger.hpp"
 #include "utils/throttle/throttle.hpp"

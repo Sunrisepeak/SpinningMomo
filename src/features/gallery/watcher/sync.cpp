@@ -2,10 +2,10 @@
 
 #include "vendor/std.hpp"
 
-import sm.core.i18n.state;
-import sm.core.notifications.notifications;
+#include "core/i18n/state.hpp"
+#include "core/notifications/notifications.hpp"
 #include "core/notifications/types.hpp"
-import sm.core.rpc.notification_hub;
+#include "core/rpc/notification_hub.hpp"
 #include "core/state/app_state.hpp"
 #include "features/gallery/asset/thumbnail.hpp"
 #include "features/gallery/folder/repository.hpp"
@@ -18,8 +18,8 @@ import sm.core.rpc.notification_hub;
 #include "features/gallery/types.hpp"
 #include "features/gallery/watcher/watcher.hpp"
 #include "utils/logger/logger.hpp"
-import sm.utils.string.string;
-import sm.utils.time;
+import utils.string.string;
+import utils.time;
 
 namespace features::gallery::watcher::sync {
 

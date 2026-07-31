@@ -1,15 +1,14 @@
-module;
+#include "core/rpc/endpoints/clipboard/clipboard.hpp"
 
-#include "core/state/app_state.hpp"
+#include "vendor/std.hpp"
+
 #include "vendor/asio.hpp"
+
+#include "core/rpc/rpc.hpp"
+#include "core/rpc/state.hpp"
 #include "core/rpc/types.hpp"
-
-module sm.core.rpc.endpoints.clipboard.clipboard;
-
-import std;
-import sm.core.rpc.rpc;
-import sm.core.rpc.state;
-import sm.utils.system.system;
+#include "core/state/app_state.hpp"
+import utils.system.system;
 
 namespace core::rpc::endpoints::clipboard {
 

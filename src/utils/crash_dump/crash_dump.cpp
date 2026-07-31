@@ -3,10 +3,10 @@ module;
 #include "vendor/windows.hpp"
 #include "vendor/windows/dbghelp.hpp"
 
-module sm.utils.crash_dump.crash_dump;
+module utils.crash_dump.crash_dump;
 
 import std;
-import sm.utils.path.path;
+import utils.path.path;
 
 namespace utils::crash_dump::detail {
 

@@ -16,7 +16,7 @@
 #include "features/gallery/watcher/notify.hpp"
 #include "features/gallery/watcher/sync.hpp"
 #include "utils/logger/logger.hpp"
-import sm.utils.path.path;
+import utils.path.path;
 
 namespace features::gallery::watcher {
 

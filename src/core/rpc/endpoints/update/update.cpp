@@ -1,17 +1,16 @@
-module;
+#include "core/rpc/endpoints/update/update.hpp"
 
-#include "core/state/app_state.hpp"
+#include "vendor/std.hpp"
+
 #include "vendor/asio.hpp"
 #include "vendor/rfl.hpp"
+
+#include "core/rpc/rpc.hpp"
+#include "core/rpc/state.hpp"
 #include "core/rpc/types.hpp"
+#include "core/state/app_state.hpp"
 #include "features/update/types.hpp"
 #include "features/update/update.hpp"
-
-module sm.core.rpc.endpoints.update.update;
-
-import std;
-import sm.core.rpc.rpc;
-import sm.core.rpc.state;
 
 namespace core::rpc::endpoints::update {
 

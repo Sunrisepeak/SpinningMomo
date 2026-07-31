@@ -2,8 +2,8 @@
 
 #include "vendor/std.hpp"
 
-import sm.core.i18n.state;
-import sm.core.notifications.notifications;
+#include "core/i18n/state.hpp"
+#include "core/notifications/notifications.hpp"
 #include "core/state/app_state.hpp"
 #include "features/letterbox/letterbox.hpp"
 #include "features/letterbox/state.hpp"
@@ -14,7 +14,7 @@ import sm.core.notifications.notifications;
 #include "features/settings/state.hpp"
 #include "features/window_control/window_control.hpp"
 #include "utils/logger/logger.hpp"
-import sm.utils.string.string;
+import utils.string.string;
 
 namespace features::overlay {
 

@@ -4,12 +4,12 @@ module;
 #include "vendor/windows.hpp"
 #include "utils/logger/logger.hpp"
 
-module sm.utils.file.file;
+module utils.file.file;
 
 import std;
-import sm.utils.file.mime;
-import sm.utils.string.string;
-import sm.utils.time;
+import utils.file.mime;
+import utils.string.string;
+import utils.time;
 
 namespace utils::file {
 

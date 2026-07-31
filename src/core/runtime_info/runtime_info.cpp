@@ -1,19 +1,17 @@
-module;
+#include "core/runtime_info/runtime_info.hpp"
 
-#include "core/state/app_state.hpp"
+#include "vendor/std.hpp"
+
 #include "core/build_config.hpp"
+#include "core/state/app_state.hpp"
+#include "core/state/runtime_info.hpp"
+#include "core/version.hpp"
+#include "core/webview/webview.hpp"
 #include "utils/graphics/capture.hpp"
 #include "utils/logger/logger.hpp"
 #include "utils/media/audio_capture.hpp"
-
-module sm.core.runtime_info.runtime_info;
-
-import std;
-import sm.core.state.runtime_info;
-import sm.core.version;
-import sm.core.webview.webview;
-import sm.utils.path.path;
-import sm.utils.system.system;
+import utils.path.path;
+import utils.system.system;
 
 namespace core::runtime_info::detail {
 

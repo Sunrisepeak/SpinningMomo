@@ -8,8 +8,8 @@
 #include "features/gallery/watcher/watcher.hpp"
 #include "features/settings/state.hpp"
 #include "utils/logger/logger.hpp"
-import sm.utils.string.string;
-import sm.utils.system.system;
+import utils.string.string;
+import utils.system.system;
 
 namespace extensions::infinity_nikki::media_hardlinks {
 

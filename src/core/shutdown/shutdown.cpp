@@ -1,6 +1,15 @@
-module;
+#include "core/shutdown/shutdown.hpp"
 
+#include "vendor/std.hpp"
+
+#include "core/async/async.hpp"
+#include "core/commands/registry.hpp"
+#include "core/database/database.hpp"
+#include "core/dialog_service/dialog_service.hpp"
+#include "core/http_client/http_client.hpp"
+#include "core/http_server/http_server.hpp"
 #include "core/state/app_state.hpp"
+#include "core/worker_pool/worker_pool.hpp"
 #include "extensions/infinity_nikki/photo_service.hpp"
 #include "features/gallery/gallery.hpp"
 #include "features/letterbox/letterbox.hpp"
@@ -20,17 +29,6 @@ module;
 #include "ui/tray_icon/tray_icon.hpp"
 #include "ui/webview_window/webview_window.hpp"
 #include "utils/logger/logger.hpp"
-
-module sm.core.shutdown.shutdown;
-
-import std;
-import sm.core.async.async;
-import sm.core.commands.registry;
-import sm.core.database.database;
-import sm.core.dialog_service.dialog_service;
-import sm.core.http_client.http_client;
-import sm.core.http_server.http_server;
-import sm.core.worker_pool.worker_pool;
 
 namespace core::shutdown {
 

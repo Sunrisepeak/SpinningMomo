@@ -1,15 +1,14 @@
-module;
+#include "core/rpc/endpoints/runtime_info/runtime_info.hpp"
 
-#include "core/state/app_state.hpp"
+#include "vendor/std.hpp"
+
 #include "vendor/asio.hpp"
+
+#include "core/rpc/rpc.hpp"
+#include "core/rpc/state.hpp"
 #include "core/rpc/types.hpp"
-
-module sm.core.rpc.endpoints.runtime_info.runtime_info;
-
-import std;
-import sm.core.rpc.rpc;
-import sm.core.rpc.state;
-import sm.core.state.runtime_info;
+#include "core/state/app_state.hpp"
+#include "core/state/runtime_info.hpp"
 
 namespace core::rpc::endpoints::runtime_info {
 

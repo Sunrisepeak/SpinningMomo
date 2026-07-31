@@ -3,16 +3,16 @@
 #include "vendor/std.hpp"
 
 #include "core/build_config.hpp"
-import sm.core.http_server.static;
+#include "core/http_server/static.hpp"
 #include "core/http_server/types.hpp"
 #include "core/state/app_state.hpp"
 #include "core/webview/state.hpp"
-import sm.core.webview.webview;
+#include "core/webview/webview.hpp"
 #include "features/settings/types.hpp"
 #include "utils/image/image.hpp"
 #include "utils/logger/logger.hpp"
-import sm.utils.path.path;
-import sm.utils.string.string;
+import utils.path.path;
+import utils.string.string;
 
 namespace features::settings::background {
 

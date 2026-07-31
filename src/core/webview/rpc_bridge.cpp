@@ -1,18 +1,17 @@
-module;
+#include "core/webview/rpc_bridge.hpp"
+
+#include "vendor/std.hpp"
 
 #include "vendor/asio.hpp"
-#include "core/state/app_state.hpp"
+
+#include "core/async/async.hpp"
 #include "core/events/events.hpp"
+#include "core/rpc/rpc.hpp"
+#include "core/state/app_state.hpp"
+#include "core/webview/events.hpp"
 #include "core/webview/state.hpp"
+#include "core/webview/webview.hpp"
 #include "utils/logger/logger.hpp"
-
-module sm.core.webview.rpc_bridge;
-
-import std;
-import sm.core.async.async;
-import sm.core.rpc.rpc;
-import sm.core.webview.events;
-import sm.core.webview.webview;
 
 namespace core::webview::rpc_bridge {
 

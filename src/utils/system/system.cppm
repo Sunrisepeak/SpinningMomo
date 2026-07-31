@@ -1,6 +1,6 @@
 module;
 
-export module sm.utils.system.system;
+export module utils.system.system;
 
 import std;
 

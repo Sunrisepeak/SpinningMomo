@@ -4,10 +4,10 @@
 
 #include "vendor/asio.hpp"
 
-import sm.core.async.async;
-import sm.core.rpc.notification_hub;
+#include "core/async/async.hpp"
+#include "core/rpc/notification_hub.hpp"
 #include "core/state/app_state.hpp"
-import sm.core.tasks.tasks;
+#include "core/tasks/tasks.hpp"
 #include "extensions/infinity_nikki/media_hardlinks.hpp"
 #include "extensions/infinity_nikki/photo_extract/photo_extract.hpp"
 #include "extensions/infinity_nikki/types.hpp"

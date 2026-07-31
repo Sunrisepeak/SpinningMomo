@@ -7,7 +7,7 @@
 #include "vendor/windows/windowsx.hpp"
 
 #include "core/state/app_state.hpp"
-import sm.core.state.runtime_info;
+#include "core/state/runtime_info.hpp"
 #include "features/preview/capture.hpp"
 #include "features/preview/interaction.hpp"
 #include "features/preview/rendering.hpp"
@@ -15,10 +15,10 @@ import sm.core.state.runtime_info;
 #include "features/preview/types.hpp"
 #include "features/preview/window.hpp"
 #include "ui/floating_window/state.hpp"
-import sm.utils.display.display;
+import utils.display.display;
 #include "utils/graphics/capture.hpp"
 #include "utils/graphics/d3d.hpp"
-import sm.utils.graphics.hdr;
+import utils.graphics.hdr;
 #include "utils/logger/logger.hpp"
 
 namespace features::preview {

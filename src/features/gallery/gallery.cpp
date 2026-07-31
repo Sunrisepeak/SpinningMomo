@@ -5,8 +5,8 @@
 #include "vendor/asio.hpp"
 #include "vendor/windows/mfapi.hpp"
 
-import sm.core.async.async;
-import sm.core.rpc.notification_hub;
+#include "core/async/async.hpp"
+#include "core/rpc/notification_hub.hpp"
 #include "core/state/app_state.hpp"
 #include "features/gallery/asset/thumbnail.hpp"
 #include "features/gallery/folder/service.hpp"
@@ -18,7 +18,7 @@ import sm.core.rpc.notification_hub;
 #include "features/gallery/types.hpp"
 #include "features/gallery/watcher/watcher.hpp"
 #include "utils/logger/logger.hpp"
-import sm.utils.path.path;
+import utils.path.path;
 
 namespace features::gallery {
 

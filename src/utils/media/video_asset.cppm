@@ -2,7 +2,7 @@ module;
 
 #include "utils/image/image.hpp"
 
-export module sm.utils.media.video_asset;
+export module utils.media.video_asset;
 
 import std;
 

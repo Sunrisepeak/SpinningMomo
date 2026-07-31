@@ -1,18 +1,17 @@
-module;
+#include "core/rpc/endpoints/dialog/dialog.hpp"
 
-#include "core/state/app_state.hpp"
+#include "vendor/std.hpp"
+
 #include "vendor/asio.hpp"
 #include "vendor/windows.hpp"
+
+#include "core/dialog_service/dialog_service.hpp"
+#include "core/rpc/rpc.hpp"
+#include "core/rpc/state.hpp"
 #include "core/rpc/types.hpp"
+#include "core/state/app_state.hpp"
 #include "core/webview/state.hpp"
 #include "utils/dialog/dialog.hpp"
-
-module sm.core.rpc.endpoints.dialog.dialog;
-
-import std;
-import sm.core.dialog_service.dialog_service;
-import sm.core.rpc.rpc;
-import sm.core.rpc.state;
 
 namespace core::rpc::endpoints::dialog {
 

@@ -15,8 +15,8 @@
 #include "features/gallery/state.hpp"
 #include "features/gallery/types.hpp"
 #include "utils/logger/logger.hpp"
-import sm.utils.path.path;
-import sm.utils.string.string;
+import utils.path.path;
+import utils.string.string;
 
 namespace features::gallery::recovery::service::detail {
 

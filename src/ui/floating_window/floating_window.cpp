@@ -6,10 +6,10 @@
 #include "vendor/windows/dwmapi.hpp"
 #include "vendor/windows/windowsx.hpp"
 
-import sm.core.commands.registry;
+#include "core/commands/registry.hpp"
 #include "core/commands/types.hpp"
 #include "core/events/events.hpp"
-import sm.core.i18n.state;
+#include "core/i18n/state.hpp"
 #include "core/i18n/types.hpp"
 #include "core/state/app_state.hpp"
 #include "features/settings/menu.hpp"
@@ -22,7 +22,7 @@ import sm.core.i18n.state;
 #include "ui/floating_window/state.hpp"
 #include "ui/floating_window/types.hpp"
 #include "utils/logger/logger.hpp"
-import sm.utils.string.string;
+import utils.string.string;
 
 namespace ui::floating_window {
 

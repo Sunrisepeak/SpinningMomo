@@ -19,7 +19,7 @@
 #include "features/gallery/state.hpp"
 #include "features/gallery/types.hpp"
 #include "utils/logger/logger.hpp"
-import sm.utils.path.path;
+import utils.path.path;
 
 namespace features::gallery::scanner {
 

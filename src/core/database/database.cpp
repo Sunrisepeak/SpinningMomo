@@ -1,15 +1,13 @@
-module;
+#include "core/database/database.hpp"
+
+#include "vendor/std.hpp"
 
 #include "vendor/sqlite.hpp"
-#include "core/database/data_mapper.hpp"
+
+#include "core/database/state.hpp"
 #include "core/database/types.hpp"
 #include "core/state/app_state.hpp"
-#include "core/database/state.hpp"
 #include "utils/logger/logger.hpp"
-
-module sm.core.database.database;
-
-import std;
 
 namespace core::database {
 

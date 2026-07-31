@@ -4,7 +4,7 @@
 
 #include "vendor/asio.hpp"
 
-import sm.core.database.database;
+#include "core/database/database.hpp"
 #include "core/database/types.hpp"
 #include "core/state/app_state.hpp"
 #include "extensions/infinity_nikki/metadata_dict.hpp"

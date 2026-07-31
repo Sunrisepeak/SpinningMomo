@@ -1,6 +1,6 @@
 module;
 
-export module sm.utils.path.path;
+export module utils.path.path;
 
 import std;
 

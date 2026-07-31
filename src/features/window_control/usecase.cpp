@@ -4,9 +4,9 @@
 
 #include "vendor/windows.hpp"
 
-import sm.core.async.ui_awaitable;
-import sm.core.i18n.state;
-import sm.core.notifications.notifications;
+#include "core/async/ui_awaitable.hpp"
+#include "core/i18n/state.hpp"
+#include "core/notifications/notifications.hpp"
 #include "core/state/app_state.hpp"
 #include "features/letterbox/letterbox.hpp"
 #include "features/letterbox/state.hpp"
@@ -24,9 +24,9 @@ import sm.core.notifications.notifications;
 #include "ui/floating_window/events.hpp"
 #include "ui/floating_window/floating_window.hpp"
 #include "ui/floating_window/state.hpp"
-import sm.utils.display.display;
+import utils.display.display;
 #include "utils/logger/logger.hpp"
-import sm.utils.string.string;
+import utils.string.string;
 
 namespace features::window_control {
 

@@ -2,7 +2,7 @@ module;
 
 #include "vendor/windows.hpp"
 
-export module sm.utils.time;
+export module utils.time;
 
 import std;
 

@@ -5,18 +5,18 @@
 #include "vendor/asio.hpp"
 #include "vendor/rfl.hpp"
 
-import sm.core.async.async;
-import sm.core.http_client.http_client;
+#include "core/async/async.hpp"
+#include "core/http_client/http_client.hpp"
 #include "core/http_client/types.hpp"
-import sm.core.rpc.notification_hub;
+#include "core/rpc/notification_hub.hpp"
 #include "core/state/app_state.hpp"
 #include "features/gallery/folder/repository.hpp"
 #include "features/gallery/folder/service.hpp"
 #include "features/gallery/types.hpp"
 #include "features/settings/state.hpp"
 #include "utils/logger/logger.hpp"
-import sm.utils.path.path;
-import sm.utils.string.string;
+import utils.path.path;
+import utils.string.string;
 
 namespace extensions::infinity_nikki::role_profile {
 

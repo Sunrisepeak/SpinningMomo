@@ -1,17 +1,15 @@
-module;
+#include "core/events/handlers/feature_handlers.hpp"
 
-#include "core/state/app_state.hpp"
+#include "vendor/std.hpp"
+
 #include "core/events/events.hpp"
+#include "core/notifications/events.hpp"
+#include "core/notifications/notifications.hpp"
+#include "core/state/app_state.hpp"
 #include "features/screenshot/usecase.hpp"
 #include "features/window_control/usecase.hpp"
 #include "ui/floating_window/events.hpp"
 #include "ui/floating_window/floating_window.hpp"
-
-module sm.core.events.handlers.feature_handlers;
-
-import std;
-import sm.core.notifications.events;
-import sm.core.notifications.notifications;
 
 namespace core::events::handlers {
 

@@ -15,7 +15,7 @@
 #include "ui/shared_render_resources/state.hpp"
 #include "ui/shared_theme/shared_theme.hpp"
 #include "utils/logger/logger.hpp"
-import sm.utils.system.system;
+import utils.system.system;
 
 namespace ui::notification_window::painter {
 

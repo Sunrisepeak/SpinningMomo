@@ -3,7 +3,7 @@ module;
 #include "vendor/windows.hpp"
 #include "vendor/windows/shlobj_core.hpp"
 
-module sm.utils.path.path;
+module utils.path.path;
 
 import std;
 

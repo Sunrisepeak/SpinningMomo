@@ -7,7 +7,7 @@
 #include "vendor/windows/d3d11.hpp"
 
 #include "core/state/app_state.hpp"
-import sm.core.state.runtime_info;
+#include "core/state/runtime_info.hpp"
 #include "features/overlay/geometry.hpp"
 #include "features/overlay/interaction.hpp"
 #include "features/overlay/overlay.hpp"

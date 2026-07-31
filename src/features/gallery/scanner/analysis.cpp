@@ -6,7 +6,7 @@
 #include "vendor/windows.hpp"
 
 #include "core/state/app_state.hpp"
-import sm.core.worker_pool.worker_pool;
+#include "core/worker_pool/worker_pool.hpp"
 #include "features/gallery/asset/repository.hpp"
 #include "features/gallery/scanner/common.hpp"
 #include "features/gallery/scanner/progress.hpp"

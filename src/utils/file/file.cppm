@@ -2,7 +2,7 @@ module;
 
 #include "vendor/asio.hpp"
 
-export module sm.utils.file.file;
+export module utils.file.file;
 
 import std;
 

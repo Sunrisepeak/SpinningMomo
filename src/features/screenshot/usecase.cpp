@@ -2,8 +2,8 @@
 
 #include "vendor/std.hpp"
 
-import sm.core.i18n.state;
-import sm.core.notifications.notifications;
+#include "core/i18n/state.hpp"
+#include "core/notifications/notifications.hpp"
 #include "core/notifications/types.hpp"
 #include "core/state/app_state.hpp"
 #include "features/photography/state.hpp"
@@ -13,9 +13,9 @@ import sm.core.notifications.notifications;
 #include "ui/floating_window/events.hpp"
 #include "utils/image/image.hpp"
 #include "utils/logger/logger.hpp"
-import sm.utils.path.path;
-import sm.utils.string.string;
-import sm.utils.system.system;
+import utils.path.path;
+import utils.string.string;
+import utils.system.system;
 
 namespace features::screenshot {
 

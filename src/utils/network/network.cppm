@@ -2,7 +2,7 @@ module;
 
 #include "vendor/asio.hpp"
 
-export module sm.utils.network.network;
+export module utils.network.network;
 
 import std;
 

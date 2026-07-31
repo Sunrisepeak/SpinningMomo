@@ -1,17 +1,16 @@
-module;
+#include "core/rpc/endpoints/file/file.hpp"
 
-#include "core/state/app_state.hpp"
+#include "vendor/std.hpp"
+
 #include "vendor/asio.hpp"
+
+#include "core/rpc/rpc.hpp"
+#include "core/rpc/state.hpp"
 #include "core/rpc/types.hpp"
-
-module sm.core.rpc.endpoints.file.file;
-
-import std;
-import sm.core.rpc.rpc;
-import sm.core.rpc.state;
-import sm.utils.file.file;
-import sm.utils.path.path;
-import sm.utils.system.system;
+#include "core/state/app_state.hpp"
+import utils.file.file;
+import utils.path.path;
+import utils.system.system;
 
 namespace core::rpc::endpoints::file {
 

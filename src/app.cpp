@@ -4,9 +4,9 @@
 
 #include "vendor/windows.hpp"
 
-import sm.core.initializer.initializer;
-import sm.core.runtime_info.runtime_info;
-import sm.core.shutdown.shutdown;
+#include "core/initializer/initializer.hpp"
+#include "core/runtime_info/runtime_info.hpp"
+#include "core/shutdown/shutdown.hpp"
 #include "core/state/app_state.hpp"
 #include "ui/floating_window/state.hpp"
 #include "utils/logger/logger.hpp"

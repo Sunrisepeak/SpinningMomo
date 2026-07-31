@@ -6,7 +6,7 @@ module;
 #include "utils/media/state.hpp"
 #include "utils/media/types.hpp"
 
-export module sm.utils.media.encoder;
+export module utils.media.encoder;
 
 import std;
 

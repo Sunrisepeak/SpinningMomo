@@ -4,15 +4,15 @@
 
 #include "vendor/asio.hpp"
 
-import sm.core.async.async;
+#include "core/async/async.hpp"
 #include "core/state/app_state.hpp"
 #include "features/gallery/folder/repository.hpp"
 #include "features/gallery/state.hpp"
 #include "features/gallery/types.hpp"
 #include "utils/logger/logger.hpp"
-import sm.utils.network.network;
-import sm.utils.path.path;
-import sm.utils.string.string;
+import utils.network.network;
+import utils.path.path;
+import utils.string.string;
 
 namespace features::gallery::root_availability::detail {
 

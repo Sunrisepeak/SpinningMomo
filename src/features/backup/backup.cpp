@@ -4,13 +4,13 @@
 
 #include "vendor/windows.hpp"
 
-import sm.core.database.database;
+#include "core/database/database.hpp"
 #include "core/state/app_state.hpp"
-import sm.core.state.runtime_info;
+#include "core/state/runtime_info.hpp"
 #include "features/backup/types.hpp"
-import sm.utils.path.path;
-import sm.utils.powershell.powershell;
-import sm.utils.string.string;
+import utils.path.path;
+import utils.powershell.powershell;
+import utils.string.string;
 
 namespace features::backup::detail {
 

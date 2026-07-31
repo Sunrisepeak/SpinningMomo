@@ -1,17 +1,16 @@
-module;
+#include "core/rpc/endpoints/window_control/window_control.hpp"
 
-#include "core/state/app_state.hpp"
+#include "vendor/std.hpp"
+
 #include "vendor/asio.hpp"
+
+#include "core/rpc/rpc.hpp"
+#include "core/rpc/state.hpp"
 #include "core/rpc/types.hpp"
+#include "core/state/app_state.hpp"
 #include "features/window_control/types.hpp"
 #include "features/window_control/window_control.hpp"
-
-module sm.core.rpc.endpoints.window_control.window_control;
-
-import std;
-import sm.core.rpc.rpc;
-import sm.core.rpc.state;
-import sm.utils.string.string;
+import utils.string.string;
 
 namespace core::rpc::endpoints::window_control {
 

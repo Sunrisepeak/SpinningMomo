@@ -1,15 +1,14 @@
-module;
+#include "core/dialog_service/dialog_service.hpp"
 
+#include "vendor/std.hpp"
+
+#include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
+
+#include "core/dialog_service/state.hpp"
 #include "core/state/app_state.hpp"
 #include "utils/dialog/dialog.hpp"
-#include "vendor/wil.hpp"
 #include "utils/logger/logger.hpp"
-
-module sm.core.dialog_service.dialog_service;
-
-import std;
-import sm.core.dialog_service.state;
 
 namespace core::dialog_service {
 

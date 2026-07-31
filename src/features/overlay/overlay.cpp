@@ -6,7 +6,7 @@
 #include "vendor/windows/dwmapi.hpp"
 
 #include "core/state/app_state.hpp"
-import sm.core.state.runtime_info;
+#include "core/state/runtime_info.hpp"
 #include "features/overlay/capture.hpp"
 #include "features/overlay/geometry.hpp"
 #include "features/overlay/interaction.hpp"
@@ -16,8 +16,8 @@ import sm.core.state.runtime_info;
 #include "features/overlay/types.hpp"
 #include "features/overlay/window.hpp"
 #include "ui/floating_window/state.hpp"
-import sm.utils.display.display;
-import sm.utils.graphics.hdr;
+import utils.display.display;
+import utils.graphics.hdr;
 #include "utils/logger/logger.hpp"
 
 namespace features::overlay {

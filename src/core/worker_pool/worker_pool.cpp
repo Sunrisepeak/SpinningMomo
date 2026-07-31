@@ -1,12 +1,10 @@
-module;
+#include "core/worker_pool/worker_pool.hpp"
+
+#include "vendor/std.hpp"
 
 #include "core/state/app_state.hpp"
+#include "core/worker_pool/state.hpp"
 #include "utils/logger/logger.hpp"
-
-module sm.core.worker_pool.worker_pool;
-
-import std;
-import sm.core.worker_pool.state;
 
 namespace core::worker_pool {
 

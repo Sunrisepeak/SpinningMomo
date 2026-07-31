@@ -2,15 +2,15 @@
 
 #include "vendor/std.hpp"
 
-import sm.core.database.database;
+#include "core/database/database.hpp"
 #include "core/state/app_state.hpp"
 #include "features/gallery/asset/service.hpp"
 #include "features/gallery/state.hpp"
 #include "features/gallery/types.hpp"
 #include "utils/image/image.hpp"
 #include "utils/logger/logger.hpp"
-import sm.utils.media.video_asset;
-import sm.utils.path.path;
+import utils.media.video_asset;
+import utils.path.path;
 
 namespace features::gallery::asset::thumbnail {
 

@@ -5,7 +5,7 @@
 #include "vendor/spdlog.hpp"
 
 #include "core/build_config.hpp"
-import sm.utils.path.path;
+import utils.path.path;
 
 namespace utils::logging::detail {
 

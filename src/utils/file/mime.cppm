@@ -1,6 +1,6 @@
 module;
 
-export module sm.utils.file.mime;
+export module utils.file.mime;
 
 import std;
 

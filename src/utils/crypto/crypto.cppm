@@ -1,6 +1,6 @@
 module;
 
-export module sm.utils.crypto.crypto;
+export module utils.crypto.crypto;
 
 import std;
 
