@@ -101,6 +101,17 @@ jobs:
         run: |
           "$MCPP" toolchain default msvc
 
+      - name: Pre-build step
+        shell: bash
+        working-directory: probes/${{ matrix.probe }}
+        run: |
+          set -euo pipefail
+          if [ -f prebuild.sh ]; then
+            bash prebuild.sh
+          else
+            echo "no prebuild.sh"
+          fi
+
       - name: Build probe
         shell: bash
         working-directory: probes/${{ matrix.probe }}

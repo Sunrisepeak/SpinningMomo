@@ -8,6 +8,14 @@ platforms = ["windows"]
 windows = "msvc@system"
 
 [build]
-include_dirs = ["src"]
+include_dirs = [
+  "src",
+  # C++/WinRT projection headers (winrt/Windows.*.h) ship in the Windows SDK
+  # under Include/<ver>/cppwinrt/, which mcpp does NOT add to the synthesised
+  # INCLUDE — src/toolchain/msvc.cppm:457-460 adds only {ucrt,um,shared,winrt},
+  # and that bare `winrt` dir is the ABI header set (lowercase
+  # windows.foundation.h), not the C++ projection. Upstream gap; glob around it.
+  "C:/Program Files (x86)/Windows Kits/10/Include/*/cppwinrt",
+]
 defines = ["NOMINMAX", "UNICODE", "_UNICODE", "WIN32_LEAN_AND_MEAN", "_WIN32_WINNT=0x0A00"]
 ldflags = ["windowsapp.lib", "user32.lib", "d3d11.lib", "dxgi.lib"]
