@@ -120,19 +120,19 @@ jobs:
             echo "no prebuild.sh"
           fi
 
-      - name: Materialise project indices
+      - name: Register project index (junction)
         shell: bash
-        working-directory: probes/${{ matrix.probe }}
-        continue-on-error: true
         run: |
-          # A `[indices] x = { path = ... }` entry is visible to mcpp
-          # immediately (`index list` shows it) but is not handed to xlings
-          # within the same invocation that first reads the manifest — a cold
-          # checkout resolves against [xim, mcpplibs] only and every `sm:`
-          # package misses. Materialise the project index explicitly first.
-          "$MCPP" index list || true
-          "$MCPP" index update || true
-          "$MCPP" index status || true
+          set -euo pipefail
+          # mcpp registers a path index by symlinking it into the project
+          # sandbox, and a directory symlink needs a privilege the runner
+          # account does not have — see scripts/mcpp-link-index.sh.
+          if [ -f "probes/${{ matrix.probe }}/mcpp.toml" ] \
+             && grep -q '^\[indices\]' "probes/${{ matrix.probe }}/mcpp.toml"; then
+            bash scripts/mcpp-link-index.sh "probes/${{ matrix.probe }}" sm mcpp
+          else
+            echo "probe declares no path index"
+          fi
 
       - name: Build probe
         shell: bash
@@ -160,3 +160,93 @@ jobs:
           else
             echo "no check.sh — build success is the whole assertion"
           fi
+
+  # ── The real thing ────────────────────────────────────────────────────────
+  # Builds SpinningMomo itself from the root mcpp.toml. Kept in the same
+  # workflow so it shares the probe matrix's bootstrap and cache lineage, but
+  # in its own job so a probe failure never masks it and vice versa.
+  full-build:
+    name: SpinningMomo (full)
+    runs-on: windows-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache xlings
+        uses: actions/cache@v4
+        with:
+          path: ~/.xlings
+          key: xlings-windows-xl${{ env.XLINGS_VERSION }}
+
+      - name: Cache mcpp sandbox
+        uses: actions/cache@v4
+        with:
+          path: ~/.mcpp
+          key: mcpp-sandbox-windows-full-xl${{ env.XLINGS_VERSION }}-${{ hashFiles('.xlings.json', 'mcpp/**') }}
+
+      - name: Cache build outputs
+        uses: actions/cache@v4
+        with:
+          path: target
+          key: mcpp-target-windows-${{ hashFiles('src/**', 'mcpp.toml') }}
+          restore-keys: mcpp-target-windows-
+
+      - name: Bootstrap xlings + mcpp
+        shell: bash
+        run: |
+          set -euo pipefail
+          REPO_DIR="$(pwd)"
+          WORK=$(mktemp -d)
+          zipfile="xlings-${XLINGS_VERSION}-windows-x86_64.zip"
+          curl -fsSL -o "${WORK}/${zipfile}" \
+            "https://github.com/d2learn/xlings/releases/download/v${XLINGS_VERSION}/${zipfile}"
+          (cd "${WORK}" && unzip -q "${zipfile}")
+          "$WORK/xlings-${XLINGS_VERSION}-windows-x86_64/subos/default/bin/xlings.exe" self install
+          echo "$USERPROFILE/.xlings/subos/default/bin" >> "$GITHUB_PATH"
+          XL="$USERPROFILE/.xlings/subos/default/bin/xlings.exe"
+          cd "$REPO_DIR"
+          "$XL" install -y -u -g
+          MCPP="$USERPROFILE/.xlings/subos/default/bin/mcpp.exe"
+          test -n "$MCPP" && test -x "$MCPP"
+          echo "MCPP=$MCPP" >> "$GITHUB_ENV"
+          "$MCPP" --version
+
+      - name: Select MSVC toolchain
+        shell: bash
+        run: |
+          "$MCPP" toolchain default msvc
+
+      - name: Fetch header-only third-party (dkm)
+        shell: bash
+        run: node scripts/fetch-third-party.js
+
+      - name: Register project index (junction)
+        shell: bash
+        run: bash scripts/mcpp-link-index.sh . sm mcpp
+
+      - name: Pre-build (resources, cppwinrt, WebView2)
+        shell: bash
+        run: bash scripts/mcpp-prebuild.sh
+
+      - name: Build
+        shell: bash
+        run: |
+          set -uo pipefail
+          "$MCPP" build -v 2>&1 | tail -400
+
+      - name: Report artefact
+        shell: bash
+        run: |
+          set -euo pipefail
+          exe=$(find target -name 'SpinningMomo.exe' | head -1)
+          test -n "$exe" || { echo "FAIL: no SpinningMomo.exe"; exit 1; }
+          ls -la "$exe"
+          powershell -NoProfile -Command \
+            "(Get-Item '$(cygpath -w "$exe")').VersionInfo | Format-List ProductName,ProductVersion,FileVersion"
+
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: SpinningMomo-mcpp
+          path: target/**/bin/SpinningMomo.exe
+          if-no-files-found: error

@@ -1,0 +1,88 @@
+[package]
+name      = "SpinningMomo"
+version   = "2.1.4"
+standard  = "c++23"
+platforms = ["windows"]
+license   = "GPL-3.0"
+
+[toolchain]
+windows = "msvc@system"
+
+# The project's own path index (see mcpp/index.toml). The index NAME must equal
+# the descriptors' `package.namespace`: the `[dependencies.sm]` table below is
+# read as both the namespace table and the index selector.
+[indices]
+sm = { path = "mcpp" }
+
+# From the official mcpp-index.
+[dependencies]
+"chriskohlhoff.asio" = "1.38.1"
+# `compiled` turns spdlog into a real library and contributes SPDLOG_COMPILED_LIB
+# as an interface define — which is exactly what the project already sets by
+# hand today, so the define moves out of [build].defines and onto the feature.
+"compat.spdlog" = { version = "1.17.0", features = ["compiled"] }
+
+# Everything mcpp-index does not carry. uwebsockets pulls usockets, which pulls
+# libuv; sqlitecpp pulls sqlite3.
+[dependencies.sm]
+xxhash      = "0.8.3"
+wil         = "1.0.260126.7"
+sqlite3     = "3.50.4"
+sqlitecpp   = "3.3.3"
+reflectcpp  = "0.25.0"
+uwebsockets = "20.79.0"
+libwebp     = "1.5.0"
+
+[build]
+# ≙ xmake `set_runtimes("MT")`. Also required for consistency with the shared
+# `std` object mcpp caches, which is built /MT; a /MD project fails to link it
+# with LNK2038.
+linkage = "static"
+
+sources = ["src/**/*.cpp"]
+
+include_dirs = [
+  "src",
+  "third_party/dkm/include",
+  # Both produced by scripts/mcpp-prebuild.sh. They must be project-relative
+  # and space-free: mcpp emits include_dirs unquoted, so a path under
+  # "C:/Program Files (x86)/..." reaches cl.exe as three arguments.
+  "gen/cppwinrt",          # C++/WinRT projection (not in mcpp's synthesised INCLUDE)
+  "gen/webview2/include",  # WebView2 SDK headers, unpacked from the NuGet package
+]
+
+defines = [
+  "NOMINMAX", "UNICODE", "_UNICODE", "WIN32_LEAN_AND_MEAN", "_WIN32_WINNT=0x0A00",
+  "yyjson_api_inline=yyjson_inline",
+  # uSockets' backend/SSL shape changes struct layouts in libusockets.h, so
+  # every TU that sees a uWS header must agree with how the library was built.
+  "LIBUS_USE_LIBUV", "LIBUS_NO_SSL", "UWS_NO_ZLIB",
+]
+
+ldflags = [
+  "/SUBSYSTEM:WINDOWS",
+
+  # link.exe runs with cwd = target/<triple>/<hash>/ and ldflags entries are
+  # passed verbatim, so file inputs have to climb back out to the project root.
+  # (`mcpp:link-search=` resolves relative paths against the project root;
+  # plain ldflags does not.)
+  "../../../gen/app.res",
+  "../../../gen/webview2/lib/WebView2LoaderStatic.lib",
+
+  # Windows system libraries — the same set xmake linked.
+  "dwmapi.lib", "dcomp.lib", "windowsapp.lib", "runtimeobject.lib",
+  "d3d11.lib", "dxgi.lib", "d3dcompiler.lib", "d2d1.lib", "dwrite.lib",
+  "shell32.lib", "shlwapi.lib", "gdi32.lib", "user32.lib", "ws2_32.lib",
+  "secur32.lib", "advapi32.lib", "bcrypt.lib", "dbghelp.lib", "userenv.lib",
+  "mf.lib", "mfplat.lib", "mfreadwrite.lib", "mfuuid.lib", "strmiids.lib",
+  "ole32.lib", "oleaut32.lib", "version.lib", "propsys.lib",
+]
+
+[profile.release]
+# Release keeps full debug info so production crash dumps stay analysable, and
+# forces the dynamic UCRT the way the xmake build did.
+ldflags = ["/DEBUG:FULL", "/NODEFAULTLIB:libucrt.lib", "/DEFAULTLIB:ucrt.lib"]
+
+[targets.SpinningMomo]
+kind = "bin"
+main = "src/main.cpp"
