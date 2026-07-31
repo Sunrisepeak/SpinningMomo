@@ -14,17 +14,16 @@ windows = "msvc@system"
 [indices]
 sm = { path = "mcpp" }
 
-# From the official mcpp-index.
-[dependencies]
-"chriskohlhoff.asio" = "1.38.1"
-# `compiled` turns spdlog into a real library and contributes SPDLOG_COMPILED_LIB
-# as an interface define — which is exactly what the project already sets by
-# hand today, so the define moves out of [build].defines and onto the feature.
-"compat.spdlog" = { version = "1.17.0", features = ["compiled"] }
-
-# Everything mcpp-index does not carry. uwebsockets pulls usockets, which pulls
-# libuv; sqlitecpp pulls sqlite3.
+# Every dependency comes from the project's own index, including Asio and
+# spdlog — which the official mcpp-index does carry. The reason is the CRT: a
+# dependency package compiles with its own flags (defaulting to /MD) and a
+# consumer cannot override them, while this project must link /MT. Owning the
+# descriptors is the only way to pin it. See mcpp/pkgs/a/sm.asio.lua.
+#
+# uwebsockets pulls usockets, which pulls libuv; sqlitecpp pulls sqlite3.
 [dependencies.sm]
+asio        = "1.38.1"
+spdlog      = "1.17.0"
 xxhash      = "0.8.3"
 wil         = "1.0.260126.7"
 sqlite3     = "3.50.4"
@@ -54,6 +53,10 @@ include_dirs = [
 defines = [
   "NOMINMAX", "UNICODE", "_UNICODE", "WIN32_LEAN_AND_MEAN", "_WIN32_WINNT=0x0A00",
   "yyjson_api_inline=yyjson_inline",
+  # spdlog compiled mode: consumers must see this too, or their headers
+  # re-emit the implementation inline instead of using the extern templates.
+  "SPDLOG_COMPILED_LIB",
+  "ASIO_STANDALONE",
   # uSockets' backend/SSL shape changes struct layouts in libusockets.h, so
   # every TU that sees a uWS header must agree with how the library was built.
   "LIBUS_USE_LIBUV", "LIBUS_NO_SSL", "UWS_NO_ZLIB",
