@@ -1,0 +1,14 @@
+# SpinningMomo's own package index.
+#
+# The official mcpp-index covers asio / spdlog / zlib; everything else this
+# project depends on (xxhash, wil, reflect-cpp, SQLiteCpp, sqlite3, uWebSockets
+# + uSockets + libuv, WebView2, libultrahdr) has no descriptor there yet. They
+# live here rather than upstream so the migration never blocks on cross-repo
+# coordination; anything that stabilises can be contributed to mcpp-index later.
+#
+# Consumed via a path index in the root manifest:
+#     [indices]
+#     spinningmomo = { path = "mcpp" }
+[index]
+spec     = "1"
+min_mcpp = "0.0.109"
