@@ -108,11 +108,20 @@ def convert_header(rel: str, modules: set[str]) -> Path:
     dst = SRC / f"{rel}.cppm"
     dst.write_text("\n".join(out).rstrip() + "\n", encoding="utf-8")
     src.unlink()
+    convert_header.last_gmf = gmf  # handed to convert_impl
     return dst
 
 
-def convert_impl(rel: str, modules: set[str]) -> Path | None:
-    """Turn x.cpp into the module implementation unit for x."""
+def convert_impl(rel: str, modules: set[str], iface_gmf: list[str] | None = None) -> Path | None:
+    """Turn x.cpp into the module implementation unit for x.
+
+    `iface_gmf` is the interface unit's global module fragment, and it MUST be
+    replayed here. Entities a module interface pulls in through a GMF
+    `#include` attach to the GLOBAL module, not to the named module, so they
+    are invisible in the implementation unit even though it implicitly imports
+    its own interface. Before modules, `encoder.cpp` saw `VideoCodec` because
+    it self-included `encoder.hpp` which included `types.hpp`; drop the
+    self-include and that chain is gone."""
     src = SRC / f"{rel}.cpp"
     if not src.exists():
         return None
@@ -125,9 +134,16 @@ def convert_impl(rel: str, modules: set[str]) -> Path | None:
     gmf, imports, start = split_top(lines, modules)
     body = lines[start:]
 
+    # Replay the interface's GMF first, then this unit's own, de-duplicated and
+    # order-preserving.
+    merged: list[str] = []
+    for line in (iface_gmf or []) + gmf:
+        if line not in merged:
+            merged.append(line)
+
     out: list[str] = ["module;", ""]
-    out += gmf
-    if gmf:
+    out += merged
+    if merged:
         out.append("")
     out.append(f"module {module_name(rel)};")
     out.append("")
@@ -174,7 +190,7 @@ def main() -> int:
     modules = set(args)
     for rel in args:
         h = convert_header(rel, modules)
-        i = convert_impl(rel, modules)
+        i = convert_impl(rel, modules, convert_header.last_gmf)
         print(f"{rel}: {h.relative_to(ROOT)}" + (f" + {i.relative_to(ROOT)}" if i else " (header-only)"))
     rewrite_consumers(args)
     return 0

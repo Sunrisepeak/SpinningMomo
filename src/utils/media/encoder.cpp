@@ -1,5 +1,8 @@
 module;
 
+#include "vendor/windows/audioclient.hpp"
+#include "utils/media/state.hpp"
+#include "utils/media/types.hpp"
 #include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
 #include "vendor/windows/codecapi.hpp"
