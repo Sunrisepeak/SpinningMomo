@@ -5,9 +5,9 @@
 #include "vendor/windows.hpp"
 #include "vendor/windows/shellapi.hpp"
 
-import core.commands.registry;
+import sm.core.commands.registry;
 #include "core/commands/types.hpp"
-import core.i18n.state;
+import sm.core.i18n.state;
 #include "core/i18n/types.hpp"
 #include "core/state/app_state.hpp"
 #include "features/settings/menu.hpp"
@@ -17,7 +17,7 @@ import core.i18n.state;
 #include "ui/floating_window/state.hpp"
 #include "ui/tray_icon/state.hpp"
 #include "ui/tray_icon/types.hpp"
-import utils.string.string;
+import sm.utils.string.string;
 
 namespace ui::tray_icon::detail {
 

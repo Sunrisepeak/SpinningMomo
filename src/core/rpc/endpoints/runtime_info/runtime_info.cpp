@@ -4,12 +4,12 @@ module;
 #include "vendor/asio.hpp"
 #include "core/rpc/types.hpp"
 
-module core.rpc.endpoints.runtime_info.runtime_info;
+module sm.core.rpc.endpoints.runtime_info.runtime_info;
 
 import std;
-import core.rpc.rpc;
-import core.rpc.state;
-import core.state.runtime_info;
+import sm.core.rpc.rpc;
+import sm.core.rpc.state;
+import sm.core.state.runtime_info;
 
 namespace core::rpc::endpoints::runtime_info {
 

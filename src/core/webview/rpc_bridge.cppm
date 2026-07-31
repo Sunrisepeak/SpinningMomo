@@ -3,7 +3,7 @@ module;
 #include "vendor/asio.hpp"
 #include "core/state/app_state.hpp"
 
-export module core.webview.rpc_bridge;
+export module sm.core.webview.rpc_bridge;
 
 import std;
 

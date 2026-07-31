@@ -2,7 +2,7 @@ module;
 
 #include "vendor/xxhash.hpp"
 
-export module utils.hash.xxhash;
+export module sm.utils.hash.xxhash;
 
 import std;
 

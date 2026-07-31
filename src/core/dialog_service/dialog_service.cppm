@@ -4,7 +4,7 @@ module;
 #include "core/state/app_state.hpp"
 #include "utils/dialog/dialog.hpp"
 
-export module core.dialog_service.dialog_service;
+export module sm.core.dialog_service.dialog_service;
 
 import std;
 

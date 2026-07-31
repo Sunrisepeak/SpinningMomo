@@ -7,7 +7,7 @@ module;
 #include "core/state/app_state.hpp"
 #include "utils/logger/logger.hpp"
 
-export module core.rpc.rpc;
+export module sm.core.rpc.rpc;
 
 import std;
 

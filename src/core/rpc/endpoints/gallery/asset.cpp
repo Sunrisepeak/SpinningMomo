@@ -12,12 +12,12 @@ module;
 #include "features/gallery/root_availability.hpp"
 #include "features/gallery/types.hpp"
 
-module core.rpc.endpoints.gallery.asset;
+module sm.core.rpc.endpoints.gallery.asset;
 
 import std;
-import core.rpc.notification_hub;
-import core.rpc.rpc;
-import core.rpc.state;
+import sm.core.rpc.notification_hub;
+import sm.core.rpc.rpc;
+import sm.core.rpc.state;
 
 namespace core::rpc::endpoints::gallery::asset {
 

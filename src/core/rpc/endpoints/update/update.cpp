@@ -7,11 +7,11 @@ module;
 #include "features/update/types.hpp"
 #include "features/update/update.hpp"
 
-module core.rpc.endpoints.update.update;
+module sm.core.rpc.endpoints.update.update;
 
 import std;
-import core.rpc.rpc;
-import core.rpc.state;
+import sm.core.rpc.rpc;
+import sm.core.rpc.state;
 
 namespace core::rpc::endpoints::update {
 

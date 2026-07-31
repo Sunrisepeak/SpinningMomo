@@ -2,7 +2,7 @@ module;
 
 #include "core/state/app_state.hpp"
 
-export module core.initializer.initializer;
+export module sm.core.initializer.initializer;
 
 import std;
 

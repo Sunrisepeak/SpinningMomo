@@ -4,12 +4,12 @@ module;
 #include "vendor/asio.hpp"
 #include "core/rpc/types.hpp"
 
-module core.rpc.endpoints.tasks.tasks;
+module sm.core.rpc.endpoints.tasks.tasks;
 
 import std;
-import core.rpc.rpc;
-import core.rpc.state;
-import core.tasks.tasks;
+import sm.core.rpc.rpc;
+import sm.core.rpc.state;
+import sm.core.tasks.tasks;
 
 namespace core::rpc::endpoints::tasks {
 

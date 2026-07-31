@@ -7,17 +7,17 @@ module;
 #include "features/gallery/types.hpp"
 #include "utils/logger/logger.hpp"
 
-module core.rpc.endpoints.gallery.gallery;
+module sm.core.rpc.endpoints.gallery.gallery;
 
 import std;
-import core.async.async;
-import core.rpc.endpoints.gallery.asset;
-import core.rpc.endpoints.gallery.folder;
-import core.rpc.endpoints.gallery.tag;
-import core.rpc.notification_hub;
-import core.rpc.rpc;
-import core.rpc.state;
-import core.tasks.tasks;
+import sm.core.async.async;
+import sm.core.rpc.endpoints.gallery.asset;
+import sm.core.rpc.endpoints.gallery.folder;
+import sm.core.rpc.endpoints.gallery.tag;
+import sm.core.rpc.notification_hub;
+import sm.core.rpc.rpc;
+import sm.core.rpc.state;
+import sm.core.tasks.tasks;
 
 namespace core::rpc::endpoints::gallery {
 

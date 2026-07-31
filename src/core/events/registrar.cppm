@@ -2,7 +2,7 @@ module;
 
 #include "core/state/app_state.hpp"
 
-export module core.events.registrar;
+export module sm.core.events.registrar;
 
 import std;
 

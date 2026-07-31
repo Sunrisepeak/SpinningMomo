@@ -5,7 +5,7 @@ module;
 #include "core/i18n/types.hpp"
 #include "core/state/app_state.hpp"
 
-export module core.i18n.i18n;
+export module sm.core.i18n.i18n;
 
 import std;
 

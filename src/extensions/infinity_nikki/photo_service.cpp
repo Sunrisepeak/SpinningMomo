@@ -2,10 +2,10 @@
 
 #include "vendor/std.hpp"
 
-import core.database.database;
+import sm.core.database.database;
 #include "core/state/app_state.hpp"
-import core.tasks.tasks;
-import core.worker_pool.worker_pool;
+import sm.core.tasks.tasks;
+import sm.core.worker_pool.worker_pool;
 #include "extensions/infinity_nikki/media_hardlinks.hpp"
 #include "extensions/infinity_nikki/role_profile.hpp"
 #include "extensions/infinity_nikki/task_service.hpp"
@@ -19,7 +19,7 @@ import core.worker_pool.worker_pool;
 #include "features/gallery/watcher/watcher.hpp"
 #include "features/settings/state.hpp"
 #include "utils/logger/logger.hpp"
-import utils.path.path;
+import sm.utils.path.path;
 
 namespace extensions::infinity_nikki::photo_service {
 

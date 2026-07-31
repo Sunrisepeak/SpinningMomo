@@ -3,7 +3,7 @@ module;
 #include "core/database/state.hpp"
 #include "core/state/app_state.hpp"
 
-export module core.initializer.database;
+export module sm.core.initializer.database;
 
 import std;
 

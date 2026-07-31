@@ -3,7 +3,7 @@ module;
 #include "vendor/windows.hpp"
 #include "core/state/app_state.hpp"
 
-export module core.webview.host;
+export module sm.core.webview.host;
 
 import std;
 

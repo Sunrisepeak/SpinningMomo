@@ -2,7 +2,7 @@ module;
 
 #include "core/state/app_state.hpp"
 
-export module core.rpc.endpoints.window_control.window_control;
+export module sm.core.rpc.endpoints.window_control.window_control;
 
 import std;
 

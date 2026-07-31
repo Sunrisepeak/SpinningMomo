@@ -2,7 +2,7 @@ module;
 
 #include "core/state/app_state.hpp"
 
-export module core.http_server.http_server;
+export module sm.core.http_server.http_server;
 
 import std;
 

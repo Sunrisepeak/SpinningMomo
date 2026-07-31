@@ -4,10 +4,10 @@
 
 #include "vendor/windows.hpp"
 
-import core.database.database;
+import sm.core.database.database;
 #include "core/state/app_state.hpp"
 #include "core/webview/state.hpp"
-import core.webview.webview;
+import sm.core.webview.webview;
 #include "features/gallery/asset/thumbnail.hpp"
 #include "features/gallery/folder/repository.hpp"
 #include "features/gallery/ignore/service.hpp"
@@ -16,9 +16,9 @@ import core.webview.webview;
 #include "features/gallery/types.hpp"
 #include "features/gallery/watcher/watcher.hpp"
 #include "utils/logger/logger.hpp"
-import utils.path.path;
-import utils.string.string;
-import utils.system.system;
+import sm.utils.path.path;
+import sm.utils.string.string;
+import sm.utils.system.system;
 
 namespace features::gallery::folder::service {
 

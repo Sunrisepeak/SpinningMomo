@@ -6,7 +6,7 @@ module;
 #include "core/http_server/types.hpp"
 #include "utils/logger/logger.hpp"
 
-module core.http_server.sse_manager;
+module sm.core.http_server.sse_manager;
 
 import std;
 

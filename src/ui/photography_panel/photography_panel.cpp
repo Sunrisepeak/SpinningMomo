@@ -5,13 +5,13 @@
 #include "vendor/windows.hpp"
 #include "vendor/windows/dwmapi.hpp"
 
-import core.i18n.state;
+import sm.core.i18n.state;
 #include "core/state/app_state.hpp"
 #include "ui/photography_panel/message_handler.hpp"
 #include "ui/photography_panel/painter.hpp"
 #include "ui/photography_panel/render_context.hpp"
 #include "ui/photography_panel/state.hpp"
-import utils.string.string;
+import sm.utils.string.string;
 
 namespace ui::photography_panel {
 

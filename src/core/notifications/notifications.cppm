@@ -3,7 +3,7 @@ module;
 #include "core/notifications/types.hpp"
 #include "core/state/app_state.hpp"
 
-export module core.notifications.notifications;
+export module sm.core.notifications.notifications;
 
 import std;
 

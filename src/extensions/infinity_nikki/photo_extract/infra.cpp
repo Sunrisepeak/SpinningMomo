@@ -5,9 +5,9 @@
 #include "vendor/asio.hpp"
 #include "vendor/rfl.hpp"
 
-import core.database.database;
+import sm.core.database.database;
 #include "core/database/types.hpp"
-import core.http_client.http_client;
+import sm.core.http_client.http_client;
 #include "core/http_client/types.hpp"
 #include "core/state/app_state.hpp"
 #include "extensions/infinity_nikki/photo_extract/scan.hpp"

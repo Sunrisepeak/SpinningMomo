@@ -2,7 +2,7 @@ module;
 
 #include "core/state/app_state.hpp"
 
-export module core.rpc.endpoints.dialog.dialog;
+export module sm.core.rpc.endpoints.dialog.dialog;
 
 import std;
 

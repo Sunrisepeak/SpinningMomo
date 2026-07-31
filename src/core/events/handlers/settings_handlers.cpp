@@ -13,13 +13,13 @@ module;
 #include "ui/webview_window/webview_window.hpp"
 #include "utils/logger/logger.hpp"
 
-module core.events.handlers.settings_handlers;
+module sm.core.events.handlers.settings_handlers;
 
 import std;
-import core.commands.registry;
-import core.i18n.i18n;
-import core.rpc.notification_hub;
-import core.webview.webview;
+import sm.core.commands.registry;
+import sm.core.i18n.i18n;
+import sm.core.rpc.notification_hub;
+import sm.core.webview.webview;
 
 namespace core::events::handlers {
 

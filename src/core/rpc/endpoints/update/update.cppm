@@ -2,7 +2,7 @@ module;
 
 #include "core/state/app_state.hpp"
 
-export module core.rpc.endpoints.update.update;
+export module sm.core.rpc.endpoints.update.update;
 
 import std;
 

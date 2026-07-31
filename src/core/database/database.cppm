@@ -5,7 +5,7 @@ module;
 #include "core/database/types.hpp"
 #include "core/state/app_state.hpp"
 
-export module core.database.database;
+export module sm.core.database.database;
 
 import std;
 

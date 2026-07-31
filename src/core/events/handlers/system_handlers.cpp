@@ -8,11 +8,11 @@ module;
 #include "ui/webview_window/webview_window.hpp"
 #include "utils/logger/logger.hpp"
 
-module core.events.handlers.system_handlers;
+module sm.core.events.handlers.system_handlers;
 
 import std;
-import core.webview.events;
-import core.webview.webview;
+import sm.core.webview.events;
+import sm.core.webview.webview;
 
 namespace core::events::handlers {
 

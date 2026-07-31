@@ -3,12 +3,12 @@ module;
 #include "core/state/app_state.hpp"
 #include "utils/logger/logger.hpp"
 
-module core.migration.migration;
+module sm.core.migration.migration;
 
 import std;
-import core.migration.scripts.scripts;
-import core.version;
-import utils.path.path;
+import sm.core.migration.scripts.scripts;
+import sm.core.version;
+import sm.utils.path.path;
 
 namespace core::migration {
 

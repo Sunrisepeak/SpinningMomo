@@ -7,13 +7,13 @@
 #include "vendor/windows/windowsx.hpp"
 
 #include "core/state/app_state.hpp"
-import core.state.runtime_info;
+import sm.core.state.runtime_info;
 #include "features/preview/capture.hpp"
 #include "features/preview/interaction.hpp"
 #include "features/preview/rendering.hpp"
 #include "features/preview/state.hpp"
 #include "features/preview/types.hpp"
-import utils.display.display;
+import sm.utils.display.display;
 #include "utils/graphics/capture.hpp"
 #include "utils/graphics/d3d.hpp"
 #include "utils/logger/logger.hpp"

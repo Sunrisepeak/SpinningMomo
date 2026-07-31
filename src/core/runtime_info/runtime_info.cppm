@@ -2,7 +2,7 @@ module;
 
 #include "core/state/app_state.hpp"
 
-export module core.runtime_info.runtime_info;
+export module sm.core.runtime_info.runtime_info;
 
 import std;
 

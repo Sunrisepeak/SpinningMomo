@@ -3,7 +3,7 @@ module;
 #include "vendor/uwebsockets.hpp"
 #include "core/state/app_state.hpp"
 
-export module core.http_server.sse_manager;
+export module sm.core.http_server.sse_manager;
 
 import std;
 

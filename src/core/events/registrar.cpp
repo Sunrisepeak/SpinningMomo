@@ -2,12 +2,12 @@ module;
 
 #include "core/state/app_state.hpp"
 
-module core.events.registrar;
+module sm.core.events.registrar;
 
 import std;
-import core.events.handlers.feature_handlers;
-import core.events.handlers.settings_handlers;
-import core.events.handlers.system_handlers;
+import sm.core.events.handlers.feature_handlers;
+import sm.core.events.handlers.settings_handlers;
+import sm.core.events.handlers.system_handlers;
 
 namespace core::events {
 

@@ -2,7 +2,7 @@ module;
 
 #include "vendor/windows.hpp"
 
-export module core.events.state;
+export module sm.core.events.state;
 
 import std;
 

@@ -4,10 +4,10 @@ module;
 #include "core/state/app_state.hpp"
 #include "utils/logger/logger.hpp"
 
-module core.async.async;
+module sm.core.async.async;
 
 import std;
-import core.async.state;
+import sm.core.async.state;
 
 namespace core::async {
 

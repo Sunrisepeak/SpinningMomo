@@ -2,7 +2,7 @@ module;
 
 #include "vendor/asio.hpp"
 
-export module core.async.state;
+export module sm.core.async.state;
 
 import std;
 

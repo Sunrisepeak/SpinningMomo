@@ -5,26 +5,26 @@
 #include "vendor/asio.hpp"
 #include "vendor/windows.hpp"
 
-import core.async.async;
+import sm.core.async.async;
 #include "core/events/events.hpp"
-import core.http_client.http_client;
+import sm.core.http_client.http_client;
 #include "core/http_client/types.hpp"
-import core.i18n.state;
-import core.notifications.notifications;
+import sm.core.i18n.state;
+import sm.core.notifications.notifications;
 #include "core/notifications/types.hpp"
 #include "core/state/app_state.hpp"
-import core.tasks.tasks;
-import core.version;
+import sm.core.tasks.tasks;
+import sm.core.version;
 #include "features/settings/state.hpp"
 #include "features/update/state.hpp"
 #include "features/update/types.hpp"
 #include "ui/floating_window/events.hpp"
 #include "ui/webview_window/webview_window.hpp"
-import utils.crypto.crypto;
+import sm.utils.crypto.crypto;
 #include "utils/logger/logger.hpp"
-import utils.path.path;
-import utils.powershell.powershell;
-import utils.string.string;
+import sm.utils.path.path;
+import sm.utils.powershell.powershell;
+import sm.utils.string.string;
 #include "utils/throttle/throttle.hpp"
 
 namespace features::update {

@@ -6,7 +6,7 @@ module;
 #include "core/webview/static.hpp"
 #include "core/webview/types.hpp"
 
-export module core.webview.webview;
+export module sm.core.webview.webview;
 
 import std;
 

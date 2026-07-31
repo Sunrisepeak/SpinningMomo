@@ -1,6 +1,6 @@
 module;
 
-export module core.worker_pool.state;
+export module sm.core.worker_pool.state;
 
 import std;
 

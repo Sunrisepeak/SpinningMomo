@@ -2,7 +2,7 @@ module;
 
 #include "core/state/app_state.hpp"
 
-export module core.shutdown.shutdown;
+export module sm.core.shutdown.shutdown;
 
 import std;
 

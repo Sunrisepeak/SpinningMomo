@@ -8,10 +8,10 @@ module;
 #include "features/settings/types.hpp"
 #include "utils/logger/logger.hpp"
 
-module core.migration.scripts.scripts;
+module sm.core.migration.scripts.scripts;
 
 import std;
-import core.database.database;
+import sm.core.database.database;
 
 namespace core::migration::scripts {
 

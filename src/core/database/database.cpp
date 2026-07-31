@@ -7,7 +7,7 @@ module;
 #include "core/database/state.hpp"
 #include "utils/logger/logger.hpp"
 
-module core.database.database;
+module sm.core.database.database;
 
 import std;
 

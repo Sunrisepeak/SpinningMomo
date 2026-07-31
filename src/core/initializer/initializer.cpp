@@ -20,25 +20,25 @@ module;
 #include "ui/webview_window/webview_window.hpp"
 #include "utils/logger/logger.hpp"
 
-module core.initializer.initializer;
+module sm.core.initializer.initializer;
 
 import std;
-import core.async.async;
-import core.commands.registry;
-import core.dialog_service.dialog_service;
-import core.events.registrar;
-import core.events.state;
-import core.http_client.http_client;
-import core.http_server.http_server;
-import core.i18n.i18n;
-import core.i18n.state;
-import core.initializer.database;
-import core.migration.migration;
-import core.notifications.notifications;
-import core.rpc.registry;
-import core.state.runtime_info;
-import core.worker_pool.worker_pool;
-import utils.string.string;
+import sm.core.async.async;
+import sm.core.commands.registry;
+import sm.core.dialog_service.dialog_service;
+import sm.core.events.registrar;
+import sm.core.events.state;
+import sm.core.http_client.http_client;
+import sm.core.http_server.http_server;
+import sm.core.i18n.i18n;
+import sm.core.i18n.state;
+import sm.core.initializer.database;
+import sm.core.migration.migration;
+import sm.core.notifications.notifications;
+import sm.core.rpc.registry;
+import sm.core.state.runtime_info;
+import sm.core.worker_pool.worker_pool;
+import sm.utils.string.string;
 
 namespace core::initializer {
 

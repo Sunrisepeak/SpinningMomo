@@ -7,12 +7,12 @@ module;
 #include "core/webview/state.hpp"
 #include "utils/dialog/dialog.hpp"
 
-module core.rpc.endpoints.dialog.dialog;
+module sm.core.rpc.endpoints.dialog.dialog;
 
 import std;
-import core.dialog_service.dialog_service;
-import core.rpc.rpc;
-import core.rpc.state;
+import sm.core.dialog_service.dialog_service;
+import sm.core.rpc.rpc;
+import sm.core.rpc.state;
 
 namespace core::rpc::endpoints::dialog {
 

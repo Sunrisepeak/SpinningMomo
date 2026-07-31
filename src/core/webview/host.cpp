@@ -17,12 +17,12 @@ module;
 #include "features/settings/state.hpp"
 #include "utils/logger/logger.hpp"
 
-module core.webview.host;
+module sm.core.webview.host;
 
 import std;
-import core.webview.rpc_bridge;
-import utils.path.path;
-import utils.string.string;
+import sm.core.webview.rpc_bridge;
+import sm.utils.path.path;
+import sm.utils.string.string;
 
 namespace core::webview::host::detail {
 

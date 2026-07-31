@@ -2,7 +2,7 @@ module;
 
 #include "vendor/windows.hpp"
 
-export module utils.graphics.hdr;
+export module sm.utils.graphics.hdr;
 
 import std;
 

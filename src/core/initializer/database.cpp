@@ -4,11 +4,11 @@ module;
 #include "core/state/app_state.hpp"
 #include "utils/logger/logger.hpp"
 
-module core.initializer.database;
+module sm.core.initializer.database;
 
 import std;
-import core.database.database;
-import utils.path.path;
+import sm.core.database.database;
+import sm.utils.path.path;
 
 namespace core::initializer::database {
 

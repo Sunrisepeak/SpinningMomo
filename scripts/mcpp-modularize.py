@@ -41,9 +41,17 @@ PRAGMA_ONCE_RE = re.compile(r'^\s*#\s*pragma\s+once\s*$')
 NAMESPACE_RE = re.compile(r'^namespace\s+([A-Za-z_][A-Za-z0-9_:]*)\s*\{')
 
 
+# mcpp forbids a handful of top-level module names to avoid collisions between
+# packages: core, util, common, std, detail, internal, base
+# (modgraph/validate.cppm:48). `core/...` is exactly what this project's tree is
+# built around, so every module carries the project's namespace prefix — the
+# same `sm` the package index uses.
+MODULE_PREFIX = "sm."
+
+
 def module_name(rel: str) -> str:
     """src-relative path without extension -> dotted module name."""
-    return rel.replace("/", ".")
+    return MODULE_PREFIX + rel.replace("/", ".")
 
 
 def split_top(lines: list[str], modules: set[str]) -> tuple[list[str], list[str], int]:

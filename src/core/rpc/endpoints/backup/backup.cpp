@@ -8,12 +8,12 @@ module;
 #include "features/backup/types.hpp"
 #include "ui/floating_window/events.hpp"
 
-module core.rpc.endpoints.backup.backup;
+module sm.core.rpc.endpoints.backup.backup;
 
 import std;
-import core.async.async;
-import core.rpc.rpc;
-import core.rpc.state;
+import sm.core.async.async;
+import sm.core.rpc.rpc;
+import sm.core.rpc.state;
 
 namespace core::rpc::endpoints::backup {
 

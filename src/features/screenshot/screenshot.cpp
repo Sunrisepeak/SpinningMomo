@@ -9,19 +9,19 @@
 #include "vendor/windows/winrt/windows_graphics_capture.hpp"
 
 #include "core/state/app_state.hpp"
-import core.state.runtime_info;
+import sm.core.state.runtime_info;
 #include "features/screenshot/hdr_encoder.hpp"
 #include "features/screenshot/state.hpp"
 #include "features/settings/state.hpp"
 #include "utils/graphics/capture.hpp"
 #include "utils/graphics/capture_region.hpp"
 #include "utils/graphics/d3d.hpp"
-import utils.graphics.hdr;
+import sm.utils.graphics.hdr;
 #include "utils/graphics/photo_processing.hpp"
 #include "utils/image/image.hpp"
 #include "utils/logger/logger.hpp"
-import utils.path.path;
-import utils.string.string;
+import sm.utils.path.path;
+import sm.utils.string.string;
 
 namespace features::screenshot {
 

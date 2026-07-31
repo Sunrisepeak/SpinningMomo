@@ -7,11 +7,11 @@ module;
 #include "ui/floating_window/events.hpp"
 #include "ui/floating_window/floating_window.hpp"
 
-module core.events.handlers.feature_handlers;
+module sm.core.events.handlers.feature_handlers;
 
 import std;
-import core.notifications.events;
-import core.notifications.notifications;
+import sm.core.notifications.events;
+import sm.core.notifications.notifications;
 
 namespace core::events::handlers {
 

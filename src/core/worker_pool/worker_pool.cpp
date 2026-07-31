@@ -3,10 +3,10 @@ module;
 #include "core/state/app_state.hpp"
 #include "utils/logger/logger.hpp"
 
-module core.worker_pool.worker_pool;
+module sm.core.worker_pool.worker_pool;
 
 import std;
-import core.worker_pool.state;
+import sm.core.worker_pool.state;
 
 namespace core::worker_pool {
 

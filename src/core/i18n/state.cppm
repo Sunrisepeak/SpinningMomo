@@ -2,7 +2,7 @@ module;
 
 #include "core/i18n/types.hpp"
 
-export module core.i18n.state;
+export module sm.core.i18n.state;
 
 import std;
 

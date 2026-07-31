@@ -2,7 +2,7 @@ module;
 
 #include "core/state/app_state.hpp"
 
-export module core.rpc.endpoints.clipboard.clipboard;
+export module sm.core.rpc.endpoints.clipboard.clipboard;
 
 import std;
 

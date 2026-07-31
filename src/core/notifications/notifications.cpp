@@ -6,11 +6,11 @@ module;
 #include "ui/floating_window/state.hpp"
 #include "ui/notification_window/notification_window.hpp"
 
-module core.notifications.notifications;
+module sm.core.notifications.notifications;
 
 import std;
-import core.notifications.events;
-import utils.string.string;
+import sm.core.notifications.events;
+import sm.utils.string.string;
 
 namespace core::notifications {
 

@@ -6,7 +6,7 @@
 #include "features/gallery/folder/repository.hpp"
 #include "features/gallery/types.hpp"
 #include "utils/logger/logger.hpp"
-import utils.path.path;
+import sm.utils.path.path;
 
 namespace features::gallery::original_locator {
 

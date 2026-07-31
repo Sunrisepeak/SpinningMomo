@@ -6,10 +6,10 @@ module;
 #include "vendor/wil.hpp"
 #include "utils/logger/logger.hpp"
 
-module core.dialog_service.dialog_service;
+module sm.core.dialog_service.dialog_service;
 
 import std;
-import core.dialog_service.state;
+import sm.core.dialog_service.state;
 
 namespace core::dialog_service {
 

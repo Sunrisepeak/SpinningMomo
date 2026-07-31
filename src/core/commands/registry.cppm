@@ -4,7 +4,7 @@ module;
 #include "core/commands/types.hpp"
 #include "core/state/app_state.hpp"
 
-export module core.commands.registry;
+export module sm.core.commands.registry;
 
 import std;
 

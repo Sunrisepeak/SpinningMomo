@@ -7,10 +7,10 @@ module;
 #include "vendor/rfl.hpp"
 #include "utils/logger/logger.hpp"
 
-module core.i18n.i18n;
+module sm.core.i18n.i18n;
 
 import std;
-import core.i18n.state;
+import sm.core.i18n.state;
 
 namespace core::i18n {
 

@@ -6,10 +6,10 @@ module;
 #include "features/settings/state.hpp"
 #include "utils/logger/logger.hpp"
 
-module core.commands.registry;
+module sm.core.commands.registry;
 
 import std;
-import core.commands.state;
+import sm.core.commands.state;
 
 namespace core::commands {
 

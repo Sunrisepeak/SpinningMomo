@@ -1,6 +1,6 @@
 module;
 
-export module core.state.runtime_info;
+export module sm.core.state.runtime_info;
 
 import std;
 

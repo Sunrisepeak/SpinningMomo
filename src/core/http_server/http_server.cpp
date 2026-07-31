@@ -6,11 +6,11 @@ module;
 #include "core/http_server/state.hpp"
 #include "utils/logger/logger.hpp"
 
-module core.http_server.http_server;
+module sm.core.http_server.http_server;
 
 import std;
-import core.http_server.routes;
-import core.http_server.sse_manager;
+import sm.core.http_server.routes;
+import sm.core.http_server.sse_manager;
 
 namespace core::http_server {
 

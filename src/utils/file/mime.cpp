@@ -1,9 +1,9 @@
 module;
 
-module utils.file.mime;
+module sm.utils.file.mime;
 
 import std;
-import utils.string.string;
+import sm.utils.string.string;
 
 namespace utils::file::mime {
 

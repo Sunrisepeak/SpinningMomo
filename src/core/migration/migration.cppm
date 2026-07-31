@@ -2,7 +2,7 @@ module;
 
 #include "core/state/app_state.hpp"
 
-export module core.migration.migration;
+export module sm.core.migration.migration;
 
 import std;
 

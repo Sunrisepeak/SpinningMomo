@@ -21,16 +21,16 @@ module;
 #include "ui/webview_window/webview_window.hpp"
 #include "utils/logger/logger.hpp"
 
-module core.shutdown.shutdown;
+module sm.core.shutdown.shutdown;
 
 import std;
-import core.async.async;
-import core.commands.registry;
-import core.database.database;
-import core.dialog_service.dialog_service;
-import core.http_client.http_client;
-import core.http_server.http_server;
-import core.worker_pool.worker_pool;
+import sm.core.async.async;
+import sm.core.commands.registry;
+import sm.core.database.database;
+import sm.core.dialog_service.dialog_service;
+import sm.core.http_client.http_client;
+import sm.core.http_server.http_server;
+import sm.core.worker_pool.worker_pool;
 
 namespace core::shutdown {
 

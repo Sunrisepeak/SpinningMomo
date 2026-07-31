@@ -4,14 +4,14 @@ module;
 #include "vendor/asio.hpp"
 #include "core/rpc/types.hpp"
 
-module core.rpc.endpoints.file.file;
+module sm.core.rpc.endpoints.file.file;
 
 import std;
-import core.rpc.rpc;
-import core.rpc.state;
-import utils.file.file;
-import utils.path.path;
-import utils.system.system;
+import sm.core.rpc.rpc;
+import sm.core.rpc.state;
+import sm.utils.file.file;
+import sm.utils.path.path;
+import sm.utils.system.system;
 
 namespace core::rpc::endpoints::file {
 

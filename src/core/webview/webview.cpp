@@ -10,11 +10,11 @@ module;
 #include "vendor/windows/windowsx.hpp"
 #include "utils/logger/logger.hpp"
 
-module core.webview.webview;
+module sm.core.webview.webview;
 
 import std;
-import core.webview.host;
-import utils.string.string;
+import sm.core.webview.host;
+import sm.utils.string.string;
 
 namespace core::webview::detail {
 

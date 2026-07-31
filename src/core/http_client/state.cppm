@@ -4,7 +4,7 @@ module;
 #include "vendor/windows/winhttp.hpp"
 #include "core/http_client/types.hpp"
 
-export module core.http_client.state;
+export module sm.core.http_client.state;
 
 import std;
 

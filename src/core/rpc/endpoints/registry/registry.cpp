@@ -5,12 +5,12 @@ module;
 #include "core/commands/types.hpp"
 #include "core/rpc/types.hpp"
 
-module core.rpc.endpoints.registry.registry;
+module sm.core.rpc.endpoints.registry.registry;
 
 import std;
-import core.commands.registry;
-import core.rpc.rpc;
-import core.rpc.state;
+import sm.core.commands.registry;
+import sm.core.rpc.rpc;
+import sm.core.rpc.state;
 
 namespace core::rpc::endpoints::registry {
 

@@ -6,7 +6,7 @@
 #include "vendor/windows/d2d1_3.hpp"
 #include "vendor/windows/dwrite_3.hpp"
 
-import core.commands.registry;
+import sm.core.commands.registry;
 #include "core/commands/types.hpp"
 #include "core/state/app_state.hpp"
 #include "features/settings/menu.hpp"

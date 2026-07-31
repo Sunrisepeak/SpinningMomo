@@ -2,7 +2,7 @@ module;
 
 #include "core/notifications/types.hpp"
 
-export module core.notifications.events;
+export module sm.core.notifications.events;
 
 import std;
 

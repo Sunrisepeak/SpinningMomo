@@ -7,12 +7,12 @@ module;
 #include "core/webview/state.hpp"
 #include "ui/webview_window/webview_window.hpp"
 
-module core.rpc.endpoints.webview.webview;
+module sm.core.rpc.endpoints.webview.webview;
 
 import std;
-import core.rpc.rpc;
-import core.rpc.state;
-import utils.string.string;
+import sm.core.rpc.rpc;
+import sm.core.rpc.state;
+import sm.utils.string.string;
 
 namespace core::rpc::endpoints::webview {
 

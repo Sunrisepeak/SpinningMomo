@@ -5,10 +5,10 @@ module;
 #include "vendor/rfl.hpp"
 #include "utils/logger/logger.hpp"
 
-module core.tasks.tasks;
+module sm.core.tasks.tasks;
 
 import std;
-import core.rpc.notification_hub;
+import sm.core.rpc.notification_hub;
 
 namespace core::tasks {
 

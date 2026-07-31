@@ -6,13 +6,13 @@ module;
 #include "core/webview/state.hpp"
 #include "utils/logger/logger.hpp"
 
-module core.webview.rpc_bridge;
+module sm.core.webview.rpc_bridge;
 
 import std;
-import core.async.async;
-import core.rpc.rpc;
-import core.webview.events;
-import core.webview.webview;
+import sm.core.async.async;
+import sm.core.rpc.rpc;
+import sm.core.webview.events;
+import sm.core.webview.webview;
 
 namespace core::webview::rpc_bridge {
 

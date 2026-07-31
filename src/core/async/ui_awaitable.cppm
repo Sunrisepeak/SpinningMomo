@@ -2,7 +2,7 @@ module;
 
 #include "vendor/windows.hpp"
 
-export module core.async.ui_awaitable;
+export module sm.core.async.ui_awaitable;
 
 import std;
 

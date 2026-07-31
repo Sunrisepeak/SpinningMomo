@@ -8,7 +8,7 @@
 #include "core/state/app_state.hpp"
 #include "features/letterbox/state.hpp"
 #include "ui/floating_window/state.hpp"
-import utils.display.display;
+import sm.utils.display.display;
 #include "utils/logger/logger.hpp"
 
 namespace features::letterbox {

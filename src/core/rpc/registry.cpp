@@ -3,22 +3,22 @@ module;
 #include "core/state/app_state.hpp"
 #include "utils/logger/logger.hpp"
 
-module core.rpc.registry;
+module sm.core.rpc.registry;
 
 import std;
-import core.rpc.endpoints.backup.backup;
-import core.rpc.endpoints.clipboard.clipboard;
-import core.rpc.endpoints.dialog.dialog;
-import core.rpc.endpoints.extensions.extensions;
-import core.rpc.endpoints.file.file;
-import core.rpc.endpoints.gallery.gallery;
-import core.rpc.endpoints.registry.registry;
-import core.rpc.endpoints.runtime_info.runtime_info;
-import core.rpc.endpoints.settings.settings;
-import core.rpc.endpoints.tasks.tasks;
-import core.rpc.endpoints.update.update;
-import core.rpc.endpoints.webview.webview;
-import core.rpc.endpoints.window_control.window_control;
+import sm.core.rpc.endpoints.backup.backup;
+import sm.core.rpc.endpoints.clipboard.clipboard;
+import sm.core.rpc.endpoints.dialog.dialog;
+import sm.core.rpc.endpoints.extensions.extensions;
+import sm.core.rpc.endpoints.file.file;
+import sm.core.rpc.endpoints.gallery.gallery;
+import sm.core.rpc.endpoints.registry.registry;
+import sm.core.rpc.endpoints.runtime_info.runtime_info;
+import sm.core.rpc.endpoints.settings.settings;
+import sm.core.rpc.endpoints.tasks.tasks;
+import sm.core.rpc.endpoints.update.update;
+import sm.core.rpc.endpoints.webview.webview;
+import sm.core.rpc.endpoints.window_control.window_control;
 
 namespace core::rpc::registry {
 

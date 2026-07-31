@@ -4,11 +4,11 @@ module;
 #include "core/events/events.hpp"
 #include "utils/logger/logger.hpp"
 
-module core.rpc.notification_hub;
+module sm.core.rpc.notification_hub;
 
 import std;
-import core.http_server.sse_manager;
-import core.webview.events;
+import sm.core.http_server.sse_manager;
+import sm.core.webview.events;
 
 namespace core::rpc::notification_hub {
 

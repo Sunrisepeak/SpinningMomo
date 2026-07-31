@@ -7,10 +7,10 @@ module;
 #include "core/state/app_state.hpp"
 #include "utils/logger/logger.hpp"
 
-module core.rpc.rpc;
+module sm.core.rpc.rpc;
 
 import std;
-import core.rpc.state;
+import sm.core.rpc.state;
 
 namespace core::rpc {
 

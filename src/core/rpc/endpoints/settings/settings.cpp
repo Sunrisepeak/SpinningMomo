@@ -7,11 +7,11 @@ module;
 #include "features/settings/settings.hpp"
 #include "features/settings/types.hpp"
 
-module core.rpc.endpoints.settings.settings;
+module sm.core.rpc.endpoints.settings.settings;
 
 import std;
-import core.rpc.rpc;
-import core.rpc.state;
+import sm.core.rpc.rpc;
+import sm.core.rpc.state;
 
 namespace core::rpc::endpoints::settings {
 

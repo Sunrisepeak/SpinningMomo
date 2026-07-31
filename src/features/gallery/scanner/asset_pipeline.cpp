@@ -2,7 +2,7 @@
 
 #include "vendor/std.hpp"
 
-import core.database.database;
+import sm.core.database.database;
 #include "core/state/app_state.hpp"
 #include "features/gallery/asset/repository.hpp"
 #include "features/gallery/asset/thumbnail.hpp"
@@ -14,10 +14,10 @@ import core.database.database;
 #include "features/gallery/types.hpp"
 #include "utils/image/image.hpp"
 #include "utils/logger/logger.hpp"
-import utils.media.video_asset;
-import utils.path.path;
-import utils.string.string;
-import utils.time;
+import sm.utils.media.video_asset;
+import sm.utils.path.path;
+import sm.utils.string.string;
+import sm.utils.time;
 
 namespace features::gallery::scanner::asset_pipeline {
 

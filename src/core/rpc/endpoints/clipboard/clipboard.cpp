@@ -4,12 +4,12 @@ module;
 #include "vendor/asio.hpp"
 #include "core/rpc/types.hpp"
 
-module core.rpc.endpoints.clipboard.clipboard;
+module sm.core.rpc.endpoints.clipboard.clipboard;
 
 import std;
-import core.rpc.rpc;
-import core.rpc.state;
-import utils.system.system;
+import sm.core.rpc.rpc;
+import sm.core.rpc.state;
+import sm.utils.system.system;
 
 namespace core::rpc::endpoints::clipboard {
 

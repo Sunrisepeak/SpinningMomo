@@ -5,7 +5,7 @@
 #include "vendor/windows.hpp"
 #include "vendor/windows/d2d1_3.hpp"
 
-import core.i18n.state;
+import sm.core.i18n.state;
 #include "core/state/app_state.hpp"
 #include "features/photography/long_exposure.hpp"
 #include "features/photography/state.hpp"
@@ -13,7 +13,7 @@ import core.i18n.state;
 #include "ui/photography_panel/render_context.hpp"
 #include "ui/photography_panel/state.hpp"
 #include "utils/logger/logger.hpp"
-import utils.string.string;
+import sm.utils.string.string;
 
 namespace ui::photography_panel::painter {
 

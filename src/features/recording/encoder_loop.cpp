@@ -8,8 +8,8 @@
 #include "vendor/windows/mfapi.hpp"
 #include "vendor/windows/winrt/windows_graphics_capture.hpp"
 
-import core.i18n.state;
-import core.notifications.notifications;
+import sm.core.i18n.state;
+import sm.core.notifications.notifications;
 #include "core/notifications/types.hpp"
 #include "core/state/app_state.hpp"
 #include "features/recording/recording.hpp"
@@ -20,9 +20,9 @@ import core.notifications.notifications;
 #include "utils/graphics/capture.hpp"
 #include "utils/graphics/capture_region.hpp"
 #include "utils/logger/logger.hpp"
-import utils.media.encoder;
+import sm.utils.media.encoder;
 #include "utils/media/types.hpp"
-import utils.string.string;
+import sm.utils.string.string;
 
 namespace features::recording::encoder_loop {
 

@@ -7,13 +7,13 @@ module;
 #include "core/http_server/state.hpp"
 #include "utils/logger/logger.hpp"
 
-module core.http_server.routes;
+module sm.core.http_server.routes;
 
 import std;
-import core.async.async;
-import core.http_server.sse_manager;
-import core.http_server.static;
-import core.rpc.rpc;
+import sm.core.async.async;
+import sm.core.http_server.sse_manager;
+import sm.core.http_server.static;
+import sm.core.rpc.rpc;
 
 namespace core::http_server::routes {
 

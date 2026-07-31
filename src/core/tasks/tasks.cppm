@@ -3,7 +3,7 @@ module;
 #include "core/state/app_state.hpp"
 #include "core/tasks/state.hpp"
 
-export module core.tasks.tasks;
+export module sm.core.tasks.tasks;
 
 import std;
 

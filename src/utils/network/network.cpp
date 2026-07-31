@@ -2,10 +2,10 @@ module;
 
 #include "vendor/asio.hpp"
 
-module utils.network.network;
+module sm.utils.network.network;
 
 import std;
-import utils.string.string;
+import sm.utils.string.string;
 
 namespace utils::network::detail {
 

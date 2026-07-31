@@ -2,7 +2,7 @@ module;
 
 #include "core/rpc/types.hpp"
 
-export module core.rpc.state;
+export module sm.core.rpc.state;
 
 import std;
 

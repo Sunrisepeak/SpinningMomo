@@ -7,11 +7,11 @@ module;
 #include "vendor/windows/winhttp.hpp"
 #include "utils/logger/logger.hpp"
 
-module core.http_client.http_client;
+module sm.core.http_client.http_client;
 
 import std;
-import core.http_client.state;
-import utils.string.string;
+import sm.core.http_client.state;
+import sm.utils.string.string;
 
 namespace core::http_client::detail {
 

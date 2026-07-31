@@ -3,7 +3,7 @@ module;
 #include "vendor/windows.hpp"
 #include "core/commands/types.hpp"
 
-export module core.commands.state;
+export module sm.core.commands.state;
 
 import std;
 

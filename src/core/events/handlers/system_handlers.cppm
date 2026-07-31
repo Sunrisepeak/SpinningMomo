@@ -2,7 +2,7 @@ module;
 
 #include "core/state/app_state.hpp"
 
-export module core.events.handlers.system_handlers;
+export module sm.core.events.handlers.system_handlers;
 
 import std;
 

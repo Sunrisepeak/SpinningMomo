@@ -6,14 +6,14 @@ module;
 #include "utils/logger/logger.hpp"
 #include "utils/media/audio_capture.hpp"
 
-module core.runtime_info.runtime_info;
+module sm.core.runtime_info.runtime_info;
 
 import std;
-import core.state.runtime_info;
-import core.version;
-import core.webview.webview;
-import utils.path.path;
-import utils.system.system;
+import sm.core.state.runtime_info;
+import sm.core.version;
+import sm.core.webview.webview;
+import sm.utils.path.path;
+import sm.utils.system.system;
 
 namespace core::runtime_info::detail {
 

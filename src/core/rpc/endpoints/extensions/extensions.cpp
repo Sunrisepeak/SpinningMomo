@@ -11,12 +11,12 @@ module;
 #include "features/gallery/types.hpp"
 #include "utils/logger/logger.hpp"
 
-module core.rpc.endpoints.extensions.extensions;
+module sm.core.rpc.endpoints.extensions.extensions;
 
 import std;
-import core.rpc.notification_hub;
-import core.rpc.rpc;
-import core.rpc.state;
+import sm.core.rpc.notification_hub;
+import sm.core.rpc.rpc;
+import sm.core.rpc.state;
 
 namespace core::rpc::endpoints::extensions {
 

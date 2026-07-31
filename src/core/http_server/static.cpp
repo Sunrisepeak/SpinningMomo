@@ -7,14 +7,14 @@ module;
 #include "vendor/asio.hpp"
 #include "utils/logger/logger.hpp"
 
-module core.http_server.static;
+module sm.core.http_server.static;
 
 import std;
-import core.async.async;
-import utils.file.file;
-import utils.file.mime;
-import utils.path.path;
-import utils.time;
+import sm.core.async.async;
+import sm.utils.file.file;
+import sm.utils.file.mime;
+import sm.utils.path.path;
+import sm.utils.time;
 
 namespace core::http_server::static_content {
 

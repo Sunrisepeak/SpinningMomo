@@ -6,12 +6,12 @@ module;
 #include "features/window_control/types.hpp"
 #include "features/window_control/window_control.hpp"
 
-module core.rpc.endpoints.window_control.window_control;
+module sm.core.rpc.endpoints.window_control.window_control;
 
 import std;
-import core.rpc.rpc;
-import core.rpc.state;
-import utils.string.string;
+import sm.core.rpc.rpc;
+import sm.core.rpc.state;
+import sm.utils.string.string;
 
 namespace core::rpc::endpoints::window_control {
 

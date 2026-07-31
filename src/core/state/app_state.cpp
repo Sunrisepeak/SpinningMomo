@@ -2,19 +2,19 @@
 
 #include "vendor/std.hpp"
 
-import core.async.state;
-import core.commands.state;
+import sm.core.async.state;
+import sm.core.commands.state;
 #include "core/database/state.hpp"
-import core.dialog_service.state;
-import core.events.state;
-import core.http_client.state;
+import sm.core.dialog_service.state;
+import sm.core.events.state;
+import sm.core.http_client.state;
 #include "core/http_server/state.hpp"
-import core.i18n.state;
-import core.rpc.state;
-import core.state.runtime_info;
+import sm.core.i18n.state;
+import sm.core.rpc.state;
+import sm.core.state.runtime_info;
 #include "core/tasks/state.hpp"
 #include "core/webview/state.hpp"
-import core.worker_pool.state;
+import sm.core.worker_pool.state;
 #include "features/gallery/state.hpp"
 #include "features/letterbox/state.hpp"
 #include "features/overlay/state.hpp"

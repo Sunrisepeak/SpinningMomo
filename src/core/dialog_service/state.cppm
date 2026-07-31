@@ -1,6 +1,6 @@
 module;
 
-export module core.dialog_service.state;
+export module sm.core.dialog_service.state;
 
 import std;
 

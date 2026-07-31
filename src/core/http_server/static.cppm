@@ -5,7 +5,7 @@ module;
 #include "core/http_server/types.hpp"
 #include "core/state/app_state.hpp"
 
-export module core.http_server.static;
+export module sm.core.http_server.static;
 
 import std;
 

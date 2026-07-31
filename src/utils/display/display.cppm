@@ -2,7 +2,7 @@ module;
 
 #include "vendor/windows.hpp"
 
-export module utils.display.display;
+export module sm.utils.display.display;
 
 import std;
 

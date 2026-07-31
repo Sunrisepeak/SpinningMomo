@@ -1,6 +1,6 @@
 module;
 
-export module core.version;
+export module sm.core.version;
 
 import std;
 

@@ -6,7 +6,7 @@
 #include "vendor/windows/dwmapi.hpp"
 #include "vendor/windows/windowsx.hpp"
 
-import core.commands.registry;
+import sm.core.commands.registry;
 #include "core/commands/types.hpp"
 #include "core/events/events.hpp"
 #include "core/state/app_state.hpp"

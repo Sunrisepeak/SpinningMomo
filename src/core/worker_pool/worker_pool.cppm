@@ -2,7 +2,7 @@ module;
 
 #include "core/state/app_state.hpp"
 
-export module core.worker_pool.worker_pool;
+export module sm.core.worker_pool.worker_pool;
 
 import std;
 

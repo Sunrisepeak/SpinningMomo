@@ -1,6 +1,6 @@
 module;
 
-export module core.webview.events;
+export module sm.core.webview.events;
 
 import std;
 

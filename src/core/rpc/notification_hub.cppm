@@ -2,7 +2,7 @@ module;
 
 #include "core/state/app_state.hpp"
 
-export module core.rpc.notification_hub;
+export module sm.core.rpc.notification_hub;
 
 import std;
 

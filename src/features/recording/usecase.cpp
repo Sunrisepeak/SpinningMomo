@@ -5,7 +5,7 @@
 #include "vendor/windows.hpp"
 
 #include "core/events/events.hpp"
-import core.i18n.state;
+import sm.core.i18n.state;
 #include "core/state/app_state.hpp"
 #include "features/recording/recording.hpp"
 #include "features/recording/session.hpp"
@@ -14,11 +14,11 @@ import core.i18n.state;
 #include "features/settings/state.hpp"
 #include "features/window_control/window_control.hpp"
 #include "ui/floating_window/events.hpp"
-import utils.graphics.hdr;
+import sm.utils.graphics.hdr;
 #include "utils/logger/logger.hpp"
 #include "utils/media/audio_capture.hpp"
-import utils.path.path;
-import utils.string.string;
+import sm.utils.path.path;
+import sm.utils.string.string;
 
 namespace features::recording {
 
