@@ -56,6 +56,7 @@ jobs:
           - { probe: p5-index,         toolchain: llvm }  # the project's own package index
           - { probe: p6-asio-module,   toolchain: llvm }  # asio as `import asio;` — the C1116 fix
           - { probe: p8-asio-windows,  toolchain: llvm }  # `import asio;` + textual <windows.h> in one TU
+          - { probe: p9-win-module,    toolchain: llvm }  # …and the same pair with Win32 as a module too
           # ── Known-red, on purpose ────────────────────────────────────────
           # These two run under NATIVE cl.exe, where `import asio;` does not
           # compile (see the [toolchain] note in the root mcpp.toml). They are

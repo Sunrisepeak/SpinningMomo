@@ -1,0 +1,118 @@
+name: xmake-windows
+
+# The SECOND build of the same source tree.
+#
+# SpinningMomo builds under two toolchains-of-record: mcpp (mcpp-windows.yml) and
+# xmake + vcpkg (this file). That is not redundancy — the two disagree about
+# enough to be a real check on the code rather than on one build's quirks:
+#
+#   * dependencies come from the mcpp index vs. from vcpkg;
+#   * the module `asio` comes from a package vs. from a module unit compiled
+#     in-tree (third_party/asio-module/, kept in step by
+#     scripts/check-asio-module-parity.py);
+#   * the driver is `clang++` targeting the MSVC ABI vs. `clang-cl`, so the flag
+#     dialect is GNU on one side and MSVC on the other;
+#   * `.rc` goes through a prebuild script vs. through xmake's own rule.
+#
+# Anything that passes both is a property of the SOURCE. Anything that passes one
+# is a property of that build, and worth knowing which.
+
+on:
+  push:
+    branches: ['mcpp/**']
+  workflow_dispatch:
+
+concurrency:
+  group: xmake-windows-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: SpinningMomo (xmake)
+    runs-on: windows-latest
+    timeout-minutes: 90
+    env:
+      # Keep xmake/vcpkg caches inside the workspace: actions/cache restores
+      # reliably there, and the runner's %LOCALAPPDATA% does not survive.
+      XMAKE_GLOBALDIR: ${{ github.workspace }}\.xmake-global
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Fetch header-only third-party (dkm)
+        run: node scripts/fetch-third-party.js
+
+      - name: Setup xmake
+        uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: latest
+
+      # Two upstream defects this project has to route around; both scripts
+      # patch the INSTALLED xmake in place and say what and why.
+      - name: Patch xmake (vcpkg manifest mode, xmake-io/xmake#7554)
+        run: node scripts/patch-xmake-7554.js
+
+      - name: Patch xmake (clang-cl C++23 selection)
+        run: node scripts/patch-xmake-clang-cl-cxx23.js
+
+      - name: Cache xmake/vcpkg dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            .xmake
+            .xmake-global
+            build/.packages/v
+          key: ${{ runner.os }}-xmake-vcpkg-${{ hashFiles('xmake.lua', 'xmake-requires.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-xmake-vcpkg-
+
+      - name: Ensure cache directories exist
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path ".xmake" | Out-Null
+          New-Item -ItemType Directory -Force -Path ".xmake-global" | Out-Null
+          New-Item -ItemType Directory -Force -Path "build/.packages/v" | Out-Null
+
+      # The xmake side's `asio` module unit is a copy of what the mcpp index
+      # package generates. Two copies of one interface drift silently, so the
+      # diff runs BEFORE the build — a mismatch is a source problem, and finding
+      # it after a 40-minute compile teaches nothing extra.
+      - name: Check asio module parity with the index descriptor
+        shell: bash
+        run: python3 scripts/check-asio-module-parity.py
+
+      - name: Check C++ architecture invariants
+        shell: bash
+        run: python3 scripts/check-cpp-architecture.py
+
+      # clang-cl, matching xmake.lua's own default and the LLVM/MSVC-ABI
+      # toolchain the mcpp side uses. Native cl.exe is NOT usable here: it cannot
+      # round-trip asio's `io_context::service` through a BMI, which is exactly
+      # what probes/p6-asio-module (msvc) records on the other workflow.
+      - name: Configure (release, clang-cl)
+        run: xmake f -m release --toolchain=clang-cl -y -v
+
+      - name: Build
+        run: xmake build -y -v
+
+      - name: Report artefact
+        shell: bash
+        run: |
+          set -euo pipefail
+          exe=$(find build -name 'SpinningMomo.exe' | head -1)
+          test -n "$exe" || { echo "FAIL: no SpinningMomo.exe"; exit 1; }
+          ls -la "$exe"
+          powershell -NoProfile -Command \
+            "(Get-Item '$(cygpath -w "$exe")').VersionInfo | Format-List ProductName,ProductVersion,FileVersion"
+
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: SpinningMomo-xmake
+          path: build/**/SpinningMomo.exe
+          if-no-files-found: error
