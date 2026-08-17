@@ -1,9 +1,10 @@
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 
-import sm.core.commands.registry;
+module sm.core.commands.registry;
+
+import std;
 import sm.core.commands.state;
 import sm.core.commands.types;
 import sm.core.state.app_state;
@@ -21,7 +22,6 @@ import sm.features.screenshot.usecase;
 import sm.features.window_control.usecase;
 import sm.ui.floating_window.floating_window;
 import sm.ui.webview_window.webview_window;
-
 import sm.features.settings.state;
 import sm.utils.logger.logger;
 import sm.utils.path.path;

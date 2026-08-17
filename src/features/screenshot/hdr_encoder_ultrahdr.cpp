@@ -1,9 +1,11 @@
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
+#include "vendor/windows/d3d11.hpp"
 
-import sm.features.screenshot.hdr_encoder;
+module sm.features.screenshot.hdr_encoder;
+
+import std;
 import sm.utils.image.image;
 
 namespace features::screenshot::hdr_encoder {

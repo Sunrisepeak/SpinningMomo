@@ -1,11 +1,12 @@
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
 #include "vendor/windows/d3d11.hpp"
+#include "vendor/wil.hpp"
 
-import sm.features.screenshot.hdr_encoder;
+module sm.features.screenshot.hdr_encoder;
+
+import std;
 import sm.utils.graphics.d3d;
 import sm.utils.logger.logger;
 

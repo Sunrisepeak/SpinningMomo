@@ -246,6 +246,15 @@ def validate_file(path: Path, errors: list[str]) -> None:
         if is_module_unit:
             if "import std;" not in text:
                 report(errors, path, 1, "模块单元缺少 import std;")
+            # …and only ONE door. A module unit that also pulls vendor/std.hpp
+            # into its global module fragment has the standard library twice in
+            # one TU: once as global-module entities and once through the `std`
+            # module. It happens to work today because the std module re-exports
+            # what the headers declare — but "happens to work" is not the rule
+            # this project states.
+            if '#include "vendor/std.hpp"' in text:
+                report(errors, path, 1,
+                       "模块单元不该再包含 vendor/std.hpp —— 标准库一个单元一扇门")
         elif '#include "vendor/std.hpp"' not in text:
             report(errors, path, 1, '缺少显式 #include "vendor/std.hpp"')
     if is_vendor_facade:
