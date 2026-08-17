@@ -5,8 +5,30 @@ standard  = "c++23"
 platforms = ["windows"]
 license   = "GPL-3.0"
 
+# llvm targeting the MSVC ABI — mcpp's own default on Windows, and the same
+# toolchain the xmake build has always used (`clang-cl[llvm]`).
+#
+# It is NOT native cl.exe, and that is a decision with evidence rather than a
+# preference. `import asio;` does not compile under cl.exe 19.51:
+#
+#   asio/io_context.hpp(1041): error C2039: 'service': is not a member of
+#   'asio::io_context'   — while instantiating service_base<strand_service>
+#
+# asio declares `class service;` inside `io_context`, defines it at namespace
+# scope, and derives a class template from it; a consumer instantiating any
+# service has to find that nested class through the BMI, and cl.exe cannot.
+# probes/p6-asio-module runs under BOTH toolchains and reports exactly this:
+# green on llvm, red on msvc.
+#
+# The module form of asio is not optional here — it is what stops asio's
+# template specializations from being re-instantiated per importing TU (C1116).
+# So the toolchain follows from it.
+#
+# CONSEQUENCE: this driver is `clang++`, not `clang-cl`. Flags are GNU-spelled
+# (`-luser32`, `-Wl,/subsystem:windows`), which is also why the official index's
+# Windows descriptors spell their link libs `-lpsapi` and friends.
 [toolchain]
-windows = "msvc@system"
+windows = "llvm@22.1.8"
 
 # The project's own path index (see mcpp/index.toml). The index NAME must equal
 # the descriptors' `package.namespace`: the `[dependencies.sm]` table below is
@@ -107,37 +129,41 @@ defines = [
   "LIBUS_USE_LIBUV", "LIBUS_NO_SSL", "UWS_NO_ZLIB",
 ]
 
+# GNU-spelled, because the driver is `clang++` (see [toolchain]). `-l<name>`
+# becomes `<name>.lib` on the lld-link line, and `-Wl,<x>` hands `<x>` to
+# lld-link untouched — which is how an MSVC-style linker switch still gets
+# through.
+#
+# This is also why `compat.libuv` writing `-lpsapi` now simply works: dependency
+# ldflags are propagated VERBATIM (only `-L` and `-Wl,-rpath` are rewritten), so
+# under cl.exe they used to arrive as an unrecognised option and be dropped with
+# LNK4044.
 ldflags = [
-  "/SUBSYSTEM:WINDOWS",
+  "-Wl,/subsystem:windows",
 
-  # link.exe runs with cwd = target/<triple>/<hash>/ and ldflags entries are
+  # The linker runs with cwd = target/<triple>/<hash>/ and ldflags entries are
   # passed verbatim, so file inputs have to climb back out to the project root.
   # (`mcpp:link-search=` resolves relative paths against the project root;
   # plain ldflags does not.)
-  "../../../gen/app.res",
-  "../../../gen/webview2/lib/WebView2LoaderStatic.lib",
+  "-Wl,../../../gen/app.res",
+  "-Wl,../../../gen/webview2/lib/WebView2LoaderStatic.lib",
 
   # Windows system libraries — the same set xmake linked.
-  "dwmapi.lib", "dcomp.lib", "windowsapp.lib", "runtimeobject.lib",
-  "d3d11.lib", "dxgi.lib", "d3dcompiler.lib", "d2d1.lib", "dwrite.lib",
-  "shell32.lib", "shlwapi.lib", "gdi32.lib", "user32.lib", "ws2_32.lib",
-  "secur32.lib", "advapi32.lib", "bcrypt.lib", "dbghelp.lib", "userenv.lib",
-  "mf.lib", "mfplat.lib", "mfreadwrite.lib", "mfuuid.lib", "strmiids.lib",
-  "ole32.lib", "oleaut32.lib", "version.lib", "propsys.lib",
+  "-ldwmapi", "-ldcomp", "-lwindowsapp", "-lruntimeobject",
+  "-ld3d11", "-ldxgi", "-ld3dcompiler", "-ld2d1", "-ldwrite",
+  "-lshell32", "-lshlwapi", "-lgdi32", "-luser32", "-lws2_32",
+  "-lsecur32", "-ladvapi32", "-lbcrypt", "-ldbghelp", "-luserenv",
+  "-lmf", "-lmfplat", "-lmfreadwrite", "-lmfuuid", "-lstrmiids",
+  "-lole32", "-loleaut32", "-lversion", "-lpropsys",
 
-  # libuv's Windows link set. `compat.libuv` declares it GNU-style
-  # (`-lpsapi`, …) because the index's Windows CI leg runs an llvm driver;
-  # mcpp propagates dependency ldflags VERBATIM (only -L and -Wl,-rpath are
-  # rewritten), so native link.exe sees `-lpsapi`, answers LNK4044 and drops
-  # it. Everything else libuv needs is already in the list above; these two
-  # were not.
-  "psapi.lib", "iphlpapi.lib",
+  # libuv's own Windows link set, minus what is already above.
+  "-lpsapi", "-liphlpapi",
 ]
 
 [profile.release]
 # Release keeps full debug info so production crash dumps stay analysable, and
 # forces the dynamic UCRT the way the xmake build did.
-ldflags = ["/DEBUG:FULL", "/NODEFAULTLIB:libucrt.lib", "/DEFAULTLIB:ucrt.lib"]
+ldflags = ["-Wl,/debug:full", "-Wl,/nodefaultlib:libucrt.lib", "-Wl,/defaultlib:ucrt.lib"]
 
 [targets.SpinningMomo]
 kind = "bin"
@@ -147,9 +173,12 @@ main = "src/main.cpp"
 # now derives it once, for the project AND its dependencies. Two spellings of
 # one physical switch is how the CRT drifted apart in the first place.
 #
-# /bigobj: the xmake build carried it, and it is not optional here — reflect-cpp
-# instantiates enough templates per RPC endpoint to blow past the 65,536-section
-# object limit. (/utf-8 is already in mcpp's MSVC baseline, so it is not
-# repeated.)
+# -mbig-obj is clang's spelling of what the xmake build wrote `/bigobj`, and it
+# is not optional: reflect-cpp instantiates enough templates per RPC endpoint to
+# blow past COFF's 65,536-section limit.
+#
+# -Wno-microsoft-include: the xmake build already carried this for clang-cl. The
+# Windows SDK and the C++/WinRT projection both resolve some includes the way
+# MSVC does rather than the way the standard says, and clang reports each one.
 [target.'cfg(windows)'.build]
-cxxflags = ["/bigobj"]
+cxxflags = ["-mbig-obj", "-Wno-microsoft-include"]

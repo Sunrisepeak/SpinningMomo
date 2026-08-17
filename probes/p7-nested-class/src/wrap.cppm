@@ -7,6 +7,7 @@ module;
 export module nestedwrap;
 
 export namespace demo {
+using demo::Base;      // exported so the consumer can assert WHICH Inner it got
 using demo::Outer;
 using demo::Derived;
 }

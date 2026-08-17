@@ -31,6 +31,7 @@ env:
 jobs:
   probe:
     name: ${{ matrix.probe }} (${{ matrix.toolchain }})
+    continue-on-error: ${{ matrix.expect == 'red' }}
     runs-on: windows-latest
     timeout-minutes: 30
     strategy:
@@ -45,17 +46,24 @@ jobs:
         # (clang-cl) targeting the same ABI. p6/p7 run under both because the
         # difference decides whether `import asio;` is viable at all.
         include:
-          - { probe: p0-hello,         toolchain: msvc }  # mcpp installs, import std works
-          - { probe: p1-win32gui,      toolchain: msvc }  # WinMain + /SUBSYSTEM:WINDOWS + system libs
-          - { probe: p2-rc,            toolchain: msvc }  # rc.exe -> .res reaches link.exe
-          - { probe: p3a-win32-export, toolchain: msvc }  # module wrapping windows.h, re-export to ::
-          - { probe: p3b-winrt-export, toolchain: msvc }  # module wrapping C++/WinRT
-          - { probe: p3c-gmf-direct,   toolchain: msvc }  # consumer includes vendor headers in its GMF
-          - { probe: p4-importstd,     toolchain: msvc }  # real project sources as modules + import std
-          - { probe: p5-index,         toolchain: msvc }  # the project's own package index
-          - { probe: p6-asio-module,   toolchain: msvc }  # asio as `import asio;` — the C1116 fix
-          - { probe: p6-asio-module,   toolchain: llvm }
-          - { probe: p7-nested-class,  toolchain: msvc }  # the 20-line reduction of why p6/msvc fails
+          - { probe: p0-hello,         toolchain: llvm }  # mcpp installs, import std works
+          - { probe: p1-win32gui,      toolchain: llvm }  # WinMain + windows subsystem + system libs
+          - { probe: p2-rc,            toolchain: llvm }  # rc.exe -> .res reaches the linker
+          - { probe: p3a-win32-export, toolchain: llvm }  # module wrapping windows.h, re-export to ::
+          - { probe: p3b-winrt-export, toolchain: llvm }  # module wrapping C++/WinRT
+          - { probe: p3c-gmf-direct,   toolchain: llvm }  # consumer includes vendor headers in its GMF
+          - { probe: p4-importstd,     toolchain: llvm }  # real project sources as modules + import std
+          - { probe: p5-index,         toolchain: llvm }  # the project's own package index
+          - { probe: p6-asio-module,   toolchain: llvm }  # asio as `import asio;` — the C1116 fix
+          # ── Known-red, on purpose ────────────────────────────────────────
+          # These two run under NATIVE cl.exe, where `import asio;` does not
+          # compile (see the [toolchain] note in the root mcpp.toml). They are
+          # kept so that the day a newer MSVC fixes it, this workflow says so —
+          # a comparison that only exists in a document goes stale silently.
+          # `continue-on-error` keeps the run green: a job that is red every
+          # time teaches people to ignore red.
+          - { probe: p6-asio-module,   toolchain: msvc, expect: red }
+          - { probe: p7-nested-class,  toolchain: msvc, expect: red }
           - { probe: p7-nested-class,  toolchain: llvm }
     steps:
       - uses: actions/checkout@v4
@@ -201,14 +209,14 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.mcpp
-          key: mcpp-sandbox-windows-full-xl${{ env.XLINGS_VERSION }}-${{ hashFiles('.xlings.json', 'mcpp/**') }}
+          key: mcpp-sandbox-windows-full-llvm-xl${{ env.XLINGS_VERSION }}-${{ hashFiles('.xlings.json', 'mcpp/**') }}
 
       - name: Cache build outputs
         uses: actions/cache@v4
         with:
           path: target
-          key: mcpp-target-windows-${{ hashFiles('src/**', 'mcpp.toml') }}
-          restore-keys: mcpp-target-windows-
+          key: mcpp-target-windows-llvm-${{ hashFiles('src/**', 'mcpp.toml') }}
+          restore-keys: mcpp-target-windows-llvm-
 
       - name: Bootstrap xlings + mcpp
         shell: bash
@@ -230,10 +238,16 @@ jobs:
           echo "MCPP=$MCPP" >> "$GITHUB_ENV"
           "$MCPP" --version
 
-      - name: Select MSVC toolchain
+      - name: Select toolchain
         shell: bash
         run: |
-          "$MCPP" toolchain default msvc
+          set -euo pipefail
+          # The root mcpp.toml pins `llvm@22.1.8`, so the manifest decides and
+          # this only makes sure the payload is present before the build starts
+          # (and puts the resolved version in the log).
+          "$MCPP" toolchain install llvm
+          "$MCPP" toolchain default llvm
+          "$MCPP" toolchain list
 
       - name: Fetch header-only third-party (dkm)
         shell: bash
