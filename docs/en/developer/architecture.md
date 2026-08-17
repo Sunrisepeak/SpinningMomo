@@ -23,7 +23,7 @@ Dependencies come from the **official mcpp package index** (`mcpplibs/mcpp-index
 the project no longer carries an index of its own.
 
 For the full design philosophy, the C++ component breakdown, the module naming rules,
-and the **fourteen machine-enforced architecture invariants**, check the root-level
+and the **fifteen machine-enforced architecture invariants**, check the root-level
 **[`AGENTS.md`](https://github.com/ChanIok/SpinningMomo/blob/main/AGENTS.md)**.
 
 ## Prerequisites
@@ -89,6 +89,7 @@ npm ci --prefix web
 ```bash
 node scripts/patch-xmake-7554.js
 node scripts/patch-xmake-clang-cl-cxx23.js
+node scripts/patch-xmake-std-module-order.js
 
 # Clang-cl + LLD (default)
 xmake f --toolchain="clang-cl[llvm]" -y
