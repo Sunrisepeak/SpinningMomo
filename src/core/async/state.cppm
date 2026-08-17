@@ -15,7 +15,7 @@ struct AsyncState {
   std::atomic<bool> shutdown_requested{false};
 
   // 配置
-  size_t thread_count = 0;  // 0表示使用硬件并发数
+  std::size_t thread_count = 0;  // 0表示使用硬件并发数
 };
 
 }  // namespace core::async

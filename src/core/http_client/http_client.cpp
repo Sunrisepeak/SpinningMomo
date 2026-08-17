@@ -131,7 +131,7 @@ auto trim_wstring(std::wstring_view value) -> std::wstring_view {
 auto parse_raw_headers(std::wstring_view raw_headers) -> std::vector<Header> {
   std::vector<Header> headers;
 
-  size_t cursor = 0;
+  std::size_t cursor = 0;
   bool skipped_status_line = false;
   while (cursor < raw_headers.size()) {
     auto line_end = raw_headers.find(L"\r\n", cursor);

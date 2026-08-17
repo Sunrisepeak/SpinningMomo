@@ -66,6 +66,23 @@ REQUIRED_SYMBOL_PROVIDERS = {
     "utils::hash::": ('#include "utils/hash/xxhash.hpp"', "import sm.utils.hash.xxhash;"),
 }
 
+# `size_t` / `int64_t` and friends WITHOUT the std:: qualification, inside a
+# module unit. `import std;` exports `std::size_t`; the unqualified spelling
+# lives in the GLOBAL namespace and only exists in a translation unit that
+# textually included <stddef.h> — which, in a module unit, means some vendor
+# facade in the global module fragment happened to pull it in.
+#
+# That is a dependency on the CONTENT of a header nobody named. It held until
+# `#include "vendor/asio.hpp"` became `import asio;`, at which point
+# utils/file/file.cppm stopped compiling on `int64_t last_modified;` — a field
+# that had never had anything to do with Asio.
+UNQUALIFIED_C_TYPE = re.compile(
+    r"(?<![\w:.>])("
+    r"size_t|ptrdiff_t|intptr_t|uintptr_t"
+    r"|u?int(?:8|16|32|64)_t"
+    r")\b"
+)
+
 # A free function DEFINITION at namespace scope inside a module interface.
 # Templates, `inline`, `constexpr`/`consteval` and class-member definitions are
 # all legitimately part of an interface and are not matched: the target is the
@@ -134,6 +151,15 @@ def validate_file(path: Path, errors: list[str]) -> None:
     for symbol, providers in REQUIRED_SYMBOL_PROVIDERS.items():
         if symbol in text and not any(p in text for p in providers):
             report(errors, path, 1, f"使用 {symbol} 时必须写明来源: {' 或 '.join(providers)}")
+
+    if is_module_unit:
+        for match in UNQUALIFIED_C_TYPE.finditer(text):
+            line_text = text[text.rfind("\n", 0, match.start()) + 1 : text.find("\n", match.start())]
+            if line_text.lstrip().startswith(("//", "*", "/*")):
+                continue
+            line = text.count("\n", 0, match.start()) + 1
+            report(errors, path, line,
+                   f"模块单元里的 C 类型要写全: {match.group(1)} -> std::{match.group(1)}")
 
     if path.suffix in MODULE_SUFFIXES:
         for match in IFACE_FUNCTION_BODY.finditer(text):

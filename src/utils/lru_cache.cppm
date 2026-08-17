@@ -14,7 +14,7 @@ struct CacheNode {
 // LRU 缓存状态
 template <typename Key, typename Value>
 struct LRUCacheState {
-  size_t capacity;
+  std::size_t capacity;
   std::unordered_map<Key, typename std::list<CacheNode<Key, Value>>::iterator> map;
   std::list<CacheNode<Key, Value>> list;  // 头部=最新，尾部=最旧
   std::shared_mutex mutex;                // 读写锁
@@ -22,7 +22,7 @@ struct LRUCacheState {
 
 // 创建缓存
 template <typename Key, typename Value>
-inline auto create(size_t capacity) -> LRUCacheState<Key, Value> {
+inline auto create(std::size_t capacity) -> LRUCacheState<Key, Value> {
   return LRUCacheState<Key, Value>{.capacity = capacity, .map = {}, .list = {}};
 }
 
@@ -109,7 +109,7 @@ inline auto clear(LRUCacheState<Key, Value>& cache) -> void {
 // 获取统计信息
 template <typename Key, typename Value>
 inline auto get_stats(const LRUCacheState<Key, Value>& cache)
-    -> std::tuple<size_t, size_t> {  // (current_size, capacity)
+    -> std::tuple<std::size_t, std::size_t> {  // (current_size, capacity)
   std::shared_lock lock(cache.mutex);
   return {cache.list.size(), cache.capacity};
 }

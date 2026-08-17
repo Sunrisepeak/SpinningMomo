@@ -11,7 +11,7 @@ import sm.core.async.state;
 
 namespace core::async {
 
-auto start(core::AppState& state, size_t thread_count) -> std::expected<void, std::string> {
+auto start(core::AppState& state, std::size_t thread_count) -> std::expected<void, std::string> {
   if (!state.async) {
     return std::unexpected("AsyncState is not initialized");
   }
@@ -29,7 +29,7 @@ auto start(core::AppState& state, size_t thread_count) -> std::expected<void, st
       thread_count = std::thread::hardware_concurrency() / 2;
       if (thread_count < 2) thread_count = 2;  // 最少 2 条
     }
-    const size_t resolved_thread_count = thread_count;
+    const std::size_t resolved_thread_count = thread_count;
     runtime.thread_count = resolved_thread_count;
 
     // 初始化io_context
@@ -39,7 +39,7 @@ auto start(core::AppState& state, size_t thread_count) -> std::expected<void, st
 
     // 创建工作线程池
     runtime.worker_threads.reserve(resolved_thread_count);
-    for (size_t i = 0; i < resolved_thread_count; ++i) {
+    for (std::size_t i = 0; i < resolved_thread_count; ++i) {
       runtime.worker_threads.emplace_back([&runtime, i]() {
         try {
           const auto work = asio::make_work_guard(*runtime.io_context);

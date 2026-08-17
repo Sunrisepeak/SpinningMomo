@@ -397,7 +397,7 @@ auto copy_files_to_clipboard(const std::vector<std::filesystem::path>& paths)
   std::vector<std::wstring> normalized_paths;
   normalized_paths.reserve(paths.size());
 
-  size_t total_chars = 0;
+  std::size_t total_chars = 0;
   for (const auto& path : paths) {
     if (path.empty()) {
       continue;

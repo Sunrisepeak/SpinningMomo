@@ -30,23 +30,33 @@ env:
 
 jobs:
   probe:
-    name: ${{ matrix.probe }}
+    name: ${{ matrix.probe }} (${{ matrix.toolchain }})
     runs-on: windows-latest
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
-        probe:
-          - p0-hello           # mcpp installs, msvc detected, import std works
-          - p1-win32gui        # WinMain + /SUBSYSTEM:WINDOWS + system libs
-          - p2-rc              # build.mcpp drives rc.exe, .res reaches link.exe
-          - p3a-win32-export   # module wrapping windows.h, re-export to ::
-          - p3b-winrt-export   # module wrapping C++/WinRT (THE critical unknown)
-          - p3c-gmf-direct     # consumer includes vendor headers in its own GMF
-          - p4-importstd       # real project sources as modules + import std
-          - p5-index           # the project's own package index, five descriptors
-          - p6-asio-module     # asio as `import asio;` — the C1116 fix, and the
-                               # export surface mcpp-index#213 added
+        # `toolchain` is what the CI selects with `mcpp toolchain default`; a
+        # probe that pins one in its own manifest ignores this (a manifest
+        # toolchain is never overruled), which is why p6 and p7 carry no pin.
+        #
+        # Windows has TWO MSVC-ABI toolchains and they are not interchangeable
+        # for modules: native `cl.exe`, and mcpp's own Windows default, llvm
+        # (clang-cl) targeting the same ABI. p6/p7 run under both because the
+        # difference decides whether `import asio;` is viable at all.
+        include:
+          - { probe: p0-hello,         toolchain: msvc }  # mcpp installs, import std works
+          - { probe: p1-win32gui,      toolchain: msvc }  # WinMain + /SUBSYSTEM:WINDOWS + system libs
+          - { probe: p2-rc,            toolchain: msvc }  # rc.exe -> .res reaches link.exe
+          - { probe: p3a-win32-export, toolchain: msvc }  # module wrapping windows.h, re-export to ::
+          - { probe: p3b-winrt-export, toolchain: msvc }  # module wrapping C++/WinRT
+          - { probe: p3c-gmf-direct,   toolchain: msvc }  # consumer includes vendor headers in its GMF
+          - { probe: p4-importstd,     toolchain: msvc }  # real project sources as modules + import std
+          - { probe: p5-index,         toolchain: msvc }  # the project's own package index
+          - { probe: p6-asio-module,   toolchain: msvc }  # asio as `import asio;` — the C1116 fix
+          - { probe: p6-asio-module,   toolchain: llvm }
+          - { probe: p7-nested-class,  toolchain: msvc }  # the 20-line reduction of why p6/msvc fails
+          - { probe: p7-nested-class,  toolchain: llvm }
     steps:
       - uses: actions/checkout@v4
 
@@ -68,7 +78,7 @@ jobs:
           # prefix-restored sandbox from before an index rename keeps searching
           # the old name and every `sm:` package misses no matter how often the
           # build is retried.
-          key: mcpp-sandbox-windows-xl${{ env.XLINGS_VERSION }}-${{ hashFiles('.xlings.json', 'mcpp/**') }}
+          key: mcpp-sandbox-windows-${{ matrix.toolchain }}-xl${{ env.XLINGS_VERSION }}-${{ hashFiles('.xlings.json', 'mcpp/**') }}
 
       - name: Bootstrap xlings + mcpp
         shell: bash
@@ -106,10 +116,17 @@ jobs:
           "$MCPP" self doctor || true
           "$MCPP" toolchain list || true
 
-      - name: Select MSVC toolchain
+      - name: Select toolchain
         shell: bash
         run: |
-          "$MCPP" toolchain default msvc
+          set -euo pipefail
+          # llvm is not preinstalled in the sandbox; msvc is discovered on the
+          # host. `toolchain install` is a no-op when it is already there.
+          if [ "${{ matrix.toolchain }}" != "msvc" ]; then
+            "$MCPP" toolchain install ${{ matrix.toolchain }}
+          fi
+          "$MCPP" toolchain default ${{ matrix.toolchain }}
+          "$MCPP" toolchain list
 
       - name: Pre-build step
         shell: bash

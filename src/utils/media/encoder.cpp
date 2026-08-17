@@ -51,8 +51,8 @@ auto calculate_video_buffer_size(GUID subtype, std::uint32_t width, std::uint32_
 }
 
 // 辅助函数：创建输出媒体类型
-auto create_output_media_type(uint32_t width, uint32_t height, uint32_t fps, uint32_t bitrate,
-                              uint32_t keyframe_interval, VideoCodec codec, bool enable_hdr,
+auto create_output_media_type(std::uint32_t width, std::uint32_t height, std::uint32_t fps, std::uint32_t bitrate,
+                              std::uint32_t keyframe_interval, VideoCodec codec, bool enable_hdr,
                               std::uint32_t hdr_target_peak_nits) -> wil::com_ptr<IMFMediaType> {
   wil::com_ptr<IMFMediaType> media_type;
   if (FAILED(MFCreateMediaType(media_type.put()))) return nullptr;
@@ -121,7 +121,7 @@ auto create_output_media_type(uint32_t width, uint32_t height, uint32_t fps, uin
 }
 
 // 辅助函数：创建输入媒体类型
-auto create_input_media_type(uint32_t width, uint32_t height, uint32_t fps, bool set_stride,
+auto create_input_media_type(std::uint32_t width, std::uint32_t height, std::uint32_t fps, bool set_stride,
                              bool enable_hdr) -> wil::com_ptr<IMFMediaType> {
   wil::com_ptr<IMFMediaType> media_type;
   if (FAILED(MFCreateMediaType(media_type.put()))) return nullptr;
@@ -168,7 +168,7 @@ auto create_input_media_type(uint32_t width, uint32_t height, uint32_t fps, bool
 }
 
 // 辅助函数：添加音频流
-auto add_audio_stream(EncoderContext& encoder, WAVEFORMATEX* wave_format, uint32_t audio_bitrate)
+auto add_audio_stream(EncoderContext& encoder, WAVEFORMATEX* wave_format, std::uint32_t audio_bitrate)
     -> std::expected<void, std::string> {
   if (!encoder.sink_writer) {
     return std::unexpected("Sink writer not initialized");
@@ -566,7 +566,7 @@ auto convert_scrgb_to_p010(EncoderContext& encoder, ID3D11DeviceContext* context
 // GPU 编码帧（内部函数）
 // 直通 DXGI surface：调用方必须保证 frame_texture 在 WriteSample 返回前保持有效。
 auto encode_frame_gpu(EncoderContext& encoder, ID3D11DeviceContext* context,
-                      ID3D11Texture2D* frame_texture, int64_t timestamp_100ns, uint32_t fps)
+                      ID3D11Texture2D* frame_texture, std::int64_t timestamp_100ns, std::uint32_t fps)
     -> std::expected<void, std::string> {
   ID3D11Texture2D* encoder_texture = frame_texture;
   if (encoder.hdr_encoding) {
@@ -617,7 +617,7 @@ auto encode_frame_gpu(EncoderContext& encoder, ID3D11DeviceContext* context,
 
 // CPU 编码帧（内部函数）
 auto encode_frame_cpu(EncoderContext& encoder, ID3D11DeviceContext* context,
-                      ID3D11Texture2D* frame_texture, int64_t timestamp_100ns, uint32_t fps)
+                      ID3D11Texture2D* frame_texture, std::int64_t timestamp_100ns, std::uint32_t fps)
     -> std::expected<void, std::string> {
   // 1. 获取纹理描述
   D3D11_TEXTURE2D_DESC desc;
@@ -694,7 +694,7 @@ auto encode_frame_cpu(EncoderContext& encoder, ID3D11DeviceContext* context,
 }
 
 auto encode_frame(EncoderContext& encoder, ID3D11DeviceContext* context,
-                  ID3D11Texture2D* frame_texture, int64_t timestamp_100ns, uint32_t fps)
+                  ID3D11Texture2D* frame_texture, std::int64_t timestamp_100ns, std::uint32_t fps)
     -> std::expected<void, std::string> {
   if (!encoder.sink_writer || !context || !frame_texture) {
     return std::unexpected("Invalid encoder state");
@@ -709,7 +709,7 @@ auto encode_frame(EncoderContext& encoder, ID3D11DeviceContext* context,
 }
 
 auto encode_audio(EncoderContext& encoder, const BYTE* audio_data, UINT32 num_frames,
-                  UINT32 bytes_per_frame, int64_t timestamp_100ns)
+                  UINT32 bytes_per_frame, std::int64_t timestamp_100ns)
     -> std::expected<void, std::string> {
   if (!encoder.sink_writer || !encoder.has_audio) {
     return std::unexpected("Audio stream not available");

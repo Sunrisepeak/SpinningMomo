@@ -12,27 +12,27 @@ export namespace core::http_server {
 // ============= 流式传输配置 =============
 
 // 流式传输阈值：超过此大小使用流式传输
-constexpr size_t STREAM_THRESHOLD = 1024 * 1024;  // 1MB
+constexpr std::size_t STREAM_THRESHOLD = 1024 * 1024;  // 1MB
 
 // 流式传输块大小
-constexpr size_t STREAM_CHUNK_SIZE = 65536;  // 64KB
+constexpr std::size_t STREAM_CHUNK_SIZE = 65536;  // 64KB
 
 // 流式传输上下文（完整状态）
 struct StreamContext {
   // 文件相关
   asio::random_access_file file;
   std::filesystem::path file_path;
-  size_t source_file_size;  // 完整文件大小（Content-Range 里的总长）
-  size_t response_size;     // 本次 HTTP 体长度（uWS tryEnd 的 total；Range 时为片段字节数）
-  size_t file_offset;       // 下一次 async_read 的起始绝对偏移
-  size_t file_end_offset;   // 读到该偏移前停止（exclusive；即「尾字节 + 1」）
+  std::size_t source_file_size;  // 完整文件大小（Content-Range 里的总长）
+  std::size_t response_size;     // 本次 HTTP 体长度（uWS tryEnd 的 total；Range 时为片段字节数）
+  std::size_t file_offset;       // 下一次 async_read 的起始绝对偏移
+  std::size_t file_end_offset;   // 读到该偏移前停止（exclusive；即「尾字节 + 1」）
 
   // 响应相关
   std::string mime_type;
   std::string cache_control;
   std::string etag;
   std::string last_modified;
-  size_t bytes_sent;
+  std::size_t bytes_sent;
   int status_code = 200;
   std::optional<std::string> content_range_header;
 

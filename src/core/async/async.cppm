@@ -10,7 +10,7 @@ import asio;
 export namespace core::async {
 
 // 启动异步运行时（包含初始化）
-auto start(core::AppState& state, size_t thread_count = 0) -> std::expected<void, std::string>;
+auto start(core::AppState& state, std::size_t thread_count = 0) -> std::expected<void, std::string>;
 
 // 停止异步运行时（包含清理）
 auto stop(core::AppState& state) -> void;

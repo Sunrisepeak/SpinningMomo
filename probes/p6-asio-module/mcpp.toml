@@ -4,9 +4,8 @@ version   = "0.1.0"
 standard  = "c++23"
 platforms = ["windows"]
 
-[toolchain]
-windows = "msvc@system"
-
+# NO [toolchain] pin on purpose: the CI matrix runs this probe under BOTH
+# `msvc` and `llvm`, and a manifest pin is never overruled by the CLI.
 # The project's own index, for the same reason the root manifest uses it: the
 # published `chriskohlhoff.asio` predates mcpplibs/mcpp-index#213, so the
 # amendment lives in `sm.asio` until the artifact catches up. The MODULE is

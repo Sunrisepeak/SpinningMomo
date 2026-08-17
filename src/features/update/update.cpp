@@ -83,7 +83,7 @@ auto is_update_needed(const std::string& current_version, const std::string& lat
   auto v1_parts = split_version(latest_version);
   auto v2_parts = split_version(current_version);
 
-  for (size_t i = 0; i < 4; ++i) {
+  for (std::size_t i = 0; i < 4; ++i) {
     if (v1_parts[i] > v2_parts[i]) {
       return true;
     } else if (v1_parts[i] < v2_parts[i]) {
@@ -136,7 +136,7 @@ auto parse_sha256sum_for_filename(const std::string& checksums_content, const st
       continue;
     }
 
-    size_t hash_end = 0;
+    std::size_t hash_end = 0;
     while (hash_end < trimmed_line.size() &&
            !std::isspace(static_cast<unsigned char>(trimmed_line[hash_end]))) {
       hash_end++;

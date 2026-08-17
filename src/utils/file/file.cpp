@@ -214,7 +214,7 @@ auto write_file(const std::filesystem::path& file_path, const std::string& conte
       co_return FileWriteResult{};
     }
 
-    size_t bytes_written = 0;
+    std::size_t bytes_written = 0;
     if (is_binary) {
       // 二进制文件：从base64解码后写入
       auto binary_data = utils::string::FromBase64(content);

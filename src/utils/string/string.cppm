@@ -93,11 +93,11 @@ constexpr char kBase64Chars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstu
   const auto data_size = binary_data.size();
   result.reserve((data_size + 2) / 3 * 4);
 
-  for (size_t i = 0; i < data_size; i += 3) {
-    const auto bytes_left = std::min<size_t>(3, data_size - i);
+  for (std::size_t i = 0; i < data_size; i += 3) {
+    const auto bytes_left = std::min<std::size_t>(3, data_size - i);
 
     std::uint32_t chunk = 0;
-    for (size_t j = 0; j < bytes_left; ++j) {
+    for (std::size_t j = 0; j < bytes_left; ++j) {
       chunk |= (static_cast<std::uint8_t>(binary_data[i + j]) << (8 * (2 - j)));
     }
 
@@ -125,7 +125,7 @@ constexpr char kBase64Chars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstu
   const auto input_len = base64_str.length();
   result.reserve(input_len / 4 * 3);
 
-  for (size_t i = 0; i < input_len; i += 4) {
+  for (std::size_t i = 0; i < input_len; i += 4) {
     if (i + 3 >= input_len) break;
 
     const auto a = decode_table[static_cast<std::uint8_t>(base64_str[i])];
@@ -153,7 +153,7 @@ constexpr char kBase64Chars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstu
 
 // 检查字符串是否为有效的UTF-8
 [[nodiscard]] inline auto IsValidUtf8(const std::vector<char>& data) -> bool {
-  for (size_t i = 0; i < data.size(); ++i) {
+  for (std::size_t i = 0; i < data.size(); ++i) {
     const auto byte = static_cast<std::uint8_t>(data[i]);
 
     if (byte < 0x80) {
