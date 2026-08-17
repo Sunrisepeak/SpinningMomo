@@ -1,8 +1,8 @@
 export module sm.core.database.database;
 
+import std;
 import sm.core.database.types;
 import sm.core.state.app_state;
-import std;
 import sm.vendor.sqlite;
 import sm.core.database.data_mapper;
 

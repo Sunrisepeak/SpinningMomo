@@ -1,8 +1,8 @@
 export module sm.extensions.infinity_nikki.metadata_dict;
 
+import std;
 import sm.core.state.app_state;
 import sm.extensions.infinity_nikki.types;
-import std;
 import asio;
 
 export namespace extensions::infinity_nikki::metadata_dict {

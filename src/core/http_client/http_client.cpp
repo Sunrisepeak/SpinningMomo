@@ -5,10 +5,10 @@ module;
 
 module sm.core.http_client.http_client;
 
+import std;
 import sm.core.http_client.types;
 import sm.core.state.app_state;
 import sm.utils.logger.logger;
-import std;
 import asio;
 import sm.core.http_client.state;
 

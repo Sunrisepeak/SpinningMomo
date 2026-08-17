@@ -1,7 +1,7 @@
 module sm.utils.logger.logger;
 
-import sm.core.build_config;
 import std;
+import sm.core.build_config;
 import sm.vendor.spdlog;
 
 import sm.utils.path.path;

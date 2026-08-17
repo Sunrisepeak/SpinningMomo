@@ -1,7 +1,7 @@
 export module sm.utils.hash.xxhash;
 
-import sm.vendor.xxhash;
 import std;
+import sm.vendor.xxhash;
 
 export namespace utils::hash {
 

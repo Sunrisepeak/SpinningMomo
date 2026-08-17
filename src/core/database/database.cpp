@@ -1,10 +1,10 @@
 module sm.core.database.database;
 
+import std;
 import sm.core.database.types;
 import sm.core.state.app_state;
 import sm.core.database.state;
 import sm.utils.logger.logger;
-import std;
 import sm.vendor.sqlite;
 
 namespace core::database {

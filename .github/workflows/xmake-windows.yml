@@ -52,13 +52,18 @@ jobs:
         with:
           xmake-version: latest
 
-      # Two upstream defects this project has to route around; both scripts
-      # patch the INSTALLED xmake in place and say what and why.
+      # Three upstream defects this project has to route around; each script
+      # patches the INSTALLED xmake in place and says what and why. Each also
+      # detects the upstream fix by SUBSTANCE and exits cleanly, so none of them
+      # turns into a wall the day xmake fixes it.
       - name: Patch xmake (vcpkg manifest mode, xmake-io/xmake#7554)
         run: node scripts/patch-xmake-7554.js
 
       - name: Patch xmake (clang-cl C++23 selection)
         run: node scripts/patch-xmake-clang-cl-cxx23.js
+
+      - name: Patch xmake (std module build order)
+        run: node scripts/patch-xmake-std-module-order.js
 
       - name: Cache xmake/vcpkg dependencies
         uses: actions/cache@v4
@@ -105,46 +110,28 @@ jobs:
       - name: Configure (release, clang-cl)
         run: xmake f -m release --toolchain=clang-cl -y -v
 
-      # xmake schedules the toolchain-provided `std` module BMI concurrently with
-      # the units that import it, instead of before them. The evidence, from the
-      # run before this step existed:
-      #
-      #   20:58:38.99  compiling.module.bmi.release std          <- launched
-      #   20:58:46.66  compiling.module.bmi.release sm.ui.floating_window.events
-      #   20:58:47.24  events.cppm(7,8): fatal error: module 'std' not found
-      #
-      # The module map is right — every unit that says `import std;` gets
-      # `-fmodule-file=std=...\std.pcm` on its command line, and the units that
-      # do not (src/vendor/*.cppm, which only have a global module fragment) do
-      # not. It is the JOB ORDER that misses the edge: the four units launched at
-      # 46.6 are exactly those whose only module dependency is `std`, so nothing
-      # else was holding them back and nothing made them wait for it either.
-      #
-      # Building that one BMI on its own first is enough — the second invocation
-      # finds it up to date and every other edge in the graph is ordered
-      # correctly. This is not a source problem, so it is fixed here and not in
-      # xmake.lua, where it would read as if the project needed it.
-      # `--files="**/std.ixx"` selects nothing (std.ixx is an absolute path
-      # outside the project), so the first invocation is the whole build: it
-      # gets as far as the std BMI and the four units that only depend on it,
-      # then dies. Whatever it leaves on disk is the answer to the one question
-      # the logs cannot settle — whether the std BMI is produced at all, or
-      # whether its compile is what fails and the dependents merely report it.
-      - name: Build round 1 (expected to hit the std ordering defect)
-        shell: bash
-        continue-on-error: true
-        run: xmake build -y -v 2>&1 | grep -viE '^"C:|clang-cl' | tail -40
-
-      - name: What landed on disk
-        shell: bash
-        run: |
-          echo "--- every BMI produced ---"
-          find build -name '*.pcm' -printf '%10s  %p\n' 2>/dev/null | sort -k2 | head -30
-          echo "--- std specifically ---"
-          find build -name 'std.pcm' -printf '%10s  %p\n' 2>/dev/null || echo "NO std.pcm — its own compile is what fails"
-
+      # `scripts/patch-xmake-std-module-order.js` above is what makes this step
+      # work; without it a handful of units — always the ones whose only module
+      # dependency is `std` — die with `fatal error: module 'std' not found`.
+      # The full evidence is in that script's header.
       - name: Build
         run: xmake build -y -v
+
+      # The backend regression suite (doctest). It is a separate target with
+      # `set_default(false)`, so `xmake build` does not touch it — and until now
+      # neither did CI, which meant the one place in this repository that asserts
+      # RUNTIME behaviour was never executed. It is cheap here: two modules plus
+      # their implementation units and three test TUs, on top of an already-warm
+      # package cache.
+      #
+      # It also checks something the main build cannot. `time.cppm` and
+      # `path.cppm` are compiled again, in a target with a smaller macro set and
+      # no asio anywhere — so if either had come to depend on something it never
+      # names, this is where that shows up.
+      - name: Build and run the backend tests
+        run: |
+          xmake build -y SpinningMomoTests
+          xmake test -v
 
       - name: Report artefact
         shell: bash

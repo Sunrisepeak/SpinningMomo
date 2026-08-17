@@ -4,10 +4,10 @@ module;
 
 module sm.features.settings.settings;
 
+import std;
 import sm.core.state.app_state;
 import sm.core.events.events;
 import sm.features.settings.compute;
-import std;
 import sm.vendor.rfl;
 import sm.features.settings.background;
 import sm.features.settings.events;

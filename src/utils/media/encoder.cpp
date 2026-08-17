@@ -13,11 +13,11 @@ module;
 
 module sm.utils.media.encoder;
 
+import std;
 import sm.utils.media.state;
 import sm.utils.media.types;
 import sm.utils.media.hdr_convert;
 import sm.utils.logger.logger;
-import std;
 
 namespace utils::media::encoder {
 

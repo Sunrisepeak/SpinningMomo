@@ -6,8 +6,8 @@ module;
 
 module sm.utils.graphics.hdr;
 
-import sm.utils.logger.logger;
 import std;
+import sm.utils.logger.logger;
 
 namespace utils::graphics::hdr {
 

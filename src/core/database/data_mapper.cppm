@@ -1,8 +1,8 @@
 export module sm.core.database.data_mapper;
 
+import std;
 import sm.core.database.types;
 import sm.vendor.rfl;
-import std;
 import sm.vendor.sqlite;
 
 export namespace core::database::data_mapper {

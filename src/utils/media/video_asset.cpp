@@ -11,9 +11,9 @@ module;
 
 module sm.utils.media.video_asset;
 
+import std;
 import sm.utils.image.image;
 import sm.utils.logger.logger;
-import std;
 import sm.utils.file.mime;
 
 namespace utils::media::video_asset {

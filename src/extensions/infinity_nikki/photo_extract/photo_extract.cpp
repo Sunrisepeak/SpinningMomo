@@ -1,11 +1,11 @@
 module sm.extensions.infinity_nikki.photo_extract.photo_extract;
 
+import std;
 import sm.core.state.app_state;
 import sm.extensions.infinity_nikki.types;
 import sm.core.worker_pool.worker_pool;
 import sm.extensions.infinity_nikki.photo_extract.scan;
 import sm.utils.logger.logger;
-import std;
 import asio;
 import sm.extensions.infinity_nikki.photo_extract.infra;
 

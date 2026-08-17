@@ -4,8 +4,8 @@ module;
 
 export module sm.core.http_client.state;
 
-import sm.core.http_client.types;
 import std;
+import sm.core.http_client.types;
 import asio;
 
 export namespace core::http_client {

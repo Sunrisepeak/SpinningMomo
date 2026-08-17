@@ -1,9 +1,9 @@
 export module sm.features.update.update;
 
+import std;
 import sm.core.state.app_state;
 import sm.features.update.state;
 import sm.features.update.types;
-import std;
 import asio;
 
 export namespace features::update {

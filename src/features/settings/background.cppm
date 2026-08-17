@@ -1,7 +1,7 @@
 export module sm.features.settings.background;
 
-import sm.core.state.app_state;
 import std;
+import sm.core.state.app_state;
 import sm.features.settings.types;
 
 export namespace features::settings::background {

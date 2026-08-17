@@ -1,7 +1,7 @@
 export module sm.core.webview.rpc_bridge;
 
-import sm.core.state.app_state;
 import std;
+import sm.core.state.app_state;
 import asio;
 
 export namespace core::webview::rpc_bridge {

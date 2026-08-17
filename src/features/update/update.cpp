@@ -4,6 +4,7 @@ module;
 
 module sm.features.update.update;
 
+import std;
 import sm.core.events.events;
 import sm.core.http_client.types;
 import sm.core.i18n.state;
@@ -18,7 +19,6 @@ import sm.features.update.state;
 import sm.features.update.types;
 import sm.ui.floating_window.events;
 import sm.ui.webview_window.webview_window;
-import std;
 import asio;
 import sm.core.async.async;
 import sm.core.http_client.http_client;

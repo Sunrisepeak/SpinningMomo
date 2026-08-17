@@ -1,5 +1,6 @@
 module sm.extensions.infinity_nikki.photo_extract.infra;
 
+import std;
 import sm.core.state.app_state;
 import sm.extensions.infinity_nikki.photo_extract.scan;
 import sm.extensions.infinity_nikki.types;
@@ -8,7 +9,6 @@ import sm.core.http_client.types;
 import sm.features.gallery.folder.repository;
 import sm.vendor.rfl;
 import sm.core.database.database;
-import std;
 import asio;
 import sm.core.http_client.http_client;
 

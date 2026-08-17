@@ -6,6 +6,7 @@ SpinningMomo is built upon the following excellent open-source projects. We exte
 
 | Project | License | Link |
 |---------|---------|------|
+| [mcpp](https://github.com/mcpp-community/mcpp) | Apache-2.0 | https://github.com/mcpp-community/mcpp |
 | [xmake](https://github.com/xmake-io/xmake) | Apache-2.0 | https://github.com/xmake-io/xmake |
 | [uWebSockets](https://github.com/uNetworking/uWebSockets) | Apache-2.0 | https://github.com/uNetworking/uWebSockets |
 | [uSockets](https://github.com/uNetworking/uSockets) | Apache-2.0 | https://github.com/uNetworking/uSockets |

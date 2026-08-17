@@ -1,7 +1,7 @@
 export module sm.utils.media.video_asset;
 
-import sm.utils.image.image;
 import std;
+import sm.utils.image.image;
 
 export namespace utils::media::video_asset {
 

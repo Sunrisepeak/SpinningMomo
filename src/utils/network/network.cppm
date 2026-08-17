@@ -1,7 +1,7 @@
 export module sm.utils.network.network;
 
-import asio;
 import std;
+import asio;
 
 export namespace utils::network {
 

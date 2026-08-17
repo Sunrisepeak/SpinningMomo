@@ -1,16 +1,37 @@
 #!/usr/bin/env python3
 """Validate the module architecture without compiling the project.
 
-The invariants are the ones the mcpp migration turns on:
+The invariants are the ones the mcpp migration turns on. Each was added the
+first time it cost a Windows CI round — roughly forty minutes for a fact this
+file settles in under a second — and each one is reverse-verified: inject the
+violation, watch it go red.
 
   * every translation unit reaches the standard library through ONE door —
-    `import std;` in a module unit, `#include "vendor/std.hpp"` in a plain one;
+    `import std;` in a module unit, `#include "vendor/std.hpp"` in a plain one,
+    and a module unit may not fall back to the header;
   * external `<>` includes appear only under src/vendor/, so the global module
     fragment has exactly one kind of entry;
   * no header units (`import <h>;`), which mcpp rejects outright and which the
     repository's abandoned first modularisation was built on;
   * a module interface exports declarations, not definitions: a non-template
-    free function body belongs in the implementation unit.
+    free function body belongs in the implementation unit;
+  * a module interface's top-level declarations carry `export` — without it the
+    unit still compiles and importers simply cannot see the name;
+  * in a plain TU every `#include` precedes every `import`, because two parses
+    of <windows.h> in one TU merge in one order and not the other;
+  * C types are spelled `std::`-qualified in a module unit — `int64_t` used to
+    arrive as a global name through somebody's include;
+  * a module name component is never a C++ keyword;
+  * a `using X = ns::X;` inside `ns` is a redefinition once `ns` is a module;
+  * naming a vendor namespace means including that vendor's facade, because a
+    module's global module fragment is not a channel for names;
+  * plus the naming rules the tree already had (lower_snake_case namespaces,
+    PascalCase types, no anonymous namespaces, no `.ixx`).
+
+Two sibling checks own the rest: `check-module-graph.py` (the graph is a DAG,
+and every entity a unit names is exported by a module it can see) and
+`check-build-parity.py` (mcpp and xmake compile the same source under the same
+macros).
 """
 
 from __future__ import annotations
@@ -102,6 +123,7 @@ def blank_out_literals(text: str) -> str:
     return "".join(out)
 
 MODULE_DECLARATION = re.compile(r"^(?:export\s+)?module\s+[A-Za-z_][\w.]*\s*;", re.MULTILINE)
+IMPORT_DECL = re.compile(r"^(?:export\s+)?import\s+([\w.:]+)\s*;", re.MULTILINE)
 
 NAMESPACE_DECLARATION = re.compile(
     r"^\s*namespace\s+([A-Za-z_][A-Za-z0-9_:]*)\s*\{", re.MULTILINE
@@ -255,6 +277,32 @@ def validate_file(path: Path, errors: list[str]) -> None:
             if '#include "vendor/std.hpp"' in text:
                 report(errors, path, 1,
                        "模块单元不该再包含 vendor/std.hpp —— 标准库一个单元一扇门")
+            # `import std;` goes FIRST, before any other import.
+            #
+            # Import order should not matter, and for types it does not. For
+            # CONCEPTS it did, once, in the only two units of this tree that use
+            # them — and they make a clean pair:
+            #
+            #   dialog_service.cpp  `import std;` first    -> compiles
+            #   infra.cpp           `import std;` ninth    -> error: missing
+            #     '#include <concepts>'; 'same_as' must be declared before it is
+            #     used
+            #
+            # infra.cpp also imports asio and sm.vendor.rfl, whose global module
+            # fragments parse <concepts> textually. Those declarations are
+            # attached to the global module: reachable, not visible. The same
+            # reachable-vs-visible split as everywhere else in this migration,
+            # applied to the standard library, and concepts are where clang
+            # enforces it strictly.
+            #
+            # 49 units had some other import first. Whether order is truly the
+            # discriminator, or only correlates with it, one line of convention
+            # settles it for good — so the convention is machine-enforced rather
+            # than argued about.
+            first = next((m for m in IMPORT_DECL.finditer(code)), None)
+            if first and first.group(1) != "std":
+                report(errors, path, code[:first.start()].count("\n") + 1,
+                       f"import std; 必须排在最前面（当前第一个是 {first.group(1)}）")
         elif '#include "vendor/std.hpp"' not in text:
             report(errors, path, 1, '缺少显式 #include "vendor/std.hpp"')
     if is_vendor_facade:

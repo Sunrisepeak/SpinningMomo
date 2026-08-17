@@ -1,11 +1,11 @@
 module sm.features.settings.background;
 
+import std;
 import sm.core.state.app_state;
 import sm.core.build_config;
 import sm.core.webview.state;
 import sm.core.webview.webview;
 import sm.utils.image.image;
-import std;
 import sm.features.settings.types;
 import sm.utils.logger.logger;
 

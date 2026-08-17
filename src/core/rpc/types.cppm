@@ -1,7 +1,7 @@
 export module sm.core.rpc.types;
 
-import sm.vendor.rfl;
 import std;
+import sm.vendor.rfl;
 import asio;
 
 export namespace core::rpc {
