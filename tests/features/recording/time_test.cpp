@@ -2,7 +2,7 @@
 
 #include "vendor/doctest.hpp"
 
-#include "features/recording/time.hpp"
+import sm.features.recording.time;
 
 using features::recording::time::relative_timestamp_100ns;
 

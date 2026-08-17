@@ -249,7 +249,7 @@ def validate_file(path: Path, errors: list[str]) -> None:
         # answers `expected a module name after 'module'`. The conversion script
         # suffixes such a component with `_`; this is the check that the rule
         # was applied.
-        for match in MODULE_DECLARATION.finditer(text):
+        for match in MODULE_DECLARATION.finditer(code):
             name = match.group(0).split()[-1].rstrip(";")
             bad = [c for c in name.split(".") if c in CXX_KEYWORDS]
             if bad:
@@ -257,7 +257,7 @@ def validate_file(path: Path, errors: list[str]) -> None:
                 report(errors, path, line,
                        f"模块名分量是 C++ 关键字: {name} (改成 {'/'.join(b + '_' for b in bad)})")
 
-        for match in UNQUALIFIED_C_TYPE.finditer(text):
+        for match in UNQUALIFIED_C_TYPE.finditer(code):
             line_text = text[text.rfind("\n", 0, match.start()) + 1 : text.find("\n", match.start())]
             if line_text.lstrip().startswith(("//", "*", "/*")):
                 continue
@@ -292,11 +292,11 @@ def validate_file(path: Path, errors: list[str]) -> None:
 
     for pattern, description in FORBIDDEN_TEXT.items():
         regex = re.compile(pattern, re.MULTILINE)
-        for match in regex.finditer(text):
+        for match in regex.finditer(code):
             line = text.count("\n", 0, match.start()) + 1
             report(errors, path, line, f"仍包含{description}: {match.group(0).strip()}")
 
-    for match in NAMESPACE_DECLARATION.finditer(text):
+    for match in NAMESPACE_DECLARATION.finditer(code):
         namespace = match.group(1)
         bad_parts = [
             part
@@ -311,7 +311,7 @@ def validate_file(path: Path, errors: list[str]) -> None:
             line = text.count("\n", 0, match.start()) + 1
             report(errors, path, line, f"命名空间使用了 C++ 关键字: {namespace}")
 
-    for match in TYPE_DECLARATION.finditer(text):
+    for match in TYPE_DECLARATION.finditer(code):
         type_name = match.group(1)
         if type_name[0].islower() and type_name not in LOWERCASE_TYPE_EXCEPTIONS:
             line = text.count("\n", 0, match.start()) + 1

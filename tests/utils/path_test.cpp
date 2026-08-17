@@ -2,7 +2,7 @@
 
 #include "vendor/doctest.hpp"
 
-#include "utils/path/path.hpp"
+import sm.utils.path.path;
 
 using utils::path::ClassifyPathStorageKind;
 using utils::path::IsPathWithinBase;

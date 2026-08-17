@@ -29,3 +29,18 @@ using uWS::HttpRequest;
 using uWS::OpCode;
 
 }  // namespace uWS
+
+// uSockets' C surface reaches consumers through this facade too. uWS is a C++
+// layer over it and hands its types straight back — `App::listen` yields a
+// `us_listen_socket_t*` — so a consumer that only imported the uWS names would
+// hold a type it cannot name:
+//
+//   core/http_server/state.cppm:13: error: missing '#include "libusockets.h"';
+//   'us_listen_socket_t' must be declared before it is used
+//
+// Only what the project actually touches. The struct is opaque by design, so the
+// declaration is all there is to export.
+export {
+using ::us_listen_socket_t;
+using ::us_listen_socket_close;
+}
