@@ -405,7 +405,7 @@ auto execute_action_callback(core::AppState& state, const NotificationHitTarget&
 
   auto callback = it->action->callback;
   try {
-    callback(state);
+    callback();
   } catch (const std::exception& e) {
     Logger().error("Notification action callback failed: {}", e.what());
   } catch (...) {

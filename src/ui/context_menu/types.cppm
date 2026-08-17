@@ -6,7 +6,6 @@ module;
 export module sm.ui.context_menu.types;
 
 import std;
-import sm.features.settings.menu;
 import sm.features.settings.menu_types;
 import sm.features.window_control.types;
 

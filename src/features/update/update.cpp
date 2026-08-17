@@ -47,7 +47,7 @@ auto post_update_notification(core::AppState& app_state, const std::string& mess
     options.action = core::notifications::NotificationAction{
         .label = utils::string::FromUtf8(action_label_it->second),
         .callback =
-            [](core::AppState& state) { ui::webview_window::activate_window(state, L"/about"); },
+            [&app_state] { ui::webview_window::activate_window(app_state, L"/about"); },
     };
   } else {
     Logger().warn("Skip update notification action: view action text is missing");

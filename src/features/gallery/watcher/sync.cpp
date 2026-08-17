@@ -195,8 +195,8 @@ auto notify_sync_faulted(core::AppState& app_state, FolderWatcherState& watcher,
       .label =
           utils::string::FromUtf8(get_i18n_text(app_state, "notification.action.retry", "Retry")),
       .callback =
-          [watcher_key = std::move(watcher_key)](core::AppState& callback_state) {
-            retry_faulted_sync(callback_state, watcher_key);
+          [&app_state, watcher_key = std::move(watcher_key)] {
+            retry_faulted_sync(app_state, watcher_key);
           },
   };
   core::notifications::post_notification_request(app_state, std::move(options));

@@ -83,8 +83,8 @@ auto show_recording_saved_notification(core::AppState& state,
 
   core::notifications::NotificationAction view_action;
   view_action.label = utils::string::FromUtf8(state.i18n->texts["notification.action.view"]);
-  view_action.callback = [saved_path](core::AppState& app_state) {
-    handle_saved_file_view_action(app_state, saved_path, "recording");
+  view_action.callback = [&state, saved_path] {
+    handle_saved_file_view_action(state, saved_path, "recording");
   };
   options.action = std::move(view_action);
 

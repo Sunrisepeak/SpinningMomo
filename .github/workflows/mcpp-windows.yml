@@ -29,8 +29,30 @@ env:
   XLINGS_NON_INTERACTIVE: '1'
 
 jobs:
+  # ── Everything that can be judged without a Windows runner ────────────────
+  # These are seconds on Linux and answer questions that otherwise cost a
+  # 40-minute Windows compile: is the module graph acyclic, do the architecture
+  # invariants hold, has the xmake mirror of the asio module drifted. The heavy
+  # jobs wait on it, so a source-level mistake never buys Windows minutes.
+  preflight:
+    name: preflight (linux)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Module graph is acyclic
+        run: python3 scripts/check-module-graph.py --graph
+
+      - name: C++ architecture invariants
+        run: python3 scripts/check-cpp-architecture.py
+
+      - name: asio module mirror matches the index descriptor
+        run: python3 scripts/check-asio-module-parity.py
+
   probe:
     name: ${{ matrix.probe }} (${{ matrix.toolchain }})
+    needs: preflight
     continue-on-error: ${{ matrix.expect == 'red' }}
     runs-on: windows-latest
     timeout-minutes: 30
@@ -196,6 +218,7 @@ jobs:
   # in its own job so a probe failure never masks it and vice versa.
   full-build:
     name: SpinningMomo (full)
+    needs: preflight
     runs-on: windows-latest
     timeout-minutes: 90
     steps:

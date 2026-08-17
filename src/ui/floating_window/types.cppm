@@ -10,7 +10,6 @@ module;
 export module sm.ui.floating_window.types;
 
 import std;
-import sm.features.settings.menu;
 
 export namespace ui::floating_window {
 

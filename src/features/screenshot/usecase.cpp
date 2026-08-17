@@ -76,8 +76,8 @@ auto capture(core::AppState& state) -> void {
 
       core::notifications::NotificationAction view_action;
       view_action.label = utils::string::FromUtf8(state.i18n->texts["notification.action.view"]);
-      view_action.callback = [screenshot_path](core::AppState& app_state) {
-        handle_saved_file_view_action(app_state, screenshot_path, "screenshot");
+      view_action.callback = [&state, screenshot_path] {
+        handle_saved_file_view_action(state, screenshot_path, "screenshot");
       };
       options.action = std::move(view_action);
 
