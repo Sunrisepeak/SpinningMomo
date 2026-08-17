@@ -10,6 +10,10 @@ target("SpinningMomoTests")
                 "_WIN32_WINNT=0x0A00")
     add_includedirs("../src")
 
+    -- `import std;` 需要 std 模块，而根 xmake.lua 关掉了 xmake 的自动注入
+    -- （原因写在那里）。每个用模块的 target 各自加一份 —— BMI 是 per-target 的。
+    on_load(add_msvc_std_module)
+
     -- 被测的两个模块，接口与实现都要在这个 target 里。模块实现单元脱离自己的接口
     -- 编不了，所以 `.cppm` 不是可选的补充而是前提。
     --

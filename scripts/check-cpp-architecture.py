@@ -232,6 +232,28 @@ VENDOR_NAMESPACES = {
     "Microsoft::WRL::": "vendor/windows/wrl",
 }
 
+# The same rule for the half of Win32 that has no namespace to key on. `SIZE`,
+# `RECT`, `HWND` — bare global names from <windows.h>, so the check above cannot
+# see them, and modularisation removed the transitive include that used to
+# supply them:
+#
+#   core/initializer/initializer.cpp:185:63: error: use of undeclared
+#   identifier 'SIZE'                      (from `SIZE{900, 600}`)
+#
+# Types only, and only ones distinctive enough not to collide with a project
+# identifier — this list is what the tree actually uses, not all of Win32.
+WIN32_BARE_TYPE = re.compile(
+    r"(?<![\w:.])("
+    r"HWND|HRESULT|SIZE|RECT|POINT|POINTS|LPARAM|WPARAM|LRESULT|HINSTANCE|HMODULE"
+    r"|HDC|HMENU|HICON|HBITMAP|HBRUSH|HFONT|HRGN|HANDLE|COLORREF|WNDCLASSEXW"
+    r"|LPCWSTR|LPWSTR|FLASHWINFO|BSMINFO|MONITORINFO|WINDOWPLACEMENT"
+    r")\b"
+)
+
+# Any of these in the global module fragment means <windows.h> reached this TU.
+WINDOWS_FACADES = ("vendor/windows.hpp", "vendor/windows/", "vendor/wil.hpp",
+                   "vendor/webview2.hpp")
+
 # A top-level declaration in a module interface that nobody exported.
 #
 # The conversion put `export` on the FIRST top-level namespace of each header,
@@ -379,6 +401,13 @@ def validate_file(path: Path, errors: list[str]) -> None:
                 report(errors, path, line,
                        f"用到 {ns} 却没有包含提供它的 vendor 头（{provider}）—— "
                        f"模块边界不再传递名字")
+
+        if not any(f in text for f in WINDOWS_FACADES):
+            m = WIN32_BARE_TYPE.search(code)
+            if m:
+                report(errors, path, code.count("\n", 0, m.start()) + 1,
+                       f"用到 Win32 的 {m.group(1)} 却没有包含 vendor/windows 门面 —— "
+                       f"它以前是靠某个传递 include 进来的")
 
     for symbol, providers in REQUIRED_SYMBOL_PROVIDERS.items():
         if symbol in text and not any(p in text for p in providers):

@@ -1,3 +1,7 @@
+module;
+
+#include "vendor/windows.hpp"
+
 module sm.core.initializer.initializer;
 
 import std;
