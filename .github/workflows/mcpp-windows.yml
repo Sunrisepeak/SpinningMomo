@@ -50,6 +50,9 @@ jobs:
       - name: asio module mirror matches the index descriptor
         run: python3 scripts/check-asio-module-parity.py
 
+      - name: The two builds compile the same source under the same contract
+        run: python3 scripts/check-build-parity.py
+
   probe:
     name: ${{ matrix.probe }} (${{ matrix.toolchain }})
     needs: preflight

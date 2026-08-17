@@ -159,6 +159,7 @@ npm run build:prepare
 python3 scripts/check-module-graph.py        # 模块图是 DAG；且没有漏写的 import
 python3 scripts/check-cpp-architecture.py    # 十一条架构不变量
 python3 scripts/check-asio-module-parity.py  # xmake 侧的 asio 镜像与索引描述符一致
+python3 scripts/check-build-parity.py        # 两套构建的宏集合与源码集合一致
 bash    scripts/mcpp-preflight.sh            # 探针中 Linux 能判定的部分
 ```
 

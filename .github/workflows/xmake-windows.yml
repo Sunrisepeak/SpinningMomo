@@ -94,6 +94,10 @@ jobs:
         shell: bash
         run: python3 scripts/check-module-graph.py
 
+      - name: Check both builds compile the same source under the same contract
+        shell: bash
+        run: python3 scripts/check-build-parity.py
+
       # clang-cl, matching xmake.lua's own default and the LLVM/MSVC-ABI
       # toolchain the mcpp side uses. Native cl.exe is NOT usable here: it cannot
       # round-trip asio's `io_context::service` through a BMI, which is exactly
