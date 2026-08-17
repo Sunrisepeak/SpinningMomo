@@ -8,6 +8,8 @@ module;
 #include "vendor/windows/dxgi.hpp"
 #include "vendor/windows/shellapi.hpp"
 #include "vendor/windows/wrl.hpp"
+#include "vendor/windows/wrl/client.hpp"
+#include "vendor/windows/wrl/implements.hpp"
 
 module sm.core.webview.host;
 

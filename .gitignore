@@ -101,7 +101,6 @@ web/src/assets/fonts/harmonyos-sans-sc/LICENSE.txt
 target/
 .mcpp/
 mcpp.lock
-mcpp/.xlings-index-cache.json
 # xlings' per-project scratch dir, created by any local `mcpp build`
 .xlings/
 probes/*/gen/

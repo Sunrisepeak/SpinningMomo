@@ -5,6 +5,8 @@ module;
 #include "vendor/windows.hpp"
 #include "vendor/windows/shlwapi.hpp"
 #include "vendor/windows/wrl.hpp"
+#include "vendor/windows/wrl/client.hpp"
+#include "vendor/windows/wrl/implements.hpp"
 
 module sm.core.webview.static_;
 

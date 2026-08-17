@@ -21,15 +21,15 @@ The comparison target is whichever descriptor the MCPP BUILD ACTUALLY CONSUMES,
 in this order:
 
   1. --descriptor PATH
-  2. mcpp/pkgs/a/sm.asio.lua — the project's own override, while it exists
-     (it is a verbatim copy of the merged upstream descriptor, and it is what
-     `[dependencies.sm] asio` resolves to today)
-  3. the installed chriskohlhoff.asio payload under the mcpp registry
-  4. a sibling checkout of mcpp-index
+  2. the installed chriskohlhoff.asio payload under the mcpp registry — what the
+     build actually consumed
+  3. a sibling checkout of mcpp-index
 
-Order matters: an installed payload can be OLDER than the index — the published
-artifact lags main — so comparing against it would report the mirror as wrong
-when it is the payload that is stale.
+A caveat worth knowing on a developer machine: a descriptor can change WITHOUT
+its version changing (an export-surface amendment is exactly that), and an
+already-installed payload is not invalidated by it. If (2) looks stale, clear it:
+
+    rm -rf ~/.mcpp/registry/data/xpkgs/chriskohlhoff-x-asio
 
 Skips (exit 0) when no descriptor can be found — on a machine that has never run
 `mcpp build` there is nothing to compare against, and failing there would only
@@ -59,12 +59,6 @@ WRAPPER_RE = re.compile(
 
 def candidate_descriptors() -> list[Path]:
     out: list[Path] = []
-
-    # The project's own override, while it exists. This is the descriptor the
-    # mcpp build resolves today, so it is the one the mirror has to match.
-    override = ROOT / "mcpp" / "pkgs" / "a" / "sm.asio.lua"
-    if override.is_file():
-        out.append(override)
 
     registry = Path(os.environ.get("MCPP_HOME", Path.home() / ".mcpp")) / "registry"
     # The package payload keeps the descriptor it was installed from; the index

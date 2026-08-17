@@ -143,6 +143,26 @@ UNQUALIFIED_C_TYPE = re.compile(
     r")\b"
 )
 
+# A unit that NAMES a vendor namespace must include a vendor header that
+# provides it. The project already required every translation unit to be
+# self-contained; before modularisation a transitive `#include` of a project
+# header quietly satisfied it, and modules removed that channel:
+#
+#   features/screenshot/state.cppm:43: error: use of undeclared identifier 'winrt'
+#
+# The type was reached through `#include "utils/graphics/capture.hpp"`, which is
+# now a module — and a module's global module fragment is not a channel for
+# NAMES. Seven units in this tree depended on that and each one surfaced as a
+# separate 40-minute build. Hence a rule.
+#
+# The right-hand side is a directory, not a file list, so a new facade under
+# vendor/windows/winrt/ is covered the day it is added.
+VENDOR_NAMESPACES = {
+    "winrt::": "vendor/windows/winrt",
+    "wil::": "vendor/wil.hpp",
+    "Microsoft::WRL::": "vendor/windows/wrl",
+}
+
 # A top-level declaration in a module interface that nobody exported.
 #
 # The conversion put `export` on the FIRST top-level namespace of each header,
@@ -232,6 +252,22 @@ def validate_file(path: Path, errors: list[str]) -> None:
         facade_include = path.relative_to(SRC).as_posix()
         if f'#include "{facade_include}"' in text:
             report(errors, path, 1, "vendor 门面不能包含自身")
+
+    if not is_vendor_facade:
+        included = {m.group(1) for m in re.finditer(r'^\s*#\s*include\s+"([^"]+)"',
+                                                    text, re.MULTILINE)}
+        for ns, provider in VENDOR_NAMESPACES.items():
+            if ns not in code:
+                continue
+            if provider.endswith(".hpp"):
+                ok = provider in included
+            else:
+                ok = any(inc.startswith(provider + "/") for inc in included)
+            if not ok:
+                line = code.count("\n", 0, code.index(ns)) + 1
+                report(errors, path, line,
+                       f"用到 {ns} 却没有包含提供它的 vendor 头（{provider}）—— "
+                       f"模块边界不再传递名字")
 
     for symbol, providers in REQUIRED_SYMBOL_PROVIDERS.items():
         if symbol in text and not any(p in text for p in providers):

@@ -1,0 +1,44 @@
+[package]
+name      = "p5officialindex"
+version   = "0.1.0"
+standard  = "c++23"
+platforms = ["windows"]
+
+# No [toolchain] pin: the matrix chooses.
+#
+# NO [indices] EITHER — that is the whole point of this probe now. It used to
+# consume the project's own path index; every descriptor in it has since been
+# contributed to mcpplibs/mcpp-index (#213-#216), so this asserts the closed
+# loop in isolation: SpinningMomo's dependency set, resolved from the PUBLISHED
+# index, on a runner that has never seen this repository's descriptors.
+#
+# Isolated on purpose. The full build proves the same thing, but takes 40
+# minutes and fails for a hundred other reasons; this one answers only
+# "does the ecosystem carry what this project needs" and answers it in six.
+
+[dependencies.chriskohlhoff]
+asio = "1.38.1"
+
+[dependencies.compat]
+spdlog      = { version = "1.17.0", features = ["compiled"] }
+xxhash      = "0.8.3"
+sqlitecpp   = "3.3.3"
+reflectcpp  = "0.25.0"
+uwebsockets = "20.79.0"
+libwebp     = "1.5.0"
+
+[target.'cfg(windows)'.dependencies.compat]
+wil = "1.0.260126.7"
+
+[build]
+cxx_runtime = "self-contained"
+
+defines = [
+  "NOMINMAX", "UNICODE", "_UNICODE", "WIN32_LEAN_AND_MEAN", "_WIN32_WINNT=0x0A00",
+  "SPDLOG_COMPILED_LIB",
+  "ASIO_STANDALONE", "ASIO_SEPARATE_COMPILATION",
+  "ASIO_DISABLE_BOOST_CONTEXT_FIBER", "ASIO_HAS_THREADS", "ASIO_NO_IOSTREAM",
+  "LIBUS_USE_LIBUV", "LIBUS_NO_SSL", "UWS_NO_ZLIB",
+  "yyjson_api_inline=yyjson_inline",
+]
+ldflags = ["-lole32", "-loleaut32", "-lws2_32", "-lpsapi", "-liphlpapi", "-luserenv", "-ldbghelp", "-lshell32", "-ladvapi32", "-luser32"]

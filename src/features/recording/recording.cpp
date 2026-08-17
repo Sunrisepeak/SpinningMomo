@@ -4,6 +4,7 @@ module;
 #include "vendor/wil.hpp"
 #include "vendor/windows/audioclient.hpp"
 #include "vendor/windows/mfapi.hpp"
+#include "vendor/windows/winrt/windows_graphics_directx.hpp"
 
 module sm.features.recording.recording;
 

@@ -3,6 +3,7 @@ module;
 #include "vendor/windows.hpp"
 #include "vendor/wil.hpp"
 #include "vendor/windows/d3d11.hpp"
+#include "vendor/windows/winrt/windows_graphics_directx.hpp"
 
 module sm.features.overlay.capture;
 

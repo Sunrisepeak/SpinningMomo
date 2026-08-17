@@ -3,6 +3,7 @@ module;
 #include "vendor/windows.hpp"
 #include "vendor/windows/d2d1_3.hpp"
 #include "vendor/windows/dwrite_3.hpp"
+#include "vendor/wil.hpp"
 
 module sm.ui.notification_window.painter;
 

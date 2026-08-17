@@ -2,6 +2,7 @@ module;
 
 #include "vendor/windows.hpp"
 #include "vendor/windows/d3d11.hpp"
+#include "vendor/windows/winrt/windows_graphics_directx_direct3d11.hpp"
 
 export module sm.features.screenshot.state;
 

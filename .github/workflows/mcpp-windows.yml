@@ -75,7 +75,7 @@ jobs:
           - { probe: p3b-winrt-export, toolchain: llvm }  # module wrapping C++/WinRT
           - { probe: p3c-gmf-direct,   toolchain: llvm }  # consumer includes vendor headers in its GMF
           - { probe: p4-importstd,     toolchain: llvm }  # real project sources as modules + import std
-          - { probe: p5-index,         toolchain: llvm }  # the project's own package index
+          - { probe: p5-official-index, toolchain: llvm }  # the whole dependency set, from the PUBLISHED index
           - { probe: p6-asio-module,   toolchain: llvm }  # asio as `import asio;` — the C1116 fix
           - { probe: p8-asio-windows,  toolchain: llvm }  # `import asio;` + textual <windows.h> in one TU
           - { probe: p9-win-module,    toolchain: llvm }  # …and the same pair with Win32 as a module too
@@ -110,7 +110,7 @@ jobs:
           # prefix-restored sandbox from before an index rename keeps searching
           # the old name and every `sm:` package misses no matter how often the
           # build is retried.
-          key: mcpp-sandbox-windows-${{ matrix.toolchain }}-xl${{ env.XLINGS_VERSION }}-${{ hashFiles('.xlings.json', 'mcpp/**') }}
+          key: mcpp-sandbox-windows-${{ matrix.toolchain }}-xl${{ env.XLINGS_VERSION }}-${{ hashFiles('.xlings.json', 'mcpp.toml') }}
 
       - name: Bootstrap xlings + mcpp
         shell: bash
@@ -171,35 +171,12 @@ jobs:
             echo "no prebuild.sh"
           fi
 
-      - name: Register project index (junction)
-        shell: bash
-        run: |
-          set -euo pipefail
-          # mcpp registers a path index by symlinking it into the project
-          # sandbox, and a directory symlink needs a privilege the runner
-          # account does not have — see scripts/mcpp-link-index.sh.
-          if [ -f "probes/${{ matrix.probe }}/mcpp.toml" ] \
-             && grep -q '^\[indices\]' "probes/${{ matrix.probe }}/mcpp.toml"; then
-            bash scripts/mcpp-link-index.sh "probes/${{ matrix.probe }}" sm mcpp
-          else
-            echo "probe declares no path index"
-          fi
-
       - name: Build probe
         shell: bash
         working-directory: probes/${{ matrix.probe }}
         run: |
           set -uo pipefail
-          # A path index declared in [indices] is registered with xlings on the
-          # first invocation that reads the manifest, but the SAME invocation
-          # has already snapshotted the repo list — so a cold project resolves
-          # against [xim, mcpplibs] only and every `sm:` package misses. The
-          # second invocation sees [sm, xim, mcpplibs]. Retry once, and let the
-          # retry's exit code be the verdict.
-          if ! "$MCPP" build -v 2>&1 | tail -200; then
-            echo "--- first build failed; retrying once (index materialisation) ---"
-            "$MCPP" build -v 2>&1 | tail -200
-          fi
+          "$MCPP" build -v 2>&1 | tail -200
 
       - name: Run probe check
         shell: bash
@@ -234,7 +211,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.mcpp
-          key: mcpp-sandbox-windows-full-llvm-xl${{ env.XLINGS_VERSION }}-${{ hashFiles('.xlings.json', 'mcpp/**') }}
+          key: mcpp-sandbox-windows-full-llvm-xl${{ env.XLINGS_VERSION }}-${{ hashFiles('.xlings.json', 'mcpp.toml') }}
 
       - name: Cache build outputs
         uses: actions/cache@v4
@@ -277,23 +254,6 @@ jobs:
       - name: Fetch header-only third-party (dkm)
         shell: bash
         run: node scripts/fetch-third-party.js
-
-      - name: Register project index (junction)
-        shell: bash
-        run: bash scripts/mcpp-link-index.sh . sm mcpp
-
-      - name: Diagnose index registration
-        shell: bash
-        continue-on-error: true
-        run: |
-          echo "--- project .mcpp/.xlings.json ---"
-          cat .mcpp/.xlings.json 2>/dev/null || echo "(absent)"
-          echo "--- project .mcpp tree ---"
-          find .mcpp -maxdepth 3 2>/dev/null | head -30 || true
-          echo "--- global ~/.mcpp/config.toml ---"
-          cat "$USERPROFILE/.mcpp/config.toml" 2>/dev/null || echo "(absent)"
-          echo "--- mcpp index list ---"
-          "$MCPP" index list || true
 
       - name: Pre-build (resources, cppwinrt, WebView2)
         shell: bash
