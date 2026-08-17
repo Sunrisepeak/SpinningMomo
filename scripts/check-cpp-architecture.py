@@ -125,6 +125,19 @@ def blank_out_literals(text: str) -> str:
 MODULE_DECLARATION = re.compile(r"^(?:export\s+)?module\s+[A-Za-z_][\w.]*\s*;", re.MULTILINE)
 IMPORT_DECL = re.compile(r"^(?:export\s+)?import\s+([\w.:]+)\s*;", re.MULTILINE)
 
+# The <concepts> library, by name. Not the whole header — only what a module
+# unit could plausibly write, and every one of them has a <type_traits>
+# equivalent that is an ordinary template and therefore merges.
+STD_CONCEPTS = re.compile(
+    r"\bstd::(?:same_as|derived_from|convertible_to|common_reference_with|common_with"
+    r"|integral|signed_integral|unsigned_integral|floating_point"
+    r"|assignable_from|swappable|swappable_with|destructible|constructible_from"
+    r"|default_initializable|move_constructible|copy_constructible"
+    r"|equality_comparable|equality_comparable_with|totally_ordered|totally_ordered_with"
+    r"|movable|copyable|semiregular|regular"
+    r"|invocable|regular_invocable|predicate|relation|equivalence_relation"
+    r"|strict_weak_order)\b")
+
 NAMESPACE_DECLARATION = re.compile(
     r"^\s*namespace\s+([A-Za-z_][A-Za-z0-9_:]*)\s*\{", re.MULTILINE
 )
@@ -277,32 +290,39 @@ def validate_file(path: Path, errors: list[str]) -> None:
             if '#include "vendor/std.hpp"' in text:
                 report(errors, path, 1,
                        "模块单元不该再包含 vendor/std.hpp —— 标准库一个单元一扇门")
-            # `import std;` goes FIRST, before any other import.
-            #
-            # Import order should not matter, and for types it does not. For
-            # CONCEPTS it did, once, in the only two units of this tree that use
-            # them — and they make a clean pair:
-            #
-            #   dialog_service.cpp  `import std;` first    -> compiles
-            #   infra.cpp           `import std;` ninth    -> error: missing
-            #     '#include <concepts>'; 'same_as' must be declared before it is
-            #     used
-            #
-            # infra.cpp also imports asio and sm.vendor.rfl, whose global module
-            # fragments parse <concepts> textually. Those declarations are
-            # attached to the global module: reachable, not visible. The same
-            # reachable-vs-visible split as everywhere else in this migration,
-            # applied to the standard library, and concepts are where clang
-            # enforces it strictly.
-            #
-            # 49 units had some other import first. Whether order is truly the
-            # discriminator, or only correlates with it, one line of convention
-            # settles it for good — so the convention is machine-enforced rather
-            # than argued about.
+            # `import std;` goes FIRST. Pure house style — one door to the
+            # standard library, named where a reader looks first. It is NOT a
+            # workaround: it was tried as one against the concepts problem below
+            # and made no difference.
             first = next((m for m in IMPORT_DECL.finditer(code)), None)
             if first and first.group(1) != "std":
                 report(errors, path, code[:first.start()].count("\n") + 1,
                        f"import std; 必须排在最前面（当前第一个是 {first.group(1)}）")
+            # No names from <concepts> in a module unit. Use the <type_traits>
+            # equivalent: std::same_as -> std::is_same_v, std::invocable ->
+            # std::is_invocable_v.
+            #
+            # A CONCEPT is one entity with one definition. A vendor module whose
+            # global module fragment parses <concepts> — rfl.hpp does, and so
+            # does asio — carries those declarations in its BMI attached to the
+            # GLOBAL module. An importer then has two `std::same_as`: that one,
+            # reachable but not visible, and the module std one, visible. For an
+            # ordinary template clang merges them. For a concept it does not:
+            #
+            #   infra.cpp:267:17: error: missing '#include <concepts>';
+            #   'same_as' must be declared before it is used
+            #
+            # The tree's other concept user, dialog_service.cpp, compiled fine —
+            # it imports no vendor module that parses <concepts>. So the rule is
+            # not "concepts are broken", it is "a concept is fragile across this
+            # boundary and a variable template is not". Two sites, both moved to
+            # traits, and nothing is lost: `requires std::is_same_v<T, bool>` is
+            # the same constraint.
+            for m in STD_CONCEPTS.finditer(code):
+                report(errors, path, code[:m.start()].count("\n") + 1,
+                       f"模块单元里不要用 <concepts> 的 {m.group(0)} —— "
+                       f"改用 <type_traits> 的等价物（vendor 模块的 GMF 会把同名 "
+                       f"concept 以全局模块实体带进来，clang 不会合并 concept）")
         elif '#include "vendor/std.hpp"' not in text:
             report(errors, path, 1, '缺少显式 #include "vendor/std.hpp"')
     if is_vendor_facade:

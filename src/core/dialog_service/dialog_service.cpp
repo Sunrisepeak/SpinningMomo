@@ -59,7 +59,8 @@ template <typename Result>
 using DialogResult = std::expected<Result, std::string>;
 
 template <typename Result, typename Task>
-  requires std::invocable<Task&> && std::same_as<std::invoke_result_t<Task&>, DialogResult<Result>>
+  requires std::is_invocable_v<Task&> &&
+           std::is_same_v<std::invoke_result_t<Task&>, DialogResult<Result>>
 auto submit_dialog_task(core::dialog_service::DialogServiceState& service, Task&& task)
     -> DialogResult<Result> {
   if (!service.is_running.load()) {
