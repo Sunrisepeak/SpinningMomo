@@ -1,12 +1,11 @@
-#include "features/gallery/ignore/repository.hpp"
+module sm.features.gallery.ignore.repository;
 
-#include "vendor/std.hpp"
-
-#include "core/database/state.hpp"
-#include "core/database/types.hpp"
-#include "core/state/app_state.hpp"
-#include "features/gallery/state.hpp"
-#include "features/gallery/types.hpp"
+import std;
+import sm.core.database.state;
+import sm.core.database.types;
+import sm.core.state.app_state;
+import sm.features.gallery.state;
+import sm.features.gallery.types;
 
 import sm.vendor.rfl;
 import sm.utils.logger.logger;
@@ -150,7 +149,7 @@ auto get_rules_by_directory_path(core::AppState& app_state, const std::string& d
   // 先查找folder_id
   std::string folder_sql = "SELECT id FROM folders WHERE path = ?";
   auto folder_result =
-      core::database::query_scalar<int64_t>(app_state, folder_sql, {directory_path});
+      core::database::query_scalar<std::int64_t>(app_state, folder_sql, {directory_path});
 
   if (!folder_result) {
     return std::unexpected("Failed to query folder by path: " + folder_result.error());

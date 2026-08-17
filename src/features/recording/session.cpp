@@ -1,17 +1,19 @@
-#include "features/recording/session.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
+#include "vendor/wil.hpp"
 #include "vendor/windows/d3d11_4.hpp"
 
-#include "core/state/app_state.hpp"
-#include "features/recording/state.hpp"
-#include "features/recording/types.hpp"
-#include "utils/graphics/capture.hpp"
-#include "utils/graphics/capture_region.hpp"
-#include "utils/graphics/d3d.hpp"
+module sm.features.recording.session;
+
+import std;
+import sm.core.state.app_state;
+import sm.features.recording.state;
+import sm.features.recording.types;
+import sm.utils.graphics.capture;
+import sm.utils.graphics.capture_region;
+import sm.utils.graphics.d3d;
+
 import sm.utils.logger.logger;
 import sm.utils.string.string;
 

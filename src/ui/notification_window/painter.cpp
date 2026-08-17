@@ -1,19 +1,21 @@
-#include "ui/notification_window/painter.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 #include "vendor/windows/d2d1_3.hpp"
 #include "vendor/windows/dwrite_3.hpp"
 
-#include "core/notifications/types.hpp"
-#include "core/state/app_state.hpp"
-#include "ui/floating_window/state.hpp"
-#include "ui/notification_window/render_context.hpp"
-#include "ui/notification_window/state.hpp"
-#include "ui/notification_window/types.hpp"
-#include "ui/shared_render_resources/state.hpp"
-#include "ui/shared_theme/shared_theme.hpp"
+module sm.ui.notification_window.painter;
+
+import std;
+import sm.core.notifications.types;
+import sm.core.state.app_state;
+import sm.ui.floating_window.state;
+import sm.ui.notification_window.render_context;
+import sm.ui.notification_window.state;
+import sm.ui.notification_window.types;
+import sm.ui.shared_render_resources.state;
+import sm.ui.shared_theme.shared_theme;
+
 import sm.utils.logger.logger;
 import sm.utils.system.system;
 

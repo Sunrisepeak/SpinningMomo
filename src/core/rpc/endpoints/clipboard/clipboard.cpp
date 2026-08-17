@@ -1,8 +1,7 @@
-#include "core/rpc/endpoints/clipboard/clipboard.hpp"
+module sm.core.rpc.endpoints.clipboard.clipboard;
 
-#include "vendor/std.hpp"
-
-#include "core/state/app_state.hpp"
+import std;
+import sm.core.state.app_state;
 
 import asio;
 import sm.core.rpc.rpc;

@@ -1,17 +1,16 @@
-#include "core/rpc/endpoints/gallery/asset.hpp"
+module sm.core.rpc.endpoints.gallery.asset;
 
-#include "vendor/std.hpp"
-
-#include "core/rpc/notification_hub.hpp"
-#include "core/state/app_state.hpp"
-#include "features/gallery/asset/repository.hpp"
-#include "features/gallery/asset/service.hpp"
-#include "features/gallery/clipboard/clipboard.hpp"
-#include "features/gallery/file_operations/file_operations.hpp"
-#include "features/gallery/importer/importer.hpp"
-#include "features/gallery/original_locator.hpp"
-#include "features/gallery/root_availability.hpp"
-#include "features/gallery/types.hpp"
+import std;
+import sm.core.rpc.notification_hub;
+import sm.core.state.app_state;
+import sm.features.gallery.asset.repository;
+import sm.features.gallery.asset.service;
+import sm.features.gallery.clipboard.clipboard;
+import sm.features.gallery.file_operations.file_operations;
+import sm.features.gallery.importer.importer;
+import sm.features.gallery.original_locator;
+import sm.features.gallery.root_availability;
+import sm.features.gallery.types;
 
 import asio;
 import sm.core.rpc.rpc;

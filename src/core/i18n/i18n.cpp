@@ -1,12 +1,11 @@
-#include "core/i18n/i18n.hpp"
+module sm.core.i18n.i18n;
 
-#include "vendor/std.hpp"
-
-#include "core/i18n/embedded/en_us.hpp"
-#include "core/i18n/embedded/zh_cn.hpp"
-#include "core/i18n/state.hpp"
-#include "core/i18n/types.hpp"
-#include "core/state/app_state.hpp"
+import std;
+import sm.core.i18n.embedded.en_us;
+import sm.core.i18n.embedded.zh_cn;
+import sm.core.i18n.state;
+import sm.core.i18n.types;
+import sm.core.state.app_state;
 
 import sm.vendor.rfl;
 import sm.utils.logger.logger;

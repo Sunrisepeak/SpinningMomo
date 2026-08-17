@@ -166,9 +166,17 @@ def convert_header(rel: str, modules: set[str]) -> Path:
         out.append("")
     out.append(f"export module {module_name(rel)};")
     out.append("")
+    # An AGGREGATOR — a header whose whole content was `#include`s — has to
+    # re-export what it gathered, or importing it would deliver nothing. The
+    # generated migration schema index is the one in this tree.
+    aggregate = not any(l.strip() and not l.strip().startswith(("//", "/*", "*"))
+                        for l in body)
+    keyword = "export import" if aggregate else "import"
+
     out.append("import std;")
     for kind, p in imports:
-        out.append(f"import {p};" if kind == "raw" else f"import {module_name(p)};")
+        name = p if kind == "raw" else module_name(p)
+        out.append(f"{keyword} {name};")
     out.append("")
     out += body
 

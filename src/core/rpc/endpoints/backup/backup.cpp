@@ -1,12 +1,11 @@
-#include "core/rpc/endpoints/backup/backup.hpp"
+module sm.core.rpc.endpoints.backup.backup;
 
-#include "vendor/std.hpp"
-
-#include "core/events/events.hpp"
-#include "core/state/app_state.hpp"
-#include "features/backup/backup.hpp"
-#include "features/backup/types.hpp"
-#include "ui/floating_window/events.hpp"
+import std;
+import sm.core.events.events;
+import sm.core.state.app_state;
+import sm.features.backup.backup;
+import sm.features.backup.types;
+import sm.ui.floating_window.events;
 
 import asio;
 import sm.core.async.async;

@@ -1,6 +1,4 @@
-#include "core/webview/static.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/webview2.hpp"
 #include "vendor/wil.hpp"
@@ -8,10 +6,14 @@
 #include "vendor/windows/shlwapi.hpp"
 #include "vendor/windows/wrl.hpp"
 
-#include "core/build_config.hpp"
-#include "core/state/app_state.hpp"
-#include "core/webview/state.hpp"
-#include "core/webview/types.hpp"
+module sm.core.webview.static_;
+
+import std;
+import sm.core.build_config;
+import sm.core.state.app_state;
+import sm.core.webview.state;
+import sm.core.webview.types;
+
 import sm.utils.logger.logger;
 
 import sm.utils.file.mime;

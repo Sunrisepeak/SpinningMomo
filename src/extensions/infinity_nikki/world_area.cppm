@@ -1,10 +1,7 @@
-module;
-
-#include "core/state/app_state.hpp"
-#include "extensions/infinity_nikki/types.hpp"
-
 export module sm.extensions.infinity_nikki.world_area;
 
+import sm.core.state.app_state;
+import sm.extensions.infinity_nikki.types;
 import std;
 import asio;
 

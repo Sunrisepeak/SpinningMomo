@@ -1,10 +1,9 @@
-#include "features/gallery/color/filter.hpp"
+module sm.features.gallery.color.filter;
 
-#include "vendor/std.hpp"
-
-#include "core/database/types.hpp"
-#include "features/gallery/color/extractor.hpp"
-#include "features/gallery/types.hpp"
+import std;
+import sm.core.database.types;
+import sm.features.gallery.color.extractor;
+import sm.features.gallery.types;
 
 namespace features::gallery::color::filter {
 

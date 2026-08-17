@@ -1,12 +1,11 @@
-#include "features/gallery/asset/repository.hpp"
+module sm.features.gallery.asset.repository;
 
-#include "vendor/std.hpp"
-
-#include "core/database/state.hpp"
-#include "core/database/types.hpp"
-#include "core/state/app_state.hpp"
-#include "features/gallery/state.hpp"
-#include "features/gallery/types.hpp"
+import std;
+import sm.core.database.state;
+import sm.core.database.types;
+import sm.core.state.app_state;
+import sm.features.gallery.state;
+import sm.features.gallery.types;
 
 import sm.vendor.rfl;
 import sm.utils.logger.logger;
@@ -68,7 +67,7 @@ auto make_scanner_update_params(const Asset& item) -> std::vector<core::database
 namespace features::gallery::asset::repository {
 
 auto create_asset(core::AppState& app_state, const Asset& item)
-    -> std::expected<int64_t, std::string> {
+    -> std::expected<std::int64_t, std::string> {
   std::string sql = R"(
             INSERT INTO assets (
                 name, path, type,
@@ -87,10 +86,10 @@ auto create_asset(core::AppState& app_state, const Asset& item)
                                                 : core::database::DbParam{std::monostate{}});
 
   params.push_back(item.width.has_value()
-                       ? core::database::DbParam{static_cast<int64_t>(item.width.value())}
+                       ? core::database::DbParam{static_cast<std::int64_t>(item.width.value())}
                        : core::database::DbParam{std::monostate{}});
   params.push_back(item.height.has_value()
-                       ? core::database::DbParam{static_cast<int64_t>(item.height.value())}
+                       ? core::database::DbParam{static_cast<std::int64_t>(item.height.value())}
                        : core::database::DbParam{std::monostate{}});
   params.push_back(item.size.has_value() ? core::database::DbParam{item.size.value()}
                                          : core::database::DbParam{std::monostate{}});
@@ -180,7 +179,7 @@ auto create_asset_with_inherited_data_in_transaction(core::AppState& app_state, 
   return new_asset_id;
 }
 
-auto get_asset_by_id(core::AppState& app_state, int64_t id)
+auto get_asset_by_id(core::AppState& app_state, std::int64_t id)
     -> std::expected<std::optional<Asset>, std::string> {
   std::string sql = R"(
             SELECT id, name, path, type,

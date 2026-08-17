@@ -1,14 +1,14 @@
-#include "features/gallery/importer/importer.hpp"
+module sm.features.gallery.importer.importer;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.state.app_state;
+import sm.features.gallery.asset.repository;
+import sm.features.gallery.folder.repository;
+import sm.features.gallery.scanner.common;
+import sm.features.gallery.scanner.scanner;
+import sm.features.gallery.types;
+import sm.features.gallery.watcher.watcher;
 
-#include "core/state/app_state.hpp"
-#include "features/gallery/asset/repository.hpp"
-#include "features/gallery/folder/repository.hpp"
-#include "features/gallery/scanner/common.hpp"
-#include "features/gallery/scanner/scanner.hpp"
-#include "features/gallery/types.hpp"
-#include "features/gallery/watcher/watcher.hpp"
 import sm.utils.logger.logger;
 import sm.utils.path.path;
 

@@ -1,8 +1,8 @@
-#include "features/gallery/scanner/common.hpp"
+module sm.features.gallery.scanner.common;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.build_config;
 
-#include "core/build_config.hpp"
 import sm.utils.hash.xxhash;
 import sm.utils.media.video_asset;
 import sm.utils.string.string;

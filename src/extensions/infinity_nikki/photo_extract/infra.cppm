@@ -1,11 +1,8 @@
-module;
-
-#include "core/state/app_state.hpp"
-#include "extensions/infinity_nikki/photo_extract/scan.hpp"
-#include "extensions/infinity_nikki/types.hpp"
-
 export module sm.extensions.infinity_nikki.photo_extract.infra;
 
+import sm.core.state.app_state;
+import sm.extensions.infinity_nikki.photo_extract.scan;
+import sm.extensions.infinity_nikki.types;
 import std;
 import asio;
 

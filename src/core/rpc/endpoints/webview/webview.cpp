@@ -1,10 +1,9 @@
-#include "core/rpc/endpoints/webview/webview.hpp"
+module sm.core.rpc.endpoints.webview.webview;
 
-#include "vendor/std.hpp"
-
-#include "core/state/app_state.hpp"
-#include "core/webview/state.hpp"
-#include "ui/webview_window/webview_window.hpp"
+import std;
+import sm.core.state.app_state;
+import sm.core.webview.state;
+import sm.ui.webview_window.webview_window;
 
 import sm.vendor.rfl;
 import asio;

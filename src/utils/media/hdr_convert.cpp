@@ -1,13 +1,15 @@
-#include "utils/media/hdr_convert.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
 #include "vendor/windows/d3d11.hpp"
 #include "vendor/windows/d3d11_4.hpp"
 
-#include "utils/graphics/d3d.hpp"
+module sm.utils.media.hdr_convert;
+
+import std;
+import sm.utils.graphics.d3d;
+
 import sm.utils.logger.logger;
 
 namespace utils::media::hdr_convert {

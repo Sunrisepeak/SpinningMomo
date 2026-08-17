@@ -1,11 +1,10 @@
-#include "features/gallery/asset/query_support.hpp"
+module sm.features.gallery.asset.query_support;
 
-#include "vendor/std.hpp"
-
-#include "core/database/types.hpp"
-#include "core/state/app_state.hpp"
-#include "features/gallery/color/filter.hpp"
-#include "features/gallery/types.hpp"
+import std;
+import sm.core.database.types;
+import sm.core.state.app_state;
+import sm.features.gallery.color.filter;
+import sm.features.gallery.types;
 
 import sm.core.database.database;
 
@@ -16,7 +15,7 @@ auto validate_month_format(const std::string& month) -> bool {
     return false;
   }
 
-  for (size_t i = 0; i < month.length(); ++i) {
+  for (std::size_t i = 0; i < month.length(); ++i) {
     if (i == 4) continue;
     if (!std::isdigit(static_cast<unsigned char>(month[i]))) {
       return false;

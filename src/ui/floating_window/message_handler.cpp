@@ -1,27 +1,29 @@
-#include "ui/floating_window/message_handler.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 #include "vendor/windows/dwmapi.hpp"
 #include "vendor/windows/windowsx.hpp"
 
-#include "core/commands/registry.hpp"
-#include "core/commands/types.hpp"
-#include "core/events/events.hpp"
-#include "core/state/app_state.hpp"
-#include "features/settings/menu.hpp"
-#include "ui/context_menu/context_menu.hpp"
-#include "ui/context_menu/types.hpp"
-#include "ui/floating_window/events.hpp"
-#include "ui/floating_window/floating_window.hpp"
-#include "ui/floating_window/layout.hpp"
-#include "ui/floating_window/painter.hpp"
-#include "ui/floating_window/render_context.hpp"
-#include "ui/floating_window/state.hpp"
-#include "ui/floating_window/types.hpp"
-#include "ui/tray_icon/tray_icon.hpp"
-#include "ui/tray_icon/types.hpp"
+module sm.ui.floating_window.message_handler;
+
+import std;
+import sm.core.commands.registry;
+import sm.core.commands.types;
+import sm.core.events.events;
+import sm.core.state.app_state;
+import sm.features.settings.menu;
+import sm.ui.context_menu.context_menu;
+import sm.ui.context_menu.types;
+import sm.ui.floating_window.events;
+import sm.ui.floating_window.floating_window;
+import sm.ui.floating_window.layout;
+import sm.ui.floating_window.painter;
+import sm.ui.floating_window.render_context;
+import sm.ui.floating_window.state;
+import sm.ui.floating_window.types;
+import sm.ui.tray_icon.tray_icon;
+import sm.ui.tray_icon.types;
+
 import sm.utils.logger.logger;
 
 namespace ui::floating_window::message_handler {
@@ -79,19 +81,19 @@ auto dispatch_item_click_event(core::AppState& state, const ui::floating_window:
   switch (item.category) {
     case ui::floating_window::MenuItemCategory::AspectRatio: {
       const auto& ratios = features::settings::menu::get_ratios(state);
-      if (item.index >= 0 && static_cast<size_t>(item.index) < ratios.size()) {
+      if (item.index >= 0 && static_cast<std::size_t>(item.index) < ratios.size()) {
         const auto& ratio_preset = ratios[item.index];
-        core::events::send(state, RatioChangeEvent{static_cast<size_t>(item.index),
+        core::events::send(state, RatioChangeEvent{static_cast<std::size_t>(item.index),
                                                    ratio_preset.name, ratio_preset.ratio});
       }
       break;
     }
     case ui::floating_window::MenuItemCategory::Resolution: {
       const auto& resolutions = features::settings::menu::get_resolutions(state);
-      if (item.index >= 0 && static_cast<size_t>(item.index) < resolutions.size()) {
+      if (item.index >= 0 && static_cast<std::size_t>(item.index) < resolutions.size()) {
         const auto& res_preset = resolutions[item.index];
         core::events::send(state,
-                           ResolutionChangeEvent{static_cast<size_t>(item.index), res_preset.name});
+                           ResolutionChangeEvent{static_cast<std::size_t>(item.index), res_preset.name});
       }
       break;
     }
@@ -245,22 +247,22 @@ auto window_procedure(core::AppState& state, HWND hwnd, UINT msg, WPARAM wParam,
       const auto counts = ui::floating_window::layout::count_items_per_column(items);
       auto& ui = state.floating_window->ui;
 
-      size_t* target_offset = nullptr;
-      size_t column_item_count = 0;
+      std::size_t* target_offset = nullptr;
+      std::size_t column_item_count = 0;
 
       if (pt.x < bounds.ratio_column_right) {
         // 比例列
         target_offset = &ui.ratio_scroll_offset;
-        column_item_count = static_cast<size_t>(counts.ratio_count);
+        column_item_count = static_cast<std::size_t>(counts.ratio_count);
       } else if (pt.x >= bounds.ratio_column_right + render.separator_height &&
                  pt.x < bounds.resolution_column_right) {
         // 分辨率列（排除第一条分隔线）
         target_offset = &ui.resolution_scroll_offset;
-        column_item_count = static_cast<size_t>(counts.resolution_count);
+        column_item_count = static_cast<std::size_t>(counts.resolution_count);
       } else if (pt.x >= bounds.resolution_column_right + render.separator_height) {
         // 功能列（排除第二条分隔线）
         target_offset = &ui.feature_scroll_offset;
-        column_item_count = static_cast<size_t>(counts.feature_count);
+        column_item_count = static_cast<std::size_t>(counts.feature_count);
       } else {
         // 在分隔线上，不处理
         return 0;
@@ -280,7 +282,7 @@ auto window_procedure(core::AppState& state, HWND hwnd, UINT msg, WPARAM wParam,
 
       // 限制页号范围并计算新的offset（必须是页大小的整数倍）
       const int clamped_page = std::clamp(new_page, 0, std::max(0, total_pages - 1));
-      *target_offset = static_cast<size_t>(clamped_page * page_size);
+      *target_offset = static_cast<std::size_t>(clamped_page * page_size);
 
       ui::floating_window::request_repaint(state);
       return 0;

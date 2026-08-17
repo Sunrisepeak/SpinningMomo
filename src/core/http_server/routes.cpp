@@ -1,10 +1,7 @@
-module;
-
-#include "core/state/app_state.hpp"
-#include "core/build_config.hpp"
-
 module sm.core.http_server.routes;
 
+import sm.core.state.app_state;
+import sm.core.build_config;
 import std;
 import sm.vendor.uwebsockets;
 import sm.core.http_server.sse_manager;

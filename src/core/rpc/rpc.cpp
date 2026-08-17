@@ -1,10 +1,7 @@
-module;
-
-#include "core/build_config.hpp"
-#include "core/state/app_state.hpp"
-
 module sm.core.rpc.rpc;
 
+import sm.core.build_config;
+import sm.core.state.app_state;
 import sm.vendor.rfl;
 import sm.utils.logger.logger;
 import std;

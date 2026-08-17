@@ -1,19 +1,20 @@
-#include "ui/webview_window/webview_window.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 #include "vendor/windows/dwmapi.hpp"
 #include "vendor/windows/shellapi.hpp"
 #include "vendor/windows/windowsx.hpp"
 
-#include "core/build_config.hpp"
-#include "core/state/app_state.hpp"
-#include "core/state/runtime_info.hpp"
-#include "core/webview/state.hpp"
-#include "core/webview/webview.hpp"
-#include "ui/floating_window/state.hpp"
-#include "ui/tray_icon/types.hpp"
+module sm.ui.webview_window.webview_window;
+
+import std;
+import sm.core.build_config;
+import sm.core.state.app_state;
+import sm.core.state.runtime_info;
+import sm.core.webview.state;
+import sm.core.webview.webview;
+import sm.ui.floating_window.state;
+import sm.ui.tray_icon.types;
 
 import sm.features.settings.settings;
 import sm.features.settings.state;

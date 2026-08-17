@@ -31,28 +31,29 @@ function toFileNameFormat(langCode) {
 }
 
 // 生成 C++ 头文件内容
-function generateCppHeader(
+function generateCppModule(
   sourceFile,
   jsonContent,
   variableName,
-  languageComment
+  languageComment,
+  langCode
 ) {
   const fileSize = Buffer.byteLength(jsonContent, "utf8");
 
   // 转义 JSON 内容中的特殊字符
   const escapedJson = jsonContent.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
 
-  return `#pragma once
+  return `export module sm.core.i18n.embedded.${toFileNameFormat(langCode)};
 
-#include "vendor/std.hpp"
+import std;
 
-// Auto-generated embedded ${languageComment} locale header
+// Auto-generated embedded ${languageComment} locale module
 // DO NOT EDIT - This file contains embedded locale data
 //
 // Source: ${sourceFile}
 // Variable: ${variableName}
 
-namespace embedded_locales {
+export namespace embedded_locales {
 
 // Embedded ${languageComment} JSON content as string_view
 // Size: ${fileSize} bytes
@@ -71,7 +72,7 @@ function processLanguageFile(fileName) {
   const inputPath = path.join(localesDir, fileName);
   const outputPath = path.join(
     embeddedDir,
-    `${toFileNameFormat(langCode)}.hpp`
+    `${toFileNameFormat(langCode)}.cppm`
   );
 
   // 读取 JSON 文件内容
@@ -89,11 +90,12 @@ function processLanguageFile(fileName) {
   };
 
   // 生成 C++ 头文件内容
-  const cppContent = generateCppHeader(
+  const cppContent = generateCppModule(
     relativePath,
     jsonContent,
     mapping.variableName,
-    mapping.comment
+    mapping.comment,
+    langCode
   );
 
   // 写入输出文件

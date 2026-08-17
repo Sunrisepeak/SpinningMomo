@@ -1,12 +1,14 @@
-#include "core/commands/registry.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 
-#include "core/commands/state.hpp"
-#include "core/commands/types.hpp"
-#include "core/state/app_state.hpp"
+module sm.core.commands.registry;
+
+import std;
+import sm.core.commands.state;
+import sm.core.commands.types;
+import sm.core.state.app_state;
+
 import sm.features.settings.state;
 import sm.utils.logger.logger;
 

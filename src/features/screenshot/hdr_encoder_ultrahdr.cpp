@@ -3,8 +3,8 @@
 
 #include "vendor/windows.hpp"
 
-#include "features/screenshot/hdr_encoder.hpp"
-#include "utils/image/image.hpp"
+import sm.features.screenshot.hdr_encoder;
+import sm.utils.image.image;
 
 namespace features::screenshot::hdr_encoder {
 

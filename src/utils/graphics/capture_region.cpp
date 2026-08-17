@@ -1,10 +1,13 @@
-#include "utils/graphics/capture_region.hpp"
+module;
 
-#include "vendor/std.hpp"
-
+#include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
 #include "vendor/windows/d3d11.hpp"
 #include "vendor/windows/dwmapi.hpp"
+
+module sm.utils.graphics.capture_region;
+
+import std;
 
 namespace utils::graphics::capture_region {
 

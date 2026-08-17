@@ -1,9 +1,9 @@
-#include "core/initializer/database.hpp"
+module sm.core.initializer.database;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.database.state;
+import sm.core.state.app_state;
 
-#include "core/database/state.hpp"
-#include "core/state/app_state.hpp"
 import sm.utils.logger.logger;
 
 import sm.core.database.database;

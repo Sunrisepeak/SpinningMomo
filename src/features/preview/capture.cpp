@@ -1,18 +1,20 @@
-#include "features/preview/capture.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
+#include "vendor/wil.hpp"
 #include "vendor/windows/d3d11.hpp"
 
-#include "core/state/app_state.hpp"
-#include "core/state/runtime_info.hpp"
-#include "features/preview/rendering.hpp"
-#include "features/preview/state.hpp"
-#include "features/preview/types.hpp"
-#include "features/preview/window.hpp"
-#include "utils/graphics/capture.hpp"
+module sm.features.preview.capture;
+
+import std;
+import sm.core.state.app_state;
+import sm.core.state.runtime_info;
+import sm.features.preview.rendering;
+import sm.features.preview.state;
+import sm.features.preview.types;
+import sm.features.preview.window;
+import sm.utils.graphics.capture;
+
 import sm.utils.logger.logger;
 
 namespace features::preview::capture {

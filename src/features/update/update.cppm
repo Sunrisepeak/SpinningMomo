@@ -1,11 +1,8 @@
-module;
-
-#include "core/state/app_state.hpp"
-#include "features/update/state.hpp"
-#include "features/update/types.hpp"
-
 export module sm.features.update.update;
 
+import sm.core.state.app_state;
+import sm.features.update.state;
+import sm.features.update.types;
 import std;
 import asio;
 

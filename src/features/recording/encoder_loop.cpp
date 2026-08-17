@@ -1,6 +1,4 @@
-#include "features/recording/encoder_loop.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
@@ -8,18 +6,21 @@
 #include "vendor/windows/mfapi.hpp"
 #include "vendor/windows/winrt/windows_graphics_capture.hpp"
 
-#include "core/i18n/state.hpp"
-#include "core/notifications/notifications.hpp"
-#include "core/notifications/types.hpp"
-#include "core/state/app_state.hpp"
-#include "features/recording/recording.hpp"
-#include "features/recording/session.hpp"
-#include "features/recording/state.hpp"
-#include "features/recording/time.hpp"
-#include "features/recording/types.hpp"
-#include "utils/graphics/capture.hpp"
-#include "utils/graphics/capture_region.hpp"
-#include "utils/media/types.hpp"
+module sm.features.recording.encoder_loop;
+
+import std;
+import sm.core.i18n.state;
+import sm.core.notifications.notifications;
+import sm.core.notifications.types;
+import sm.core.state.app_state;
+import sm.features.recording.recording;
+import sm.features.recording.session;
+import sm.features.recording.state;
+import sm.features.recording.time;
+import sm.features.recording.types;
+import sm.utils.graphics.capture;
+import sm.utils.graphics.capture_region;
+import sm.utils.media.types;
 
 import sm.utils.logger.logger;
 import sm.utils.media.encoder;

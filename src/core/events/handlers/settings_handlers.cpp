@@ -1,20 +1,19 @@
-#include "core/events/handlers/settings_handlers.hpp"
+module sm.core.events.handlers.settings_handlers;
 
-#include "vendor/std.hpp"
-
-#include "core/commands/registry.hpp"
-#include "core/events/events.hpp"
-#include "core/i18n/i18n.hpp"
-#include "core/rpc/notification_hub.hpp"
-#include "core/state/app_state.hpp"
-#include "core/webview/webview.hpp"
-#include "extensions/infinity_nikki/photo_service.hpp"
-#include "extensions/infinity_nikki/task_service.hpp"
-#include "features/gallery/gallery.hpp"
-#include "ui/floating_window/floating_window.hpp"
-#include "ui/floating_window/state.hpp"
-#include "ui/photography_panel/photography_panel.hpp"
-#include "ui/webview_window/webview_window.hpp"
+import std;
+import sm.core.commands.registry;
+import sm.core.events.events;
+import sm.core.i18n.i18n;
+import sm.core.rpc.notification_hub;
+import sm.core.state.app_state;
+import sm.core.webview.webview;
+import sm.extensions.infinity_nikki.photo_service;
+import sm.extensions.infinity_nikki.task_service;
+import sm.features.gallery.gallery;
+import sm.ui.floating_window.floating_window;
+import sm.ui.floating_window.state;
+import sm.ui.photography_panel.photography_panel;
+import sm.ui.webview_window.webview_window;
 
 import sm.features.settings.events;
 import sm.features.settings.types;

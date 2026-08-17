@@ -1,10 +1,10 @@
-#include "core/migration/migration.hpp"
+module sm.core.migration.migration;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.migration.scripts.scripts;
+import sm.core.state.app_state;
+import sm.core.version;
 
-#include "core/migration/scripts/scripts.hpp"
-#include "core/state/app_state.hpp"
-#include "core/version.hpp"
 import sm.utils.logger.logger;
 import sm.utils.path.path;
 
@@ -105,7 +105,7 @@ auto compare_versions(const std::string& v1, const std::string& v2) -> int {
   auto parts1 = parse_version(v1);
   auto parts2 = parse_version(v2);
 
-  for (size_t i = 0; i < 4; ++i) {
+  for (std::size_t i = 0; i < 4; ++i) {
     if (parts1[i] < parts2[i]) return -1;
     if (parts1[i] > parts2[i]) return 1;
   }

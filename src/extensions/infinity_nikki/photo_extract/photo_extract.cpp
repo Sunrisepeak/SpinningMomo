@@ -1,12 +1,9 @@
-module;
-
-#include "core/state/app_state.hpp"
-#include "extensions/infinity_nikki/types.hpp"
-#include "core/worker_pool/worker_pool.hpp"
-#include "extensions/infinity_nikki/photo_extract/scan.hpp"
-
 module sm.extensions.infinity_nikki.photo_extract.photo_extract;
 
+import sm.core.state.app_state;
+import sm.extensions.infinity_nikki.types;
+import sm.core.worker_pool.worker_pool;
+import sm.extensions.infinity_nikki.photo_extract.scan;
 import sm.utils.logger.logger;
 import std;
 import asio;

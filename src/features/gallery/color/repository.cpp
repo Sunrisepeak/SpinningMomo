@@ -1,12 +1,11 @@
-#include "features/gallery/color/repository.hpp"
+module sm.features.gallery.color.repository;
 
-#include "vendor/std.hpp"
-
-#include "core/database/state.hpp"
-#include "core/database/types.hpp"
-#include "core/state/app_state.hpp"
-#include "features/gallery/color/types.hpp"
-#include "features/gallery/types.hpp"
+import std;
+import sm.core.database.state;
+import sm.core.database.types;
+import sm.core.state.app_state;
+import sm.features.gallery.color.types;
+import sm.features.gallery.types;
 
 import sm.core.database.database;
 
@@ -37,16 +36,16 @@ auto replace_asset_colors_in_transaction(core::AppState& app_state, std::int64_t
   for (const auto& color : colors) {
     std::vector<core::database::DbParam> params = {
         asset_id,
-        static_cast<int64_t>(color.r),
-        static_cast<int64_t>(color.g),
-        static_cast<int64_t>(color.b),
+        static_cast<std::int64_t>(color.r),
+        static_cast<std::int64_t>(color.g),
+        static_cast<std::int64_t>(color.b),
         static_cast<double>(color.lab_l),
         static_cast<double>(color.lab_a),
         static_cast<double>(color.lab_b),
         static_cast<double>(color.weight),
-        static_cast<int64_t>(color.l_bin),
-        static_cast<int64_t>(color.a_bin),
-        static_cast<int64_t>(color.b_bin),
+        static_cast<std::int64_t>(color.l_bin),
+        static_cast<std::int64_t>(color.a_bin),
+        static_cast<std::int64_t>(color.b_bin),
     };
 
     auto insert_result = core::database::execute(app_state, kInsertSql, params);

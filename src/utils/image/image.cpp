@@ -1,12 +1,14 @@
-#include "utils/image/image.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
-#include "vendor/windows/shlwapi.hpp"
 #include "vendor/windows/wincodec.hpp"
+#include "vendor/windows/shlwapi.hpp"
 #include "vendor/windows/winerror.hpp"
+
+module sm.utils.image.image;
+
+import std;
 
 import sm.utils.logger.logger;
 
@@ -340,10 +342,10 @@ auto get_mime_type(IWICBitmapDecoder* decoder) -> std::string {
 }
 
 // 计算缩放尺寸（按短边等比例缩放）
-auto calculate_scaled_size(uint32_t original_width, uint32_t original_height,
-                           uint32_t short_edge_size) -> std::pair<uint32_t, uint32_t> {
+auto calculate_scaled_size(std::uint32_t original_width, std::uint32_t original_height,
+                           std::uint32_t short_edge_size) -> std::pair<std::uint32_t, std::uint32_t> {
   // 判断哪边是短边
-  uint32_t short_edge = std::min(original_width, original_height);
+  std::uint32_t short_edge = std::min(original_width, original_height);
 
   // 如果短边已经小于或等于目标尺寸，不缩放
   if (short_edge <= short_edge_size) {
@@ -354,8 +356,8 @@ auto calculate_scaled_size(uint32_t original_width, uint32_t original_height,
   double scale = static_cast<double>(short_edge_size) / short_edge;
 
   // 等比例计算两边
-  uint32_t new_width = static_cast<uint32_t>(original_width * scale);
-  uint32_t new_height = static_cast<uint32_t>(original_height * scale);
+  std::uint32_t new_width = static_cast<std::uint32_t>(original_width * scale);
+  std::uint32_t new_height = static_cast<std::uint32_t>(original_height * scale);
 
   // 确保至少为1像素
   new_width = std::max(new_width, 1u);
@@ -423,7 +425,7 @@ auto get_image_info(IWICImagingFactory* factory, const std::filesystem::path& pa
     // 获取MIME类型
     auto mime_type = get_mime_type(decoder.get());
 
-    return ImageInfo{static_cast<uint32_t>(width), static_cast<uint32_t>(height), pixel_format,
+    return ImageInfo{static_cast<std::uint32_t>(width), static_cast<std::uint32_t>(height), pixel_format,
                      mime_type};
   } catch (const wil::ResultException& e) {
     return std::unexpected(format_hresult(e.GetErrorCode(), "WIC operation failed"));
@@ -536,7 +538,7 @@ auto convert_source_to_bgra_data(IWICImagingFactory* factory, IWICBitmapSource* 
 }
 
 auto load_scaled_bgra_bitmap_data(IWICImagingFactory* factory, IWICBitmapSource* source,
-                                  uint32_t short_edge_size)
+                                  std::uint32_t short_edge_size)
     -> std::expected<BGRABitmapData, std::string> {
   if (!factory) {
     return std::unexpected("WIC factory is null");
@@ -573,7 +575,7 @@ auto load_scaled_bgra_bitmap_data(IWICImagingFactory* factory, IWICBitmapSource*
 }
 
 auto load_scaled_bgra_bitmap_data(IWICImagingFactory* factory, const std::filesystem::path& path,
-                                  uint32_t short_edge_size)
+                                  std::uint32_t short_edge_size)
     -> std::expected<BGRABitmapData, std::string> {
   // 文件入口只负责打开第一帧，真正的缩放/格式转换复用 source 入口。
   auto frame_result = load_bitmap_frame(factory, path);
@@ -585,7 +587,7 @@ auto load_scaled_bgra_bitmap_data(IWICImagingFactory* factory, const std::filesy
 }
 
 auto scale_bgra_bitmap_data(IWICImagingFactory* factory, const BGRABitmapData& bitmap_data,
-                            uint32_t short_edge_size)
+                            std::uint32_t short_edge_size)
     -> std::expected<BGRABitmapData, std::string> {
   if (!factory) {
     return std::unexpected("WIC factory is null");
@@ -661,8 +663,8 @@ auto encode_bgra_to_webp(const BGRABitmapData& bitmap_data, const WebPEncodeOpti
 
   try {
     // libwebp 只需要 BGRA 指针、宽高和 stride；不再额外创建 WIC bitmap。
-    uint8_t* output = nullptr;
-    size_t output_size = 0;
+    std::uint8_t* output = nullptr;
+    std::size_t output_size = 0;
     auto width = static_cast<int>(bitmap_data.width);
     auto height = static_cast<int>(bitmap_data.height);
     auto stride = static_cast<int>(bitmap_data.stride);
@@ -680,7 +682,7 @@ auto encode_bgra_to_webp(const BGRABitmapData& bitmap_data, const WebPEncodeOpti
     }
 
     // libwebp 分配输出内存；复制到 vector 后必须用 WebPFree 释放。
-    std::vector<uint8_t> result_data(output, output + output_size);
+    std::vector<std::uint8_t> result_data(output, output + output_size);
     WebPFree(output);
 
     return WebPEncodedResult{std::move(result_data), bitmap_data.width, bitmap_data.height};
@@ -693,7 +695,7 @@ auto encode_bgra_to_webp(const BGRABitmapData& bitmap_data, const WebPEncodeOpti
 
 // 视频封面：MF 已解码为 RGB32/BGRA 内存帧，无需落盘即可走与照片相同的缩放 + WebP 编码。
 auto generate_webp_thumbnail_from_bgra(IWICImagingFactory* factory,
-                                       const BGRABitmapData& bitmap_data, uint32_t short_edge_size,
+                                       const BGRABitmapData& bitmap_data, std::uint32_t short_edge_size,
                                        const WebPEncodeOptions& options)
     -> std::expected<WebPEncodedResult, std::string> {
   if (!factory) {
@@ -716,7 +718,7 @@ auto generate_webp_thumbnail_from_bgra(IWICImagingFactory* factory,
   return encode_bgra_to_webp(scaled_result.value(), options);
 }
 
-auto read_stream_bytes(IStream* stream) -> std::expected<std::vector<uint8_t>, std::string> {
+auto read_stream_bytes(IStream* stream) -> std::expected<std::vector<std::uint8_t>, std::string> {
   if (!stream) {
     return std::unexpected("Stream is null");
   }
@@ -735,7 +737,7 @@ auto read_stream_bytes(IStream* stream) -> std::expected<std::vector<uint8_t>, s
     LARGE_INTEGER seek_origin{};
     THROW_IF_FAILED(stream->Seek(seek_origin, STREAM_SEEK_SET, nullptr));
 
-    std::vector<uint8_t> bytes(static_cast<std::size_t>(stat.cbSize.QuadPart));
+    std::vector<std::uint8_t> bytes(static_cast<std::size_t>(stat.cbSize.QuadPart));
     if (!bytes.empty()) {
       ULONG bytes_read = 0;
       THROW_IF_FAILED(stream->Read(bytes.data(), static_cast<ULONG>(bytes.size()), &bytes_read));
@@ -752,10 +754,10 @@ auto read_stream_bytes(IStream* stream) -> std::expected<std::vector<uint8_t>, s
   }
 }
 
-auto encode_pixel_data_to_jpeg_bytes(IWICImagingFactory* factory, const uint8_t* pixel_data,
-                                     uint32_t width, uint32_t height, uint32_t row_pitch,
+auto encode_pixel_data_to_jpeg_bytes(IWICImagingFactory* factory, const std::uint8_t* pixel_data,
+                                     std::uint32_t width, std::uint32_t height, std::uint32_t row_pitch,
                                      const GUID& source_pixel_format, float jpeg_quality)
-    -> std::expected<std::vector<uint8_t>, std::string> {
+    -> std::expected<std::vector<std::uint8_t>, std::string> {
   // 这是新加的“内存 JPEG 编码”公共实现：
   // - 不直接写文件
   // - 把编码结果留在内存里，供上层继续 mux / 拼容器
@@ -819,18 +821,18 @@ auto encode_pixel_data_to_jpeg_bytes(IWICImagingFactory* factory, const uint8_t*
   }
 }
 
-auto encode_bgra_to_jpeg_bytes(IWICImagingFactory* factory, const uint8_t* pixel_data,
-                               uint32_t width, uint32_t height, uint32_t row_pitch,
+auto encode_bgra_to_jpeg_bytes(IWICImagingFactory* factory, const std::uint8_t* pixel_data,
+                               std::uint32_t width, std::uint32_t height, std::uint32_t row_pitch,
                                float jpeg_quality)
-    -> std::expected<std::vector<uint8_t>, std::string> {
+    -> std::expected<std::vector<std::uint8_t>, std::string> {
   // SDR base 与 Ultra HDR gain map 走这一层。
   return encode_pixel_data_to_jpeg_bytes(factory, pixel_data, width, height, row_pitch,
                                          GUID_WICPixelFormat32bppBGRA, jpeg_quality);
 }
 
 // 保存像素数据到文件
-auto save_pixel_data_to_file(IWICImagingFactory* factory, const uint8_t* pixel_data, uint32_t width,
-                             uint32_t height, uint32_t row_pitch, const std::wstring& file_path,
+auto save_pixel_data_to_file(IWICImagingFactory* factory, const std::uint8_t* pixel_data, std::uint32_t width,
+                             std::uint32_t height, std::uint32_t row_pitch, const std::wstring& file_path,
                              ImageFormat format, float jpeg_quality)
     -> std::expected<void, std::string> {
   if (!factory) {

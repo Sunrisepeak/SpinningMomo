@@ -1,13 +1,13 @@
-#include "features/gallery/scanner/discovery.hpp"
+module sm.features.gallery.scanner.discovery;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.state.app_state;
+import sm.features.gallery.folder.repository;
+import sm.features.gallery.ignore.service;
+import sm.features.gallery.scanner.common;
+import sm.features.gallery.scanner.progress;
+import sm.features.gallery.types;
 
-#include "core/state/app_state.hpp"
-#include "features/gallery/folder/repository.hpp"
-#include "features/gallery/ignore/service.hpp"
-#include "features/gallery/scanner/common.hpp"
-#include "features/gallery/scanner/progress.hpp"
-#include "features/gallery/types.hpp"
 import sm.utils.logger.logger;
 import sm.utils.path.path;
 import sm.utils.time;

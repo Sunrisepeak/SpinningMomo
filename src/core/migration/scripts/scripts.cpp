@@ -1,9 +1,8 @@
-#include "core/migration/scripts/scripts.hpp"
+module sm.core.migration.scripts.scripts;
 
-#include "vendor/std.hpp"
-
-#include "core/migration/generated/schema.hpp"
-#include "core/state/app_state.hpp"
+import std;
+import sm.core.migration.generated.schema;
+import sm.core.state.app_state;
 
 import sm.vendor.rfl;
 import sm.features.settings.settings;

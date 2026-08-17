@@ -1,9 +1,6 @@
-module;
-
-#include "core/state/app_state.hpp"
-
 module sm.core.http_server.static_;
 
+import sm.core.state.app_state;
 import sm.vendor.uwebsockets;
 import std;
 import asio;

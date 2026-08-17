@@ -1,9 +1,8 @@
-#include "core/http_server/http_server.hpp"
+module sm.core.http_server.http_server;
 
-#include "vendor/std.hpp"
-
-#include "core/build_config.hpp"
-#include "core/state/app_state.hpp"
+import std;
+import sm.core.build_config;
+import sm.core.state.app_state;
 
 import sm.vendor.uwebsockets;
 import sm.core.http_server.routes;
@@ -179,7 +178,7 @@ auto shutdown(core::AppState& state) -> void {
   Logger().info("HTTP server shut down");
 }
 
-auto get_sse_connection_count(const core::AppState& state) -> size_t {
+auto get_sse_connection_count(const core::AppState& state) -> std::size_t {
   return core::http_server::sse_manager::get_connection_count(state);
 }
 }  // namespace core::http_server

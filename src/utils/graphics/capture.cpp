@@ -1,17 +1,19 @@
-#include "utils/graphics/capture.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
 #include "vendor/windows/d3d11.hpp"
+#include "vendor/windows/winrt/windows_graphics_capture.hpp"
 #include "vendor/windows/windows_graphics_capture_interop.hpp"
 #include "vendor/windows/windows_graphics_directx_direct3d11_interop.hpp"
 #include "vendor/windows/winrt/windows_foundation.hpp"
 #include "vendor/windows/winrt/windows_foundation_metadata.hpp"
-#include "vendor/windows/winrt/windows_graphics_capture.hpp"
 #include "vendor/windows/winrt/windows_graphics_directx.hpp"
 #include "vendor/windows/winrt/windows_graphics_directx_direct3d11.hpp"
+
+module sm.utils.graphics.capture;
+
+import std;
 
 import sm.utils.logger.logger;
 

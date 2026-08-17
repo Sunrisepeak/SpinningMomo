@@ -5,8 +5,8 @@
 #include "vendor/windows.hpp"
 #include "vendor/windows/d3d11.hpp"
 
-#include "features/screenshot/hdr_encoder.hpp"
-#include "utils/graphics/d3d.hpp"
+import sm.features.screenshot.hdr_encoder;
+import sm.utils.graphics.d3d;
 import sm.utils.logger.logger;
 
 namespace features::screenshot::hdr_encoder {

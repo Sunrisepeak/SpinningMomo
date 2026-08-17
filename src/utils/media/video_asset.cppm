@@ -1,9 +1,6 @@
-module;
-
-#include "utils/image/image.hpp"
-
 export module sm.utils.media.video_asset;
 
+import sm.utils.image.image;
 import std;
 
 export namespace utils::media::video_asset {

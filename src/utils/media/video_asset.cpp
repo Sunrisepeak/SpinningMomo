@@ -8,10 +8,10 @@ module;
 #include "vendor/windows/mfobjects.hpp"
 #include "vendor/windows/mfreadwrite.hpp"
 #include "vendor/windows/propvarutil.hpp"
-#include "utils/image/image.hpp"
 
 module sm.utils.media.video_asset;
 
+import sm.utils.image.image;
 import sm.utils.logger.logger;
 import std;
 import sm.utils.file.mime;

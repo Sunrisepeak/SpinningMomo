@@ -1,21 +1,21 @@
 module;
 
-#include "core/state/app_state.hpp"
-#include "features/update/state.hpp"
-#include "features/update/types.hpp"
 #include "vendor/windows.hpp"
-#include "core/events/events.hpp"
-#include "core/http_client/types.hpp"
-#include "core/i18n/state.hpp"
-#include "core/notifications/notifications.hpp"
-#include "core/notifications/types.hpp"
-#include "core/tasks/tasks.hpp"
-#include "core/version.hpp"
-#include "ui/floating_window/events.hpp"
-#include "ui/webview_window/webview_window.hpp"
 
 module sm.features.update.update;
 
+import sm.core.state.app_state;
+import sm.features.update.state;
+import sm.features.update.types;
+import sm.core.events.events;
+import sm.core.http_client.types;
+import sm.core.i18n.state;
+import sm.core.notifications.notifications;
+import sm.core.notifications.types;
+import sm.core.tasks.tasks;
+import sm.core.version;
+import sm.ui.floating_window.events;
+import sm.ui.webview_window.webview_window;
 import sm.features.settings.state;
 import std;
 import asio;
@@ -27,7 +27,7 @@ import sm.utils.logger.logger;
 import sm.utils.path.path;
 import sm.utils.powershell.powershell;
 import sm.utils.string.string;
-#include "utils/throttle/throttle.hpp"
+import sm.utils.throttle.throttle;
 
 namespace features::update {
 

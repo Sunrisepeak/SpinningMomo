@@ -1,14 +1,11 @@
-module;
-
-#include "core/state/app_state.hpp"
-#include "extensions/infinity_nikki/types.hpp"
-#include "features/gallery/types.hpp"
-#include "core/database/types.hpp"
-#include "features/gallery/asset/query_support.hpp"
-#include "features/gallery/asset/repository.hpp"
-
 module sm.extensions.infinity_nikki.asset_service;
 
+import sm.core.state.app_state;
+import sm.extensions.infinity_nikki.types;
+import sm.features.gallery.types;
+import sm.core.database.types;
+import sm.features.gallery.asset.query_support;
+import sm.features.gallery.asset.repository;
 import sm.utils.logger.logger;
 import sm.core.database.database;
 import std;

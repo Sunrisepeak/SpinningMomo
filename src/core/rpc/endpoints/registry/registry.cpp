@@ -1,10 +1,9 @@
-#include "core/rpc/endpoints/registry/registry.hpp"
+module sm.core.rpc.endpoints.registry.registry;
 
-#include "vendor/std.hpp"
-
-#include "core/commands/registry.hpp"
-#include "core/commands/types.hpp"
-#include "core/state/app_state.hpp"
+import std;
+import sm.core.commands.registry;
+import sm.core.commands.types;
+import sm.core.state.app_state;
 
 import asio;
 import sm.core.rpc.rpc;

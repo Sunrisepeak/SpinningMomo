@@ -1,10 +1,10 @@
-#include "extensions/infinity_nikki/map_service.hpp"
+module sm.extensions.infinity_nikki.map_service;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.state.app_state;
+import sm.core.webview.webview;
+import sm.extensions.infinity_nikki.generated.map_injection_script;
 
-#include "core/state/app_state.hpp"
-#include "core/webview/webview.hpp"
-#include "extensions/infinity_nikki/generated/map_injection_script.hpp"
 import sm.utils.logger.logger;
 
 namespace extensions::infinity_nikki::map_service {

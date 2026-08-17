@@ -1,9 +1,6 @@
-module;
-
-#include "core/build_config.hpp"
-
 module sm.utils.logger.logger;
 
+import sm.core.build_config;
 import std;
 import sm.vendor.spdlog;
 

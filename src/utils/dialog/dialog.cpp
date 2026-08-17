@@ -1,10 +1,12 @@
-#include "utils/dialog/dialog.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
+#include "vendor/wil.hpp"
 #include "vendor/windows/shobjidl.hpp"
+
+module sm.utils.dialog.dialog;
+
+import std;
 
 import sm.utils.logger.logger;
 import sm.utils.string.string;
@@ -25,8 +27,8 @@ auto parse_file_filter(const std::string& filter)
 
   // 按'|'分割，确保成对出现
   std::vector<std::wstring> segments;
-  size_t start = 0;
-  size_t pos = 0;
+  std::size_t start = 0;
+  std::size_t pos = 0;
 
   while ((pos = filter_wide.find(L'|', start)) != std::wstring::npos) {
     segments.push_back(filter_wide.substr(start, pos - start));
@@ -45,7 +47,7 @@ auto parse_file_filter(const std::string& filter)
   }
 
   // 分配到name和pattern数组
-  for (size_t i = 0; i < segments.size(); i += 2) {
+  for (std::size_t i = 0; i < segments.size(); i += 2) {
     filter_names.push_back(segments[i]);
     filter_patterns.push_back(segments[i + 1]);
   }
@@ -135,7 +137,7 @@ auto select_file(const FileSelectorParams& params, HWND hwnd)
         std::vector<COMDLG_FILTERSPEC> filter_specs;
         filter_specs.resize(filter_names.size());
 
-        for (size_t i = 0; i < filter_names.size(); ++i) {
+        for (std::size_t i = 0; i < filter_names.size(); ++i) {
           filter_specs[i].pszName = filter_names[i].c_str();
           filter_specs[i].pszSpec = filter_patterns[i].c_str();
         }

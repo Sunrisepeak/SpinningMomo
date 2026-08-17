@@ -1,12 +1,12 @@
-#include "features/gallery/file_operations/file_operations.hpp"
+module sm.features.gallery.file_operations.file_operations;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.state.app_state;
+import sm.features.gallery.asset.repository;
+import sm.features.gallery.folder.repository;
+import sm.features.gallery.types;
+import sm.features.gallery.watcher.watcher;
 
-#include "core/state/app_state.hpp"
-#include "features/gallery/asset/repository.hpp"
-#include "features/gallery/folder/repository.hpp"
-#include "features/gallery/types.hpp"
-#include "features/gallery/watcher/watcher.hpp"
 import sm.utils.logger.logger;
 
 import sm.utils.file.file;

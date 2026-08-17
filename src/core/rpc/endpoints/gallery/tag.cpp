@@ -1,11 +1,10 @@
-#include "core/rpc/endpoints/gallery/tag.hpp"
+module sm.core.rpc.endpoints.gallery.tag;
 
-#include "vendor/std.hpp"
-
-#include "core/rpc/notification_hub.hpp"
-#include "core/state/app_state.hpp"
-#include "features/gallery/tag/repository.hpp"
-#include "features/gallery/types.hpp"
+import std;
+import sm.core.rpc.notification_hub;
+import sm.core.state.app_state;
+import sm.features.gallery.tag.repository;
+import sm.features.gallery.types;
 
 import asio;
 import sm.core.rpc.rpc;

@@ -1,10 +1,10 @@
-#include "features/gallery/tag/service.hpp"
+module sm.features.gallery.tag.service;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.state.app_state;
+import sm.features.gallery.tag.repository;
+import sm.features.gallery.types;
 
-#include "core/state/app_state.hpp"
-#include "features/gallery/tag/repository.hpp"
-#include "features/gallery/types.hpp"
 import sm.utils.logger.logger;
 
 namespace features::gallery::tag::service {

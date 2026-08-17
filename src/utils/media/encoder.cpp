@@ -1,8 +1,6 @@
 module;
 
 #include "vendor/windows/audioclient.hpp"
-#include "utils/media/state.hpp"
-#include "utils/media/types.hpp"
 #include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
 #include "vendor/windows/codecapi.hpp"
@@ -12,10 +10,12 @@ module;
 #include "vendor/windows/mfidl.hpp"
 #include "vendor/windows/mfreadwrite.hpp"
 #include "vendor/windows/strmif.hpp"
-#include "utils/media/hdr_convert.hpp"
 
 module sm.utils.media.encoder;
 
+import sm.utils.media.state;
+import sm.utils.media.types;
+import sm.utils.media.hdr_convert;
 import sm.utils.logger.logger;
 import std;
 

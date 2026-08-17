@@ -1,11 +1,8 @@
-module;
-
-#include "core/database/types.hpp"
-#include "core/state/app_state.hpp"
-#include "core/database/state.hpp"
-
 module sm.core.database.database;
 
+import sm.core.database.types;
+import sm.core.state.app_state;
+import sm.core.database.state;
 import sm.utils.logger.logger;
 import std;
 import sm.vendor.sqlite;

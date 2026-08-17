@@ -1,9 +1,8 @@
-#include "core/rpc/endpoints/update/update.hpp"
+module sm.core.rpc.endpoints.update.update;
 
-#include "vendor/std.hpp"
-
-#include "core/state/app_state.hpp"
-#include "features/update/types.hpp"
+import std;
+import sm.core.state.app_state;
+import sm.features.update.types;
 
 import sm.vendor.rfl;
 import asio;

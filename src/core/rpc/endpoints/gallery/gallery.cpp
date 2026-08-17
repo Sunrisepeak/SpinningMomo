@@ -1,15 +1,15 @@
-#include "core/rpc/endpoints/gallery/gallery.hpp"
+module sm.core.rpc.endpoints.gallery.gallery;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.rpc.endpoints.gallery.asset;
+import sm.core.rpc.endpoints.gallery.folder;
+import sm.core.rpc.endpoints.gallery.tag;
+import sm.core.rpc.notification_hub;
+import sm.core.state.app_state;
+import sm.core.tasks.tasks;
+import sm.features.gallery.gallery;
+import sm.features.gallery.types;
 
-#include "core/rpc/endpoints/gallery/asset.hpp"
-#include "core/rpc/endpoints/gallery/folder.hpp"
-#include "core/rpc/endpoints/gallery/tag.hpp"
-#include "core/rpc/notification_hub.hpp"
-#include "core/state/app_state.hpp"
-#include "core/tasks/tasks.hpp"
-#include "features/gallery/gallery.hpp"
-#include "features/gallery/types.hpp"
 import sm.utils.logger.logger;
 
 import asio;

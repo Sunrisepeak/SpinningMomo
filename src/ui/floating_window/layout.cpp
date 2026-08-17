@@ -1,12 +1,13 @@
-#include "ui/floating_window/layout.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 #include "vendor/windows/dwmapi.hpp"
 
-#include "core/state/app_state.hpp"
-#include "ui/floating_window/state.hpp"
+module sm.ui.floating_window.layout;
+
+import std;
+import sm.core.state.app_state;
+import sm.ui.floating_window.state;
 
 import sm.features.settings.state;
 
@@ -85,7 +86,7 @@ auto get_item_index_from_point(const core::AppState& state, int x, int y) -> int
 
   // 确定点击的是哪一列
   ui::floating_window::MenuItemCategory target_category;
-  size_t scroll_offset = 0;
+  std::size_t scroll_offset = 0;
 
   if (x < bounds.ratio_column_right) {
     target_category = ui::floating_window::MenuItemCategory::AspectRatio;
@@ -99,10 +100,10 @@ auto get_item_index_from_point(const core::AppState& state, int x, int y) -> int
   }
 
   // 处理比例和分辨率列
-  size_t visible_index = 0;
+  std::size_t visible_index = 0;
   int item_y = render.title_height + render.separator_height;
 
-  for (size_t i = 0; i < items.size(); ++i) {
+  for (std::size_t i = 0; i < items.size(); ++i) {
     const auto& item = items[i];
     if (item.category == target_category) {
       // 翻页模式下跳过不可见项
@@ -157,12 +158,12 @@ auto get_feature_item_index(const core::AppState& state, int y) -> int {
   const auto& items = state.floating_window->data.menu_items;
   const auto& ui = state.floating_window->ui;
 
-  const size_t scroll_offset = ui.feature_scroll_offset;
+  const std::size_t scroll_offset = ui.feature_scroll_offset;
 
-  size_t visible_index = 0;
+  std::size_t visible_index = 0;
   int feature_y = render.title_height + render.separator_height;
 
-  for (size_t i = 0; i < items.size(); ++i) {
+  for (std::size_t i = 0; i < items.size(); ++i) {
     const auto& item = items[i];
 
     // 判断是否为功能项

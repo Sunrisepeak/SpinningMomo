@@ -1,20 +1,21 @@
-#include "core/webview/host.hpp"
+module;
 
-#include "vendor/std.hpp"
-
+#include "vendor/windows.hpp"
 #include "vendor/webview2.hpp"
 #include "vendor/wil.hpp"
-#include "vendor/windows.hpp"
 #include "vendor/windows/d3d11.hpp"
 #include "vendor/windows/dcomp.hpp"
 #include "vendor/windows/dxgi.hpp"
 #include "vendor/windows/shellapi.hpp"
 #include "vendor/windows/wrl.hpp"
 
-#include "core/build_config.hpp"
-#include "core/state/app_state.hpp"
-#include "core/webview/state.hpp"
-#include "core/webview/static.hpp"
+module sm.core.webview.host;
+
+import std;
+import sm.core.build_config;
+import sm.core.state.app_state;
+import sm.core.webview.state;
+import sm.core.webview.static_;
 
 import sm.vendor.rfl;
 import sm.features.settings.state;
@@ -311,7 +312,7 @@ auto is_http_or_https_uri(std::wstring_view uri) -> bool {
     if (hay.size() < needle.size()) {
       return false;
     }
-    for (size_t i = 0; i < needle.size(); ++i) {
+    for (std::size_t i = 0; i < needle.size(); ++i) {
       wchar_t a = hay[i];
       wchar_t b = needle[i];
       if (a >= L'A' && a <= L'Z') {

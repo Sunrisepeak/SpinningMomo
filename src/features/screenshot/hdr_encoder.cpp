@@ -1,6 +1,11 @@
-#include "features/screenshot/hdr_encoder.hpp"
+module;
 
-#include "vendor/std.hpp"
+#include "vendor/windows.hpp"
+#include "vendor/windows/d3d11.hpp"
+
+module sm.features.screenshot.hdr_encoder;
+
+import std;
 
 import sm.utils.logger.logger;
 import sm.utils.string.string;

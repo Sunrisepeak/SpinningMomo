@@ -1,10 +1,9 @@
-#include "core/rpc/notification_hub.hpp"
+module sm.core.rpc.notification_hub;
 
-#include "vendor/std.hpp"
-
-#include "core/events/events.hpp"
-#include "core/state/app_state.hpp"
-#include "core/webview/events.hpp"
+import std;
+import sm.core.events.events;
+import sm.core.state.app_state;
+import sm.core.webview.events;
 
 import sm.core.http_server.sse_manager;
 import sm.utils.logger.logger;

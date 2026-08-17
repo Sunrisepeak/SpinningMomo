@@ -1,10 +1,10 @@
 module;
 
 #include "vendor/windows/winhttp.hpp"
-#include "core/http_client/types.hpp"
 
 export module sm.core.http_client.state;
 
+import sm.core.http_client.types;
 import std;
 import asio;
 

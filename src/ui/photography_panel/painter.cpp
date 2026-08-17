@@ -1,17 +1,19 @@
-#include "ui/photography_panel/painter.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 #include "vendor/windows/d2d1_3.hpp"
 
-#include "core/i18n/state.hpp"
-#include "core/state/app_state.hpp"
-#include "features/photography/long_exposure.hpp"
-#include "features/photography/state.hpp"
-#include "ui/floating_window/state.hpp"
-#include "ui/photography_panel/render_context.hpp"
-#include "ui/photography_panel/state.hpp"
+module sm.ui.photography_panel.painter;
+
+import std;
+import sm.core.i18n.state;
+import sm.core.state.app_state;
+import sm.features.photography.long_exposure;
+import sm.features.photography.state;
+import sm.ui.floating_window.state;
+import sm.ui.photography_panel.render_context;
+import sm.ui.photography_panel.state;
+
 import sm.utils.logger.logger;
 import sm.utils.string.string;
 

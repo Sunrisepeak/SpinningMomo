@@ -1,19 +1,21 @@
-#include "features/overlay/interaction.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 #include "vendor/windows/dwmapi.hpp"
 
-#include "core/state/app_state.hpp"
-#include "features/overlay/capture.hpp"
-#include "features/overlay/geometry.hpp"
-#include "features/overlay/overlay.hpp"
-#include "features/overlay/rendering.hpp"
-#include "features/overlay/state.hpp"
-#include "features/overlay/types.hpp"
-#include "features/overlay/window.hpp"
-#include "utils/graphics/capture.hpp"
+module sm.features.overlay.interaction;
+
+import std;
+import sm.core.state.app_state;
+import sm.features.overlay.capture;
+import sm.features.overlay.geometry;
+import sm.features.overlay.overlay;
+import sm.features.overlay.rendering;
+import sm.features.overlay.state;
+import sm.features.overlay.types;
+import sm.features.overlay.window;
+import sm.utils.graphics.capture;
+
 import sm.utils.logger.logger;
 
 namespace features::overlay::interaction {

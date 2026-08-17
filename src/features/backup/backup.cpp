@@ -1,12 +1,13 @@
-#include "features/backup/backup.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 
-#include "core/state/app_state.hpp"
-#include "core/state/runtime_info.hpp"
-#include "features/backup/types.hpp"
+module sm.features.backup.backup;
+
+import std;
+import sm.core.state.app_state;
+import sm.core.state.runtime_info;
+import sm.features.backup.types;
 
 import sm.core.database.database;
 import sm.utils.path.path;

@@ -1,12 +1,11 @@
-#include "core/rpc/endpoints/gallery/folder.hpp"
+module sm.core.rpc.endpoints.gallery.folder;
 
-#include "vendor/std.hpp"
-
-#include "core/rpc/notification_hub.hpp"
-#include "core/state/app_state.hpp"
-#include "features/gallery/folder/repository.hpp"
-#include "features/gallery/folder/service.hpp"
-#include "features/gallery/types.hpp"
+import std;
+import sm.core.rpc.notification_hub;
+import sm.core.state.app_state;
+import sm.features.gallery.folder.repository;
+import sm.features.gallery.folder.service;
+import sm.features.gallery.types;
 
 import asio;
 import sm.core.rpc.rpc;

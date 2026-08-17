@@ -1,13 +1,13 @@
-#include "features/gallery/static_resolver.hpp"
+module sm.features.gallery.static_resolver;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.build_config;
+import sm.core.state.app_state;
+import sm.core.webview.state;
+import sm.core.webview.webview;
+import sm.features.gallery.original_locator;
+import sm.features.gallery.state;
 
-#include "core/build_config.hpp"
-#include "core/state/app_state.hpp"
-#include "core/webview/state.hpp"
-#include "core/webview/webview.hpp"
-#include "features/gallery/original_locator.hpp"
-#include "features/gallery/state.hpp"
 import sm.utils.logger.logger;
 
 import sm.core.http_server.static_;

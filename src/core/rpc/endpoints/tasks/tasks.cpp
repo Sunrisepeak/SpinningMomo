@@ -1,9 +1,8 @@
-#include "core/rpc/endpoints/tasks/tasks.hpp"
+module sm.core.rpc.endpoints.tasks.tasks;
 
-#include "vendor/std.hpp"
-
-#include "core/state/app_state.hpp"
-#include "core/tasks/tasks.hpp"
+import std;
+import sm.core.state.app_state;
+import sm.core.tasks.tasks;
 
 import asio;
 import sm.core.rpc.rpc;

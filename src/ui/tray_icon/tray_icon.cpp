@@ -1,22 +1,24 @@
-#include "ui/tray_icon/tray_icon.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 #include "vendor/windows/shellapi.hpp"
 
-#include "core/commands/registry.hpp"
-#include "core/commands/types.hpp"
-#include "core/i18n/state.hpp"
-#include "core/i18n/types.hpp"
-#include "core/state/app_state.hpp"
-#include "features/settings/menu.hpp"
-#include "features/window_control/window_control.hpp"
-#include "ui/context_menu/context_menu.hpp"
-#include "ui/context_menu/types.hpp"
-#include "ui/floating_window/state.hpp"
-#include "ui/tray_icon/state.hpp"
-#include "ui/tray_icon/types.hpp"
+module sm.ui.tray_icon.tray_icon;
+
+import std;
+import sm.core.commands.registry;
+import sm.core.commands.types;
+import sm.core.i18n.state;
+import sm.core.i18n.types;
+import sm.core.state.app_state;
+import sm.features.settings.menu;
+import sm.features.window_control.window_control;
+import sm.ui.context_menu.context_menu;
+import sm.ui.context_menu.types;
+import sm.ui.floating_window.state;
+import sm.ui.tray_icon.state;
+import sm.ui.tray_icon.types;
+
 import sm.utils.string.string;
 
 namespace ui::tray_icon::detail {
@@ -43,7 +45,7 @@ auto build_window_submenu(core::AppState& state) -> std::vector<ui::context_menu
 auto build_ratio_submenu(core::AppState& state) -> std::vector<ui::context_menu::MenuItem> {
   std::vector<ui::context_menu::MenuItem> items;
   const auto& ratios = features::settings::menu::get_ratios(state);
-  for (size_t i = 0; i < ratios.size(); ++i) {
+  for (std::size_t i = 0; i < ratios.size(); ++i) {
     items.emplace_back(ui::context_menu::MenuItem::ratio_item(
         ratios[i], i, i == state.floating_window->ui.current_ratio_index));
   }
@@ -53,7 +55,7 @@ auto build_ratio_submenu(core::AppState& state) -> std::vector<ui::context_menu:
 auto build_resolution_submenu(core::AppState& state) -> std::vector<ui::context_menu::MenuItem> {
   std::vector<ui::context_menu::MenuItem> items;
   const auto& resolutions = features::settings::menu::get_resolutions(state);
-  for (size_t i = 0; i < resolutions.size(); ++i) {
+  for (std::size_t i = 0; i < resolutions.size(); ++i) {
     items.emplace_back(ui::context_menu::MenuItem::resolution_item(
         resolutions[i], i, i == state.floating_window->ui.current_resolution_index));
   }

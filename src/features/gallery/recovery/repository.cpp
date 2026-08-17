@@ -1,10 +1,9 @@
-#include "features/gallery/recovery/repository.hpp"
+module sm.features.gallery.recovery.repository;
 
-#include "vendor/std.hpp"
-
-#include "core/database/types.hpp"
-#include "core/state/app_state.hpp"
-#include "features/gallery/recovery/types.hpp"
+import std;
+import sm.core.database.types;
+import sm.core.state.app_state;
+import sm.features.gallery.recovery.types;
 
 import sm.core.database.database;
 

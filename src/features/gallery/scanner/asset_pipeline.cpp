@@ -1,17 +1,17 @@
-#include "features/gallery/scanner/asset_pipeline.hpp"
+module sm.features.gallery.scanner.asset_pipeline;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.state.app_state;
+import sm.features.gallery.asset.repository;
+import sm.features.gallery.asset.thumbnail;
+import sm.features.gallery.color.extractor;
+import sm.features.gallery.color.repository;
+import sm.features.gallery.color.types;
+import sm.features.gallery.ignore.service;
+import sm.features.gallery.scanner.common;
+import sm.features.gallery.types;
+import sm.utils.image.image;
 
-#include "core/state/app_state.hpp"
-#include "features/gallery/asset/repository.hpp"
-#include "features/gallery/asset/thumbnail.hpp"
-#include "features/gallery/color/extractor.hpp"
-#include "features/gallery/color/repository.hpp"
-#include "features/gallery/color/types.hpp"
-#include "features/gallery/ignore/service.hpp"
-#include "features/gallery/scanner/common.hpp"
-#include "features/gallery/types.hpp"
-#include "utils/image/image.hpp"
 import sm.utils.logger.logger;
 
 import sm.core.database.database;

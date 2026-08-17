@@ -1,15 +1,17 @@
-#include "core/webview/webview.hpp"
+module;
 
-#include "vendor/std.hpp"
-
+#include "vendor/windows.hpp"
 #include "vendor/webview2.hpp"
 #include "vendor/wil.hpp"
-#include "vendor/windows.hpp"
 #include "vendor/windows/windowsx.hpp"
 
-#include "core/state/app_state.hpp"
-#include "core/webview/host.hpp"
-#include "core/webview/state.hpp"
+module sm.core.webview.webview;
+
+import std;
+import sm.core.state.app_state;
+import sm.core.webview.host;
+import sm.core.webview.state;
+
 import sm.utils.logger.logger;
 import sm.utils.string.string;
 

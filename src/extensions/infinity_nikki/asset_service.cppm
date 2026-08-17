@@ -1,11 +1,8 @@
-module;
-
-#include "core/state/app_state.hpp"
-#include "extensions/infinity_nikki/types.hpp"
-#include "features/gallery/types.hpp"
-
 export module sm.extensions.infinity_nikki.asset_service;
 
+import sm.core.state.app_state;
+import sm.extensions.infinity_nikki.types;
+import sm.features.gallery.types;
 import std;
 import asio;
 

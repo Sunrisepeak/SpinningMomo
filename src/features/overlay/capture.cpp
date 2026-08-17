@@ -1,20 +1,22 @@
-#include "features/overlay/capture.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
+#include "vendor/wil.hpp"
 #include "vendor/windows/d3d11.hpp"
 
-#include "core/state/app_state.hpp"
-#include "core/state/runtime_info.hpp"
-#include "features/overlay/geometry.hpp"
-#include "features/overlay/interaction.hpp"
-#include "features/overlay/overlay.hpp"
-#include "features/overlay/rendering.hpp"
-#include "features/overlay/state.hpp"
-#include "features/overlay/window.hpp"
-#include "utils/graphics/capture.hpp"
+module sm.features.overlay.capture;
+
+import std;
+import sm.core.state.app_state;
+import sm.core.state.runtime_info;
+import sm.features.overlay.geometry;
+import sm.features.overlay.interaction;
+import sm.features.overlay.overlay;
+import sm.features.overlay.rendering;
+import sm.features.overlay.state;
+import sm.features.overlay.window;
+import sm.utils.graphics.capture;
+
 import sm.utils.logger.logger;
 
 namespace features::overlay::capture {

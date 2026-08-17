@@ -1,13 +1,10 @@
-module;
-
-#include "core/state/app_state.hpp"
-#include "core/events/events.hpp"
-#include "core/webview/events.hpp"
-#include "core/webview/state.hpp"
-#include "core/webview/webview.hpp"
-
 module sm.core.webview.rpc_bridge;
 
+import sm.core.state.app_state;
+import sm.core.events.events;
+import sm.core.webview.events;
+import sm.core.webview.state;
+import sm.core.webview.webview;
 import sm.utils.logger.logger;
 import std;
 import asio;

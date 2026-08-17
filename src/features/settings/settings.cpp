@@ -1,12 +1,12 @@
 module;
 
-#include "core/state/app_state.hpp"
 #include "vendor/windows.hpp"
-#include "core/events/events.hpp"
-#include "features/settings/compute.hpp"
 
 module sm.features.settings.settings;
 
+import sm.core.state.app_state;
+import sm.core.events.events;
+import sm.features.settings.compute;
 import std;
 import sm.vendor.rfl;
 import sm.features.settings.background;

@@ -1,26 +1,27 @@
-#include "features/recording/recording.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
+#include "vendor/wil.hpp"
 #include "vendor/windows/audioclient.hpp"
 #include "vendor/windows/mfapi.hpp"
 
-#include "core/events/events.hpp"
-#include "core/i18n/state.hpp"
-#include "core/notifications/notifications.hpp"
-#include "core/notifications/types.hpp"
-#include "core/state/app_state.hpp"
-#include "features/recording/encoder_loop.hpp"
-#include "features/recording/session.hpp"
-#include "features/recording/state.hpp"
-#include "features/recording/time.hpp"
-#include "features/recording/types.hpp"
-#include "ui/floating_window/events.hpp"
-#include "ui/floating_window/floating_window.hpp"
-#include "utils/graphics/capture.hpp"
-#include "utils/media/audio_capture.hpp"
+module sm.features.recording.recording;
+
+import std;
+import sm.core.events.events;
+import sm.core.i18n.state;
+import sm.core.notifications.notifications;
+import sm.core.notifications.types;
+import sm.core.state.app_state;
+import sm.features.recording.encoder_loop;
+import sm.features.recording.session;
+import sm.features.recording.state;
+import sm.features.recording.time;
+import sm.features.recording.types;
+import sm.ui.floating_window.events;
+import sm.ui.floating_window.floating_window;
+import sm.utils.graphics.capture;
+import sm.utils.media.audio_capture;
 
 import sm.features.settings.state;
 import sm.utils.logger.logger;

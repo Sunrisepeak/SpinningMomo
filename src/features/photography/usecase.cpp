@@ -1,12 +1,12 @@
-#include "features/photography/usecase.hpp"
+module sm.features.photography.usecase;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.i18n.state;
+import sm.core.notifications.notifications;
+import sm.core.state.app_state;
+import sm.features.photography.state;
+import sm.ui.photography_panel.photography_panel;
 
-#include "core/i18n/state.hpp"
-#include "core/notifications/notifications.hpp"
-#include "core/state/app_state.hpp"
-#include "features/photography/state.hpp"
-#include "ui/photography_panel/photography_panel.hpp"
 import sm.utils.logger.logger;
 
 namespace features::photography {

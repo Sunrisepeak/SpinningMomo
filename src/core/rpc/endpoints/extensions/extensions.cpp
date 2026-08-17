@@ -1,13 +1,12 @@
-#include "core/rpc/endpoints/extensions/extensions.hpp"
+module sm.core.rpc.endpoints.extensions.extensions;
 
-#include "vendor/std.hpp"
-
-#include "core/rpc/notification_hub.hpp"
-#include "core/state/app_state.hpp"
-#include "extensions/infinity_nikki/game_directory.hpp"
-#include "extensions/infinity_nikki/task_service.hpp"
-#include "extensions/infinity_nikki/types.hpp"
-#include "features/gallery/types.hpp"
+import std;
+import sm.core.rpc.notification_hub;
+import sm.core.state.app_state;
+import sm.extensions.infinity_nikki.game_directory;
+import sm.extensions.infinity_nikki.task_service;
+import sm.extensions.infinity_nikki.types;
+import sm.features.gallery.types;
 
 import sm.vendor.rfl;
 import sm.utils.logger.logger;

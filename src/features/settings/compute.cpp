@@ -1,12 +1,12 @@
-#include "features/settings/compute.hpp"
+module sm.features.settings.compute;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.i18n.state;
+import sm.core.i18n.types;
+import sm.core.state.app_state;
+import sm.features.settings.menu;
+import sm.features.settings.registry;
 
-#include "core/i18n/state.hpp"
-#include "core/i18n/types.hpp"
-#include "core/state/app_state.hpp"
-#include "features/settings/menu.hpp"
-#include "features/settings/registry.hpp"
 import sm.features.settings.state;
 import sm.features.settings.types;
 import sm.utils.logger.logger;

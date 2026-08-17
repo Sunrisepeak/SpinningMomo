@@ -1,9 +1,8 @@
-#include "core/rpc/endpoints/runtime_info/runtime_info.hpp"
+module sm.core.rpc.endpoints.runtime_info.runtime_info;
 
-#include "vendor/std.hpp"
-
-#include "core/state/app_state.hpp"
-#include "core/state/runtime_info.hpp"
+import std;
+import sm.core.state.app_state;
+import sm.core.state.runtime_info;
 
 import asio;
 import sm.core.rpc.rpc;

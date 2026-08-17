@@ -1,13 +1,10 @@
-module;
-
-#include "core/state/app_state.hpp"
-#include "core/build_config.hpp"
-#include "core/webview/state.hpp"
-#include "core/webview/webview.hpp"
-#include "utils/image/image.hpp"
-
 module sm.features.settings.background;
 
+import sm.core.state.app_state;
+import sm.core.build_config;
+import sm.core.webview.state;
+import sm.core.webview.webview;
+import sm.utils.image.image;
 import std;
 import sm.features.settings.types;
 import sm.utils.logger.logger;

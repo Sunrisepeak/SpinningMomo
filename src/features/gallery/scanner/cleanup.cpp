@@ -1,12 +1,12 @@
-#include "features/gallery/scanner/cleanup.hpp"
+module sm.features.gallery.scanner.cleanup;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.state.app_state;
+import sm.features.gallery.folder.repository;
+import sm.features.gallery.scanner.asset_pipeline;
+import sm.features.gallery.scanner.progress;
+import sm.features.gallery.types;
 
-#include "core/state/app_state.hpp"
-#include "features/gallery/folder/repository.hpp"
-#include "features/gallery/scanner/asset_pipeline.hpp"
-#include "features/gallery/scanner/progress.hpp"
-#include "features/gallery/types.hpp"
 import sm.utils.logger.logger;
 
 namespace features::gallery::scanner::cleanup {

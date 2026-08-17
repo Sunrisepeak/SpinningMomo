@@ -3,7 +3,7 @@
 #include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
 
-#include "app.hpp"
+import sm.app;
 import sm.features.settings.settings;
 import sm.utils.logger.logger;
 

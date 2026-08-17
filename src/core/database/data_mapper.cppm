@@ -1,9 +1,6 @@
-module;
-
-#include "core/database/types.hpp"
-
 export module sm.core.database.data_mapper;
 
+import sm.core.database.types;
 import sm.vendor.rfl;
 import std;
 import sm.vendor.sqlite;

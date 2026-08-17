@@ -1,18 +1,20 @@
-#include "features/gallery/scanner/process.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
 
-#include "core/state/app_state.hpp"
-#include "core/worker_pool/worker_pool.hpp"
-#include "features/gallery/asset/repository.hpp"
-#include "features/gallery/color/repository.hpp"
-#include "features/gallery/scanner/asset_pipeline.hpp"
-#include "features/gallery/scanner/common.hpp"
-#include "features/gallery/scanner/progress.hpp"
-#include "features/gallery/types.hpp"
+module sm.features.gallery.scanner.process;
+
+import std;
+import sm.core.state.app_state;
+import sm.core.worker_pool.worker_pool;
+import sm.features.gallery.asset.repository;
+import sm.features.gallery.color.repository;
+import sm.features.gallery.scanner.asset_pipeline;
+import sm.features.gallery.scanner.common;
+import sm.features.gallery.scanner.progress;
+import sm.features.gallery.types;
+
 import sm.utils.logger.logger;
 
 import sm.core.database.database;
@@ -76,17 +78,17 @@ auto process_files_in_parallel(core::AppState& app_state,
     return FileProcessingBatchResult{};
   }
 
-  constexpr size_t PROCESS_BATCH_SIZE = 16;
-  size_t total_batches = (files_to_process.size() + PROCESS_BATCH_SIZE - 1) / PROCESS_BATCH_SIZE;
+  constexpr std::size_t PROCESS_BATCH_SIZE = 16;
+  std::size_t total_batches = (files_to_process.size() + PROCESS_BATCH_SIZE - 1) / PROCESS_BATCH_SIZE;
 
   std::latch completion_latch(total_batches);
   FileProcessingBatchResult final_result;
   std::mutex results_mutex;
   std::size_t submitted_batches = 0;
 
-  for (size_t batch_idx = 0; batch_idx < total_batches; ++batch_idx) {
-    size_t start = batch_idx * PROCESS_BATCH_SIZE;
-    size_t end = std::min(start + PROCESS_BATCH_SIZE, files_to_process.size());
+  for (std::size_t batch_idx = 0; batch_idx < total_batches; ++batch_idx) {
+    std::size_t start = batch_idx * PROCESS_BATCH_SIZE;
+    std::size_t end = std::min(start + PROCESS_BATCH_SIZE, files_to_process.size());
 
     bool submitted = core::worker_pool::submit_task(
         app_state, [&final_result, &results_mutex, &completion_latch, &app_state, &files_to_process,
@@ -96,7 +98,7 @@ auto process_files_in_parallel(core::AppState& app_state,
 
           FileProcessingBatchResult batch_result;
 
-          for (size_t idx = start; idx < end; ++idx) {
+          for (std::size_t idx = start; idx < end; ++idx) {
             // 已开始的单文件媒体调用自然收尾，下一文件开始前响应停止
             if (stop_token.stop_requested()) {
               return;

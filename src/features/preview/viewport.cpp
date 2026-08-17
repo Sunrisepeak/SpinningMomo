@@ -1,16 +1,18 @@
-#include "features/preview/viewport.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
 #include "vendor/windows/d3d11.hpp"
 
-#include "core/state/app_state.hpp"
-#include "features/preview/rendering.hpp"
-#include "features/preview/state.hpp"
-#include "features/preview/types.hpp"
-#include "utils/graphics/d3d.hpp"
+module sm.features.preview.viewport;
+
+import std;
+import sm.core.state.app_state;
+import sm.features.preview.rendering;
+import sm.features.preview.state;
+import sm.features.preview.types;
+import sm.utils.graphics.d3d;
+
 import sm.utils.logger.logger;
 
 namespace features::preview::viewport {

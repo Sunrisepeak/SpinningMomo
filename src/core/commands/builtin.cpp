@@ -3,24 +3,24 @@
 
 #include "vendor/windows.hpp"
 
-#include "core/commands/registry.hpp"
-#include "core/commands/state.hpp"
-#include "core/commands/types.hpp"
-#include "core/state/app_state.hpp"
-#include "features/letterbox/state.hpp"
-#include "features/letterbox/usecase.hpp"
-#include "features/overlay/state.hpp"
-#include "features/overlay/usecase.hpp"
-#include "features/photography/state.hpp"
-#include "features/photography/usecase.hpp"
-#include "features/preview/state.hpp"
-#include "features/preview/usecase.hpp"
-#include "features/recording/state.hpp"
-#include "features/recording/usecase.hpp"
-#include "features/screenshot/usecase.hpp"
-#include "features/window_control/usecase.hpp"
-#include "ui/floating_window/floating_window.hpp"
-#include "ui/webview_window/webview_window.hpp"
+import sm.core.commands.registry;
+import sm.core.commands.state;
+import sm.core.commands.types;
+import sm.core.state.app_state;
+import sm.features.letterbox.state;
+import sm.features.letterbox.usecase;
+import sm.features.overlay.state;
+import sm.features.overlay.usecase;
+import sm.features.photography.state;
+import sm.features.photography.usecase;
+import sm.features.preview.state;
+import sm.features.preview.usecase;
+import sm.features.recording.state;
+import sm.features.recording.usecase;
+import sm.features.screenshot.usecase;
+import sm.features.window_control.usecase;
+import sm.ui.floating_window.floating_window;
+import sm.ui.webview_window.webview_window;
 
 import sm.features.settings.state;
 import sm.utils.logger.logger;

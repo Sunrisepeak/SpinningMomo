@@ -1,21 +1,21 @@
-#include "extensions/infinity_nikki/photo_service.hpp"
+module sm.extensions.infinity_nikki.photo_service;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.state.app_state;
+import sm.core.tasks.tasks;
+import sm.core.worker_pool.worker_pool;
+import sm.extensions.infinity_nikki.media_hardlinks;
+import sm.extensions.infinity_nikki.role_profile;
+import sm.extensions.infinity_nikki.task_service;
+import sm.extensions.infinity_nikki.types;
+import sm.features.gallery.asset.repository;
+import sm.features.gallery.folder.service;
+import sm.features.gallery.gallery;
+import sm.features.gallery.ignore.repository;
+import sm.features.gallery.state;
+import sm.features.gallery.types;
+import sm.features.gallery.watcher.watcher;
 
-#include "core/state/app_state.hpp"
-#include "core/tasks/tasks.hpp"
-#include "core/worker_pool/worker_pool.hpp"
-#include "extensions/infinity_nikki/media_hardlinks.hpp"
-#include "extensions/infinity_nikki/role_profile.hpp"
-#include "extensions/infinity_nikki/task_service.hpp"
-#include "extensions/infinity_nikki/types.hpp"
-#include "features/gallery/asset/repository.hpp"
-#include "features/gallery/folder/service.hpp"
-#include "features/gallery/gallery.hpp"
-#include "features/gallery/ignore/repository.hpp"
-#include "features/gallery/state.hpp"
-#include "features/gallery/types.hpp"
-#include "features/gallery/watcher/watcher.hpp"
 import sm.features.settings.state;
 import sm.utils.logger.logger;
 

@@ -1,11 +1,8 @@
-module;
-
-#include "core/state/app_state.hpp"
-#include "extensions/infinity_nikki/types.hpp"
-#include "core/http_client/types.hpp"
-
 module sm.extensions.infinity_nikki.metadata_dict;
 
+import sm.core.state.app_state;
+import sm.extensions.infinity_nikki.types;
+import sm.core.http_client.types;
 import sm.vendor.rfl;
 import sm.utils.logger.logger;
 import std;

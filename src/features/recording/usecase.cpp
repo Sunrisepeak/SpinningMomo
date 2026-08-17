@@ -1,19 +1,20 @@
-#include "features/recording/usecase.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 
-#include "core/events/events.hpp"
-#include "core/i18n/state.hpp"
-#include "core/state/app_state.hpp"
-#include "features/recording/recording.hpp"
-#include "features/recording/session.hpp"
-#include "features/recording/state.hpp"
-#include "features/recording/types.hpp"
-#include "features/window_control/window_control.hpp"
-#include "ui/floating_window/events.hpp"
-#include "utils/media/audio_capture.hpp"
+module sm.features.recording.usecase;
+
+import std;
+import sm.core.events.events;
+import sm.core.i18n.state;
+import sm.core.state.app_state;
+import sm.features.recording.recording;
+import sm.features.recording.session;
+import sm.features.recording.state;
+import sm.features.recording.types;
+import sm.features.window_control.window_control;
+import sm.ui.floating_window.events;
+import sm.utils.media.audio_capture;
 
 import sm.features.settings.state;
 import sm.utils.logger.logger;

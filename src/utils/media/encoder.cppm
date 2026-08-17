@@ -3,11 +3,11 @@ module;
 #include "vendor/windows.hpp"
 #include "vendor/windows/audioclient.hpp"
 #include "vendor/windows/d3d11.hpp"
-#include "utils/media/state.hpp"
-#include "utils/media/types.hpp"
 
 export module sm.utils.media.encoder;
 
+import sm.utils.media.state;
+import sm.utils.media.types;
 import std;
 
 export namespace utils::media::encoder {

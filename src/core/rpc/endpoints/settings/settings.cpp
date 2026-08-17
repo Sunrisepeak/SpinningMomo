@@ -1,8 +1,8 @@
-#include "core/rpc/endpoints/settings/settings.hpp"
+module sm.core.rpc.endpoints.settings.settings;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.state.app_state;
 
-#include "core/state/app_state.hpp"
 import sm.features.settings.background;
 import sm.features.settings.settings;
 import sm.features.settings.types;

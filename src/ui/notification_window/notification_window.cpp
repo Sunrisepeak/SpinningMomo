@@ -1,17 +1,19 @@
-#include "ui/notification_window/notification_window.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 #include "vendor/windows/dwmapi.hpp"
 
-#include "core/notifications/types.hpp"
-#include "core/state/app_state.hpp"
-#include "ui/floating_window/state.hpp"
-#include "ui/notification_window/painter.hpp"
-#include "ui/notification_window/render_context.hpp"
-#include "ui/notification_window/state.hpp"
-#include "ui/notification_window/types.hpp"
+module sm.ui.notification_window.notification_window;
+
+import std;
+import sm.core.notifications.types;
+import sm.core.state.app_state;
+import sm.ui.floating_window.state;
+import sm.ui.notification_window.painter;
+import sm.ui.notification_window.render_context;
+import sm.ui.notification_window.state;
+import sm.ui.notification_window.types;
+
 import sm.utils.logger.logger;
 
 import sm.utils.display.display;
@@ -157,8 +159,8 @@ auto mark_notification_fading_out(Notification& notification,
   notification.action_hovered = false;
 }
 
-auto active_layout_count(const core::AppState& state) -> size_t {
-  size_t count = 0;
+auto active_layout_count(const core::AppState& state) -> std::size_t {
+  std::size_t count = 0;
   for (const auto& notification : state.notification_window->active_notifications) {
     if (!painter::is_exiting(notification.state)) {
       ++count;
@@ -254,7 +256,7 @@ auto hide_host_if_idle(core::AppState& state) -> void {
   }
 }
 
-auto find_notification(core::AppState& state, size_t id) -> std::list<Notification>::iterator {
+auto find_notification(core::AppState& state, std::size_t id) -> std::list<Notification>::iterator {
   return std::ranges::find_if(
       state.notification_window->active_notifications,
       [id](const Notification& notification) { return notification.id == id; });
@@ -523,7 +525,7 @@ auto show_notification(core::AppState& state, core::notifications::NotificationO
 
   const auto now = std::chrono::steady_clock::now();
   if (active_layout_count(state) >=
-      static_cast<size_t>(notification_window::MAX_VISIBLE_NOTIFICATIONS)) {
+      static_cast<std::size_t>(notification_window::MAX_VISIBLE_NOTIFICATIONS)) {
     for (auto& notification : state.notification_window->active_notifications) {
       if (!painter::is_exiting(notification.state)) {
         mark_notification_fading_out(notification, now);

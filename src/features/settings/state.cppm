@@ -1,9 +1,6 @@
-module;
-
-#include "features/settings/menu_types.hpp"
-
 export module sm.features.settings.state;
 
+import sm.features.settings.menu_types;
 import std;
 import sm.features.settings.types;
 

@@ -1,9 +1,6 @@
-module;
-
-#include "core/state/app_state.hpp"
-
 export module sm.core.http_server.sse_manager;
 
+import sm.core.state.app_state;
 import std;
 import sm.vendor.uwebsockets;
 

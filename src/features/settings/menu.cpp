@@ -1,8 +1,8 @@
-#include "features/settings/menu.hpp"
+module sm.features.settings.menu;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.state.app_state;
 
-#include "core/state/app_state.hpp"
 import sm.features.settings.state;
 
 namespace features::settings::menu {

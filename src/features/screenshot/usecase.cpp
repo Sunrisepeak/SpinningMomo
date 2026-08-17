@@ -1,16 +1,15 @@
-#include "features/screenshot/usecase.hpp"
+module sm.features.screenshot.usecase;
 
-#include "vendor/std.hpp"
-
-#include "core/i18n/state.hpp"
-#include "core/notifications/notifications.hpp"
-#include "core/notifications/types.hpp"
-#include "core/state/app_state.hpp"
-#include "features/photography/state.hpp"
-#include "features/screenshot/screenshot.hpp"
-#include "features/window_control/window_control.hpp"
-#include "ui/floating_window/events.hpp"
-#include "utils/image/image.hpp"
+import std;
+import sm.core.i18n.state;
+import sm.core.notifications.notifications;
+import sm.core.notifications.types;
+import sm.core.state.app_state;
+import sm.features.photography.state;
+import sm.features.screenshot.screenshot;
+import sm.features.window_control.window_control;
+import sm.ui.floating_window.events;
+import sm.utils.image.image;
 
 import sm.features.settings.state;
 import sm.utils.logger.logger;

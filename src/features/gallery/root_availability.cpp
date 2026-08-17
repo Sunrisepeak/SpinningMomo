@@ -1,11 +1,11 @@
-#include "features/gallery/root_availability.hpp"
+module sm.features.gallery.root_availability;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.state.app_state;
+import sm.features.gallery.folder.repository;
+import sm.features.gallery.state;
+import sm.features.gallery.types;
 
-#include "core/state/app_state.hpp"
-#include "features/gallery/folder/repository.hpp"
-#include "features/gallery/state.hpp"
-#include "features/gallery/types.hpp"
 import sm.utils.logger.logger;
 
 import asio;

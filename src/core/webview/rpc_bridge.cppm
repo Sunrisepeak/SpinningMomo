@@ -1,9 +1,6 @@
-module;
-
-#include "core/state/app_state.hpp"
-
 export module sm.core.webview.rpc_bridge;
 
+import sm.core.state.app_state;
 import std;
 import asio;
 

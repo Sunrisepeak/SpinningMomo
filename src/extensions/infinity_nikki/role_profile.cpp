@@ -1,13 +1,12 @@
-#include "extensions/infinity_nikki/role_profile.hpp"
+module sm.extensions.infinity_nikki.role_profile;
 
-#include "vendor/std.hpp"
-
-#include "core/http_client/types.hpp"
-#include "core/rpc/notification_hub.hpp"
-#include "core/state/app_state.hpp"
-#include "features/gallery/folder/repository.hpp"
-#include "features/gallery/folder/service.hpp"
-#include "features/gallery/types.hpp"
+import std;
+import sm.core.http_client.types;
+import sm.core.rpc.notification_hub;
+import sm.core.state.app_state;
+import sm.features.gallery.folder.repository;
+import sm.features.gallery.folder.service;
+import sm.features.gallery.types;
 
 import sm.vendor.rfl;
 import sm.features.settings.state;

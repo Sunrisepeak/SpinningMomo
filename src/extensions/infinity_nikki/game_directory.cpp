@@ -1,12 +1,14 @@
-#include "extensions/infinity_nikki/game_directory.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
 #include "vendor/windows/shlobj_core.hpp"
 
-#include "extensions/infinity_nikki/types.hpp"
+module sm.extensions.infinity_nikki.game_directory;
+
+import std;
+import sm.extensions.infinity_nikki.types;
+
 import sm.utils.logger.logger;
 import sm.utils.string.string;
 

@@ -1,11 +1,11 @@
-#include "extensions/infinity_nikki/media_hardlinks.hpp"
+module sm.extensions.infinity_nikki.media_hardlinks;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.state.app_state;
+import sm.extensions.infinity_nikki.types;
+import sm.features.gallery.types;
+import sm.features.gallery.watcher.watcher;
 
-#include "core/state/app_state.hpp"
-#include "extensions/infinity_nikki/types.hpp"
-#include "features/gallery/types.hpp"
-#include "features/gallery/watcher/watcher.hpp"
 import sm.features.settings.state;
 import sm.utils.logger.logger;
 import sm.utils.string.string;

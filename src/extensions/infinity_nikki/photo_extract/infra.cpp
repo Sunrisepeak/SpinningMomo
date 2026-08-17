@@ -1,14 +1,11 @@
-module;
-
-#include "core/state/app_state.hpp"
-#include "extensions/infinity_nikki/photo_extract/scan.hpp"
-#include "extensions/infinity_nikki/types.hpp"
-#include "core/database/types.hpp"
-#include "core/http_client/types.hpp"
-#include "features/gallery/folder/repository.hpp"
-
 module sm.extensions.infinity_nikki.photo_extract.infra;
 
+import sm.core.state.app_state;
+import sm.extensions.infinity_nikki.photo_extract.scan;
+import sm.extensions.infinity_nikki.types;
+import sm.core.database.types;
+import sm.core.http_client.types;
+import sm.features.gallery.folder.repository;
 import sm.vendor.rfl;
 import sm.core.database.database;
 import std;

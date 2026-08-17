@@ -1,14 +1,14 @@
-#include "extensions/infinity_nikki/task_service.hpp"
+module sm.extensions.infinity_nikki.task_service;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.rpc.notification_hub;
+import sm.core.state.app_state;
+import sm.core.tasks.tasks;
+import sm.extensions.infinity_nikki.media_hardlinks;
+import sm.extensions.infinity_nikki.types;
+import sm.features.gallery.gallery;
+import sm.features.gallery.types;
 
-#include "core/rpc/notification_hub.hpp"
-#include "core/state/app_state.hpp"
-#include "core/tasks/tasks.hpp"
-#include "extensions/infinity_nikki/media_hardlinks.hpp"
-#include "extensions/infinity_nikki/types.hpp"
-#include "features/gallery/gallery.hpp"
-#include "features/gallery/types.hpp"
 import sm.features.settings.settings;
 import sm.features.settings.state;
 import sm.utils.logger.logger;

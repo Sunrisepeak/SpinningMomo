@@ -1,17 +1,19 @@
-#include "features/overlay/rendering.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
 #include "vendor/windows/d3d11.hpp"
 
-#include "core/state/app_state.hpp"
-#include "features/overlay/geometry.hpp"
-#include "features/overlay/shaders.hpp"
-#include "features/overlay/state.hpp"
-#include "features/overlay/types.hpp"
-#include "utils/graphics/d3d.hpp"
+module sm.features.overlay.rendering;
+
+import std;
+import sm.core.state.app_state;
+import sm.features.overlay.geometry;
+import sm.features.overlay.shaders;
+import sm.features.overlay.state;
+import sm.features.overlay.types;
+import sm.utils.graphics.d3d;
+
 import sm.utils.logger.logger;
 
 namespace features::overlay::rendering {
