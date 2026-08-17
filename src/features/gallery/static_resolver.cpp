@@ -3,7 +3,7 @@
 #include "vendor/std.hpp"
 
 #include "core/build_config.hpp"
-import sm.core.http_server.static;
+import sm.core.http_server.static_;
 import sm.core.http_server.types;
 #include "core/state/app_state.hpp"
 #include "core/webview/state.hpp"

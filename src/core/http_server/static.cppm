@@ -3,7 +3,7 @@ module;
 #include "vendor/uwebsockets.hpp"
 #include "core/state/app_state.hpp"
 
-export module sm.core.http_server.static;
+export module sm.core.http_server.static_;
 
 import std;
 import sm.core.http_server.state;

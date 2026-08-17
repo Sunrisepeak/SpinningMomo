@@ -3,7 +3,7 @@ module;
 #include "vendor/uwebsockets.hpp"
 #include "core/state/app_state.hpp"
 
-module sm.core.http_server.static;
+module sm.core.http_server.static_;
 
 import std;
 import asio;

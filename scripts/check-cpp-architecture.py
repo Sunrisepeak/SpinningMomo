@@ -153,6 +153,20 @@ def validate_file(path: Path, errors: list[str]) -> None:
             report(errors, path, 1, f"使用 {symbol} 时必须写明来源: {' 或 '.join(providers)}")
 
     if is_module_unit:
+        # A module name is a dot-separated sequence of IDENTIFIERS, so no
+        # component may be a keyword. `core/http_server/static.cpp` maps to
+        # `sm.core.http_server.static` under the path->name rule and clang
+        # answers `expected a module name after 'module'`. The conversion script
+        # suffixes such a component with `_`; this is the check that the rule
+        # was applied.
+        for match in MODULE_DECLARATION.finditer(text):
+            name = match.group(0).split()[-1].rstrip(";")
+            bad = [c for c in name.split(".") if c in CXX_KEYWORDS]
+            if bad:
+                line = text.count("\n", 0, match.start()) + 1
+                report(errors, path, line,
+                       f"模块名分量是 C++ 关键字: {name} (改成 {'/'.join(b + '_' for b in bad)})")
+
         for match in UNQUALIFIED_C_TYPE.finditer(text):
             line_text = text[text.rfind("\n", 0, match.start()) + 1 : text.find("\n", match.start())]
             if line_text.lstrip().startswith(("//", "*", "/*")):

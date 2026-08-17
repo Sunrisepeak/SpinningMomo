@@ -71,9 +71,31 @@ VENDOR_MODULES = {
 }
 
 
+# A module name is a dot-separated sequence of IDENTIFIERS, so no component may
+# be a keyword. The tree has one such directory name today — `core/http_server/
+# static.cpp` would map to `sm.core.http_server.static`, which clang rejects
+# with `expected a module name after 'module'`. The rule is a suffix rather than
+# a rename so it is derivable from the path in both directions.
+CXX_KEYWORDS = {
+    "alignas", "alignof", "and", "and_eq", "asm", "auto", "bitand", "bitor", "bool",
+    "break", "case", "catch", "char", "char8_t", "char16_t", "char32_t", "class",
+    "compl", "concept", "const", "consteval", "constexpr", "constinit", "const_cast",
+    "continue", "co_await", "co_return", "co_yield", "decltype", "default", "delete",
+    "do", "double", "dynamic_cast", "else", "enum", "explicit", "export", "extern",
+    "false", "float", "for", "friend", "goto", "if", "inline", "int", "long",
+    "mutable", "namespace", "new", "noexcept", "not", "not_eq", "nullptr", "operator",
+    "or", "or_eq", "private", "protected", "public", "register", "reinterpret_cast",
+    "requires", "return", "short", "signed", "sizeof", "static", "static_assert",
+    "static_cast", "struct", "switch", "template", "this", "thread_local", "throw",
+    "true", "try", "typedef", "typeid", "typename", "union", "unsigned", "using",
+    "virtual", "void", "volatile", "wchar_t", "while", "xor", "xor_eq",
+}
+
+
 def module_name(rel: str) -> str:
     """src-relative path without extension -> dotted module name."""
-    return MODULE_PREFIX + rel.replace("/", ".")
+    parts = [f"{p}_" if p in CXX_KEYWORDS else p for p in rel.split("/")]
+    return MODULE_PREFIX + ".".join(parts)
 
 
 def split_top(lines: list[str], modules: set[str]) -> tuple[list[str], list[str], int]:
