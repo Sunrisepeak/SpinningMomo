@@ -15,6 +15,7 @@ import sm.features.overlay.interaction;
 import sm.features.overlay.overlay;
 import sm.features.overlay.rendering;
 import sm.features.overlay.state;
+import sm.features.overlay.types;
 import sm.features.overlay.window;
 import sm.utils.graphics.capture;
 

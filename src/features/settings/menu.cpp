@@ -3,6 +3,7 @@ module sm.features.settings.menu;
 import std;
 import sm.core.state.app_state;
 
+import sm.features.settings.menu_types;
 import sm.features.settings.state;
 
 namespace features::settings::menu {

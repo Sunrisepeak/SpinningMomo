@@ -105,6 +105,33 @@ jobs:
       - name: Configure (release, clang-cl)
         run: xmake f -m release --toolchain=clang-cl -y -v
 
+      # xmake schedules the toolchain-provided `std` module BMI concurrently with
+      # the units that import it, instead of before them. The evidence, from the
+      # run before this step existed:
+      #
+      #   20:58:38.99  compiling.module.bmi.release std          <- launched
+      #   20:58:46.66  compiling.module.bmi.release sm.ui.floating_window.events
+      #   20:58:47.24  events.cppm(7,8): fatal error: module 'std' not found
+      #
+      # The module map is right — every unit that says `import std;` gets
+      # `-fmodule-file=std=...\std.pcm` on its command line, and the units that
+      # do not (src/vendor/*.cppm, which only have a global module fragment) do
+      # not. It is the JOB ORDER that misses the edge: the four units launched at
+      # 46.6 are exactly those whose only module dependency is `std`, so nothing
+      # else was holding them back and nothing made them wait for it either.
+      #
+      # Building that one BMI on its own first is enough — the second invocation
+      # finds it up to date and every other edge in the graph is ordered
+      # correctly. This is not a source problem, so it is fixed here and not in
+      # xmake.lua, where it would read as if the project needed it.
+      - name: Pre-build the std module BMI (xmake ordering defect)
+        shell: bash
+        run: |
+          set -o pipefail
+          xmake build -y -v --files="**/std.ixx" 2>&1 | tail -30
+          echo "--- BMIs on disk ---"
+          find build -name 'std.pcm' -o -name 'std.ifc' | head
+
       - name: Build
         run: xmake build -y -v
 

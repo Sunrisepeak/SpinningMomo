@@ -7,11 +7,12 @@ module sm.features.window_control.window_control;
 import std;
 import sm.core.state.app_state;
 import sm.features.window_control.state;
+import sm.features.window_control.types;
 import sm.ui.floating_window.state;
 
 import sm.features.settings.state;
-import sm.utils.logger.logger;
 import sm.utils.display.display;
+import sm.utils.logger.logger;
 import sm.utils.string.string;
 
 namespace features::window_control {

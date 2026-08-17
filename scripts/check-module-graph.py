@@ -45,6 +45,25 @@ which compiles for exactly as long as something else happens to pull the types
 module in. Each instance of this costs a 40-minute Windows round to discover, so
 it is worth a second of Linux.
 
+The UNQUALIFIED half of that is the same fact wearing a disguise, and it is the
+one that actually reached CI:
+
+    src/features/overlay/capture.cpp:61: error: declaration of
+    'WM_APPLY_CAPTURE_SIZE' must be imported from module
+    'sm.features.overlay.types' before it is required
+
+capture.cpp sits inside `namespace features::overlay::capture`, so unqualified
+lookup walks out to `features::overlay` and finds the constant — REACHABLE,
+because something in the import graph pulls the types module in transitively,
+but not VISIBLE, because nothing capture.cpp imports exports it. There is no
+`features::overlay::` on the use site for a qualified-name scan to catch, so
+this needs the entity names themselves: what each interface exports, and whether
+the namespace a unit has open would let unqualified lookup wander into it.
+
+Three implementation units had it, all the same shape — their own `.cppm`
+`import`s the types module instead of `export import`ing it, so the interface
+sees the names and the implementation does not.
+
     check-module-graph.py            # verify (exit 1 on a cycle or a missing import)
     check-module-graph.py --graph    # print the interface DAG, deepest first
 """
@@ -52,6 +71,7 @@ it is worth a second of Linux.
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import re
 import sys
 from collections import defaultdict, deque
@@ -59,6 +79,18 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
+
+
+def _load_sibling(stem: str):
+    """The sibling guard owns the literal blanker; one definition, two users."""
+    path = Path(__file__).with_name(f"{stem}.py")
+    spec = importlib.util.spec_from_file_location(stem.replace("-", "_"), path)
+    module = importlib.util.module_from_spec(spec)          # type: ignore[arg-type]
+    spec.loader.exec_module(module)                          # type: ignore[union-attr]
+    return module
+
+
+blank_out_literals = _load_sibling("check-cpp-architecture").blank_out_literals
 
 EXPORT_MODULE = re.compile(r"^export\s+module\s+([\w.]+)\s*;", re.MULTILINE)
 IMPL_MODULE = re.compile(r"^module\s+([\w.]+)\s*;", re.MULTILINE)
@@ -232,6 +264,167 @@ def missing_imports(units: list[Unit]) -> list[str]:
     return out
 
 
+# ── the unqualified half ─────────────────────────────────────────────────────
+
+NS_BLOCK = re.compile(r"^export namespace ([\w:]+)\s*\{", re.MULTILINE)
+NS_OPEN = re.compile(r"^\s*(?:export\s+)?namespace\s+([\w:]+)\s*\{", re.MULTILINE)
+
+_TAG = re.compile(r"\b(?:struct|class|union|enum(?:\s+class)?)\s+(\w+)\s*$")
+_ALIAS = re.compile(r"\busing\s+(\w+)\s*=")
+_CONCEPT = re.compile(r"\bconcept\s+(\w+)\s*=")
+_VAR = re.compile(r"^\s*(?:export\s+)?"
+                  r"(?:(?:inline|constexpr|const|static|extern)\s+)+"
+                  r"[\w:]+(?:\s*<[^;]*>)?\s*[*&]?\s*(\w+)\s*(?:=|\[)")
+_FUNC = re.compile(r"\bauto\s+(\w+)\s*\(?\s*$")
+
+# Preceded by one of these, an identifier is a DECLARATOR (a member, a
+# parameter, a loop variable), not a use — `bool is_initialized = false;` must
+# not read as a use of some other namespace's `is_initialized()`. Type
+# specifiers belong here; `const`/`static`/`return` and friends do not, because
+# a real use follows them (`const Resolution&`, `return WindowInfo{}`).
+_BUILTIN_TYPE = {"bool", "char", "char8_t", "char16_t", "char32_t", "wchar_t",
+                 "short", "int", "long", "float", "double", "void", "auto",
+                 "signed", "unsigned"}
+_NOT_A_TYPE = {"const", "constexpr", "consteval", "constinit", "static", "inline",
+               "extern", "mutable", "volatile", "return", "case", "new", "delete",
+               "throw", "co_await", "co_return", "co_yield", "sizeof", "using",
+               "typename", "struct", "class", "enum", "union", "export", "import",
+               "namespace", "else", "do", "try", "catch", "noexcept", "explicit",
+               "friend", "virtual", "typedef", "template", "and", "or", "not",
+               "if", "while", "for", "switch", "requires", "static_cast",
+               "reinterpret_cast", "const_cast", "dynamic_cast"}
+
+
+def _brace_body(text: str, open_brace: int) -> str:
+    depth, i = 0, open_brace
+    while i < len(text):
+        if text[i] == "{":
+            depth += 1
+        elif text[i] == "}":
+            depth -= 1
+            if depth == 0:
+                return text[open_brace + 1:i]
+        i += 1
+    return text[open_brace + 1:]
+
+
+def _top_level_statements(body: str):
+    """Statements at brace depth 0 of a namespace body — nothing from inside a
+    struct, a function, or a parameter list."""
+    depth = start = i = 0
+    n = len(body)
+    while i < n:
+        c = body[i]
+        if c == "{" and depth == 0:
+            yield body[start:i]                     # the declaration head
+            d, i = 1, i + 1
+            while i < n and d:
+                d += (body[i] == "{") - (body[i] == "}")
+                i += 1
+            start = i
+            continue
+        if c in "{([":
+            depth += 1
+        elif c in "})]":
+            depth -= 1
+        elif c == ";" and depth == 0:
+            yield body[start:i]
+            start = i + 1
+        i += 1
+
+
+def _entities(body: str) -> set[str]:
+    out: set[str] = set()
+    for stmt in _top_level_statements(body):
+        s = stmt.strip()
+        if not s:
+            continue
+        for rx in (_TAG, _ALIAS, _CONCEPT, _VAR, _FUNC):
+            m = rx.search(s)
+            if m:
+                out.add(m.group(1))
+                break
+    return out
+
+
+def _namespace_entities(text: str, pattern: re.Pattern[str]) -> dict[str, set[str]]:
+    out: dict[str, set[str]] = defaultdict(set)
+    for m in pattern.finditer(text):
+        out[m.group(1)] |= _entities(_brace_body(text, m.end() - 1))
+    return out
+
+
+def unqualified_missing_imports(units: list[Unit]) -> list[str]:
+    """A unit uses a name unqualified that only a module it cannot see exports.
+
+    Reachable-but-not-visible: the name resolves during the build only because
+    someone else's import chain drags the module in, and it stops resolving the
+    day that chain changes.
+    """
+    provider: dict[str, set[tuple[str, str]]] = defaultdict(set)   # name -> {(ns, module)}
+    reexports: dict[str, set[str]] = defaultdict(set)
+    texts: dict[Path, str] = {}
+
+    for u in units:
+        text = texts[u.path] = blank_out_literals(
+            u.path.read_text(encoding="utf-8", errors="replace"))
+        if not u.provides:
+            continue
+        reexports[u.provides] |= set(REEXPORT.findall(text))
+        for ns, names in _namespace_entities(text, NS_BLOCK).items():
+            for name in names:
+                provider[name].add((ns, u.provides))
+
+    def visible(seeds: set[str]) -> set[str]:
+        seen: set[str] = set()
+        stack = list(seeds)
+        while stack:
+            mod = stack.pop()
+            if mod in seen:
+                continue
+            seen.add(mod)
+            stack.extend(reexports.get(mod, ()))
+        return seen
+
+    out: list[str] = []
+    for u in units:
+        text = texts[u.path]
+        opened = set(NS_OPEN.findall(text))
+        if not opened:
+            continue
+        own = {u.provides, u.implements} - {None}
+        reach = visible(set(PLAIN_IMPORT.findall(text))
+                        | set(REEXPORT.findall(text)) | own)        # type: ignore[arg-type]
+        # Names this unit declares itself: lookup stops here, not at the import.
+        mine: set[str] = set()
+        for names in _namespace_entities(text, NS_OPEN).values():
+            mine |= names
+        lines = text.splitlines()
+        reported: set[str] = set()
+        for m in re.finditer(r"(?<![\w:.])(?<!->)([A-Za-z_]\w*)\b(?!\s*::)", text):
+            name = m.group(1)
+            if name in reported or name in mine or name not in provider:
+                continue
+            before = text[:m.start()].rstrip()
+            tail = re.search(r"[\w>&*]+$", before)
+            if tail:
+                word = re.search(r"\w+$", tail.group(0))
+                if not word or word.group(0) in _BUILTIN_TYPE:
+                    continue            # `std::atomic<bool> x`, `T& p`, `int i`
+                if word.group(0) not in _NOT_A_TYPE:
+                    continue            # `SomeType name` — a declarator
+            # Unqualified lookup only escapes into an enclosing namespace.
+            cands = [(ns, mod) for ns, mod in provider[name]
+                     if any(o == ns or o.startswith(ns + "::") for o in opened)]
+            if not cands or any(mod in reach for _, mod in cands):
+                continue
+            reported.add(name)
+            line_no = text.count("\n", 0, m.start())
+            out.append(f"{u.label}:{line_no + 1}: uses `{name}` unqualified, but nothing "
+                       f"it imports exports {cands[0][0]}:: (try: {cands[0][1]})")
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--graph", action="store_true", help="print the interface DAG")
@@ -247,6 +440,7 @@ def main() -> int:
         problems.append("interface cycle: " + " -> ".join(cyc))
 
     problems += missing_imports(units)
+    problems += unqualified_missing_imports(units)
 
     stuck = topo(len(units), edges)
     if stuck:
