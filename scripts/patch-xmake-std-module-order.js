@@ -45,6 +45,13 @@
  *
  * xmake 3.1.0 (2026-08-08) is the current release and no later commit touches
  * this. Delete this script once one does.
+ *
+ * ONE TRAP, PAID FOR ONCE: patching a `rules/` tree that exists on disk is not
+ * the same as patching the one xmake loads. This machine's xmake self-extracts
+ * to /tmp/.xmakeNNNN/<version>/ and ignores the tree beside the executable
+ * entirely — the patch applied, said so, and changed nothing. Hence
+ * `os.programdir` below, and hence the `print`: an ordering patch that matches
+ * nothing has to say so out loud.
  */
 
 const fs = require("node:fs");
@@ -58,22 +65,32 @@ const BEFORE = [
   "    for jobname, deps in pairs(jobdeps) do",
 ].join("\n");
 
+// Feed the edges into `jobdeps` rather than calling `jobgraph:add_orders`
+// directly, so they go through xmake's own application loop — one less thing
+// that can differ from how the build system means it. The `print` is
+// deliberate: an ordering patch that silently matches nothing is exactly the
+// failure mode worth seeing in a log.
 const AFTER = [
   `    ${MARKER}`,
   "    local _stdjobs = {}",
-  "    for _, sourcefile in ipairs(_built_modules) do",
-  "        local _m = mapper.get(target, sourcefile)",
-  '        if _m.name == "std" or _m.name == "std.compat" then',
-  "            table.insert(_stdjobs, _get_module_buildfilejob_for(target, sourcefile, moduletype))",
+  "    for _, _sf in ipairs(_built_modules) do",
+  "        local _m = mapper.get(target, _sf)",
+  '        if _m and (_m.name == "std" or _m.name == "std.compat") then',
+  "            table.insert(_stdjobs, _get_module_buildfilejob_for(target, _sf, moduletype))",
   "        end",
   "    end",
+  "    local _ordered = 0",
   "    for _, _stdjob in ipairs(_stdjobs) do",
-  "        for _, buildfilejob in ipairs(buildfilejobs) do",
-  "            if buildfilejob ~= _stdjob then",
-  "                jobgraph:add_orders(_stdjob, buildfilejob)",
+  "        for _, _bfj in ipairs(buildfilejobs) do",
+  "            if _bfj ~= _stdjob then",
+  "                jobdeps[_bfj] = jobdeps[_bfj] or {}",
+  "                table.insert(jobdeps[_bfj], _stdjob)",
+  "                _ordered = _ordered + 1",
   "            end",
   "        end",
   "    end",
+  '    print("[std-order patch] %s: %d std job(s), %d module job(s), %d edges added",',
+  "          target:fullname(), #_stdjobs, #buildfilejobs, _ordered)",
   "",
   "    -- apply jobdeps",
   "    for jobname, deps in pairs(jobdeps) do",
@@ -94,21 +111,27 @@ function getXmakeExe() {
   return firstLine;
 }
 
-// The Lua rules sit next to xmake.exe on the Windows runner, but an
-// xlings-managed install puts the executable behind a shim and keeps the rules
-// in the share directory. Try both rather than assume the CI layout.
+// ASK XMAKE where its Lua lives. Guessing costs more than it looks: xmake may
+// run from a directory next to the executable, or from a self-extracted copy
+// under a temp path, and a `rules/` tree that exists on disk is not necessarily
+// the one being loaded. Patching the wrong copy is silent — it applies, it says
+// so, and it changes nothing. `os.programdir` is the authority.
 function findRulesFile() {
   const relative = path.join("rules", "c++", "modules", "builder.lua");
-  const roots = [
-    process.env.XMAKE_PROGRAM_DIR,
-    path.dirname(getXmakeExe()),
-    path.join(process.env.HOME || "", ".local", "share", "xmake"),
-  ].filter(Boolean);
-  for (const root of roots) {
+  const roots = [];
+  try {
+    const out = cp.execFileSync(getXmakeExe(), ["l", "os.programdir"], { encoding: "utf8" });
+    const dir = out.replace(/\x1b\[[0-9;]*m/g, "").trim().replace(/^"|"$/g, "");
+    if (dir) roots.push(dir);
+  } catch {
+    /* fall through to the layout guesses below */
+  }
+  roots.push(process.env.XMAKE_PROGRAM_DIR, path.dirname(getXmakeExe()));
+  for (const root of roots.filter(Boolean)) {
     const candidate = path.join(root, relative);
     if (fs.existsSync(candidate)) return candidate;
   }
-  fail(`target file not found under any of:\n  ${roots.join("\n  ")}`);
+  fail(`target file not found under any of:\n  ${roots.filter(Boolean).join("\n  ")}`);
 }
 
 function main() {

@@ -447,8 +447,17 @@ def entity_missing_imports(units: list[Unit]) -> list[str]:
                  if mm.group(1) not in _NOT_A_TYPE}
         lines = text.splitlines()
         reported: set[tuple[str, str]] = set()
-        for m in re.finditer(r"(?<![\w:.])(?<!->)((?:\w+::)*)([A-Za-z_]\w*)\b(?!\s*::)", text):
+        for m in re.finditer(r"(?<![\w:.])(?<!->)((?:\w+::)*)([A-Za-z_]\w*)\b", text):
             qualifier, name = m.group(1)[:-2], m.group(2)
+            # `features::recording::RecordingStatus::Starting` — the entity that
+            # has to be visible is the ENUM, not the enumerator, and the same
+            # goes for a nested type or a static member. So when the last
+            # component is not something any module exports, step one level left
+            # and ask about that instead.
+            while name not in provider and "::" in qualifier:
+                qualifier, name = qualifier.rsplit("::", 1)
+            if name not in provider and qualifier and "::" not in qualifier:
+                qualifier, name = "", qualifier
             if (qualifier, name) in reported or name not in provider:
                 continue
             if not qualifier and name in mine:

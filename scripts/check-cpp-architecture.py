@@ -71,6 +71,37 @@ EXTERNAL_INCLUDE = re.compile(r"^\s*#include\s*<[^>]+>")
 SELF_ALIAS = re.compile(r"^\s*using\s+(\w+)\s*=\s*[\w:]+::(\w+)\s*;", re.MULTILINE)
 
 
+_LITERAL_PREFIX = {"L", "u", "U", "u8"}
+
+
+def _is_digit_separator(text: str, i: int) -> bool:
+    """Is `text[i]` (an apostrophe) a C++14 digit separator, not a char literal?
+
+    Not a nicety. `std::uint32_t audio_bitrate = 192'000;` has ONE apostrophe;
+    read as a character literal it opens a string that runs to the next
+    apostrophe anywhere in the file. In recording/types.cppm that blanked
+    everything from line 108 to the end, so `enum class RecordingStatus` at
+    line 112 stopped existing as far as BOTH guards were concerned. The build
+    found it instead, forty minutes later:
+
+        core/commands/builtin.cpp:244:61: error: no member named
+        'RecordingStatus' in namespace 'features::recording'
+
+    Ten sites in this tree use digit separators.
+
+    Inside a pp-number an apostrophe is a separator, so: alphanumeric on both
+    sides means separator — UNLESS what precedes is an encoding prefix, because
+    `L'a'` and `u8'x'` are character literals whose prefix ends in a letter."""
+    if i == 0 or i + 1 >= len(text):
+        return False
+    if not (text[i - 1].isalnum() and text[i + 1].isalnum()):
+        return False
+    j = i - 1
+    while j >= 0 and (text[j].isalnum() or text[j] == "_"):
+        j -= 1
+    return text[j + 1:i] not in _LITERAL_PREFIX
+
+
 def blank_out_literals(text: str) -> str:
     """Replace comments and string literals with spaces, preserving offsets.
 
@@ -105,6 +136,9 @@ def blank_out_literals(text: str) -> str:
             close = ')' + delim + '"'
             j = text.find(close, k)
             j = n if j < 0 else j + len(close)
+        elif c == "'" and _is_digit_separator(text, i):
+            i += 1
+            continue
         elif c in "\"'":
             j = i + 1
             while j < n:
@@ -481,6 +515,38 @@ def validate_file(path: Path, errors: list[str]) -> None:
                 )
 
 
+# Every entry is a bug this blanker actually had, or a case one of those fixes
+# could plausibly break. It is the foundation both guards stand on — when it
+# eats the wrong span the rules go QUIET rather than red, which is the worst way
+# for a check to fail. So it self-tests on every run: microseconds, and no way
+# to regress silently.
+_BLANKER_CASES = [
+    ("int x = 192'000;\nenum class E { A };\n", "E", True,
+     "a lone digit separator must not open a character literal"),
+    ("int y = 80'000'000;\nstruct S {};\n", "S", True,
+     "two separators in one number"),
+    ("char c = 'a';\nenum class E { A };\n", "E", True,
+     "a real character literal is blanked, and ends"),
+    ("wchar_t c = L'a';\nenum class E { A };\n", "E", True,
+     "an encoding-prefixed character literal is still a literal"),
+    ('const char* s = "enum class Fake {};";\n', "Fake", False,
+     "string contents stay blanked"),
+    ("// enum class Commented {};\n", "Commented", False,
+     "comment contents stay blanked"),
+    ('auto hlsl = R"(float4 main(float2 uv) : SV_Target { return 0; })";\n', "SV_Target", False,
+     "raw string contents stay blanked"),
+]
+
+
+def self_test() -> list[str]:
+    out: list[str] = []
+    for source, needle, should_survive, why in _BLANKER_CASES:
+        if (needle in blank_out_literals(source)) is not should_survive:
+            out.append("scripts/check-cpp-architecture.py: "
+                       f"blank_out_literals 自检失败 —— {why}")
+    return out
+
+
 def main() -> int:
     # The findings are written in Chinese and this runs on a Windows runner,
     # where stdout defaults to the ANSI code page (cp1252) and `print` dies with
@@ -492,7 +558,7 @@ def main() -> int:
         except (AttributeError, ValueError):
             pass
 
-    errors: list[str] = []
+    errors: list[str] = self_test()
 
     module_interfaces = sorted(SRC.rglob("*.ixx")) + sorted(TESTS.rglob("*.ixx"))
     for path in module_interfaces:
