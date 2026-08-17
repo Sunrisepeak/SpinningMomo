@@ -20,22 +20,20 @@ sm = { path = "../../mcpp" }
 
 # Explicit-table form: a single candidate `(sm, <name>)`, no guessing. Bare
 # names would not reach a third-party namespace at all (SPEC-001 §4.2).
+# `sqlite3` is deliberately NOT listed: sm.sqlitecpp depends on the official
+# index's `compat.sqlite3`, so this probe also asserts that a path-index package
+# can pull a package from the published remote index — the shape every
+# descriptor here takes once it is upstreamed.
 [dependencies.sm]
 xxhash     = "0.8.3"
 wil        = "1.0.260126.7"
-sqlite3    = "3.50.4"
 sqlitecpp  = "3.3.3"
 reflectcpp = "0.25.0"
 
 [build]
+# The CRT, derived once for this project AND its dependency packages. This is
+# what replaced the hand-written /MT in every descriptor; the probe fails at
+# link time with LNK2038 if it ever stops reaching the packages.
+cxx_runtime = "self-contained"
 defines = ["NOMINMAX", "UNICODE", "_UNICODE", "WIN32_LEAN_AND_MEAN", "_WIN32_WINNT=0x0A00"]
 ldflags = ["ole32.lib", "oleaut32.lib"]
-
-# `[build] linkage = "static"` alone does not reach the compile lines: every TU
-# still gets /MD while the `std` object mcpp caches is built /MT, so the link
-# dies with LNK2038 RuntimeLibrary mismatch plus a pile of LNK2005 out of
-# msvcprt.lib. Spell the CRT out so compiler and cached std agree. Scoped to
-# Windows — /MT is an MSVC spelling and gcc treats it as a linker input.
-[target.'cfg(windows)'.build]
-cflags   = ["/MT"]
-cxxflags = ["/MT"]

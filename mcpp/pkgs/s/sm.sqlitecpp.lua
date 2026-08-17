@@ -34,10 +34,8 @@ package = {
         include_dirs = { "*/include" },
         sources      = { "*/src/*.cpp" },
         targets      = { ["SQLiteCpp"] = { kind = "lib" } },
-        -- The consuming project links /MT (and mcpp's cached `std` object is
-        -- /MT too), but a dependency package compiles with its own flags and
-        -- would otherwise default to /MD — LNK2038 at the final link.
-        windows      = { cflags = { "/MT" }, cxxflags = { "/MT" } },
-        deps         = { ["sm.sqlite3"] = "3.50.4" },
+        -- Upstream vendors sqlite3 as a git submodule that the source tarball
+        -- does not carry; the official index's amalgamation package replaces it.
+        deps         = { ["compat.sqlite3"] = "3.45.3" },
     },
 }

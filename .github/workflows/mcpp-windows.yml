@@ -25,7 +25,7 @@ env:
   # Pinned via .xlings.json + bare `xlings install` (passing a package name
   # makes xlings resolve "newest in this runner's index copy" and silently
   # ignore the workspace pin — mcpp's own CI learned this the hard way).
-  XLINGS_VERSION: '2026.7.28.4'
+  XLINGS_VERSION: '2026.8.17.2'
   XLINGS_NON_INTERACTIVE: '1'
 
 jobs:

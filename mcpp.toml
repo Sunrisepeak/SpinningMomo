@@ -11,28 +11,58 @@ windows = "msvc@system"
 # The project's own path index (see mcpp/index.toml). The index NAME must equal
 # the descriptors' `package.namespace`: the `[dependencies.sm]` table below is
 # read as both the namespace table and the index selector.
+#
+# This table is TEMPORARY. It holds exactly the packages the official index does
+# not carry yet; each one is being upstreamed to mcpplibs/mcpp-index, and the
+# table disappears together with the `mcpp/` directory once they land. Anything
+# the official index already has is consumed from there — see below.
 [indices]
 sm = { path = "mcpp" }
 
-# Every dependency comes from the project's own index, including Asio and
-# spdlog — which the official mcpp-index does carry. The reason is the CRT: a
-# dependency package compiles with its own flags (defaulting to /MD) and a
-# consumer cannot override them, while this project must link /MT. Owning the
-# descriptors is the only way to pin it. See mcpp/pkgs/a/sm.asio.lua.
+# Asio, as a C++23 MODULE (`import asio;`), not headers. Consuming it as a module
+# is what keeps its template specializations — `service_registry::use_service`
+# and friends — instantiated ONCE inside the asio module instead of once per
+# importing TU's global module fragment. The header form is what made
+# `sm.core.rpc.*` die with C1116 when those modules were first converted.
+[dependencies.chriskohlhoff]
+asio = "1.38.1"
+
+# The official index already carries these, so the project does not own them.
+# It could not use them before 2026.8.16, because a dependency package compiled
+# with its own flags (i.e. /MD) and this project must link /MT — see the
+# `cxx_runtime` note in [build].
 #
-# uwebsockets pulls usockets, which pulls libuv; sqlitecpp pulls sqlite3.
+# libuv is not listed: sm.usockets depends on it and mcpp resolves it
+# transitively. sqlite3 likewise arrives through sm.sqlitecpp.
+[dependencies.compat]
+spdlog = { version = "1.17.0", features = ["compiled"] }
+
+# Still project-owned — the official index has no descriptor for these yet.
+# uwebsockets pulls usockets, which pulls compat.libuv; sqlitecpp pulls
+# compat.sqlite3.
 [dependencies.sm]
-asio        = "1.38.1"
-spdlog      = "1.17.0"
 xxhash      = "0.8.3"
 wil         = "1.0.260126.7"
-sqlite3     = "3.50.4"
 sqlitecpp   = "3.3.3"
 reflectcpp  = "0.25.0"
 uwebsockets = "20.79.0"
 libwebp     = "1.5.0"
 
 [build]
+# The MSVC CRT model, for the WHOLE build — this project's TUs, the cached `std`
+# module object, AND every dependency package's TUs. `self-contained` is /MT on
+# the MSVC ABI, which is what the xmake build spelled `set_runtimes("MT")`.
+#
+# This key was INERT on the MSVC ABI until mcpp 2026.8.16 (it reported "not
+# implemented for the MSVC runtime yet" and fell back to /MD). That is the whole
+# reason this project used to own a descriptor for every dependency: a consumer
+# could not reach a dependency's compile line, so /MT had to be written into
+# each descriptor by hand. It is honoured now, so the descriptors carry no CRT
+# flags any more and the official index's packages became usable.
+#
+# Requires mcpp >= 2026.8.16 (.xlings.json pins 2026.8.17.1).
+cxx_runtime = "self-contained"
+
 # Modules and their implementation units both live under src/. The migration
 # converts bottom-up: a leaf header becomes `<name>.cppm`, its consumers'
 # `#include "…hpp"` become `import …;`. `.hpp` files that have not been
@@ -56,7 +86,14 @@ defines = [
   # spdlog compiled mode: consumers must see this too, or their headers
   # re-emit the implementation inline instead of using the extern templates.
   "SPDLOG_COMPILED_LIB",
-  "ASIO_STANDALONE",
+  # Asio's package contract. An index descriptor's `features.<f>.defines` reach
+  # the PACKAGE's own TUs; a consumer that must agree with how the library was
+  # built declares them itself. These five are exactly what
+  # `chriskohlhoff.asio`'s default `separate-compilation` feature compiles with,
+  # and disagreeing on ASIO_SEPARATE_COMPILATION alone is enough to make the
+  # consumer re-emit inline what the package already compiled out-of-line.
+  "ASIO_STANDALONE", "ASIO_SEPARATE_COMPILATION",
+  "ASIO_DISABLE_BOOST_CONTEXT_FIBER", "ASIO_HAS_THREADS", "ASIO_NO_IOSTREAM",
   # uSockets' backend/SSL shape changes struct layouts in libusockets.h, so
   # every TU that sees a uWS header must agree with how the library was built.
   "LIBUS_USE_LIBUV", "LIBUS_NO_SSL", "UWS_NO_ZLIB",
@@ -79,6 +116,14 @@ ldflags = [
   "secur32.lib", "advapi32.lib", "bcrypt.lib", "dbghelp.lib", "userenv.lib",
   "mf.lib", "mfplat.lib", "mfreadwrite.lib", "mfuuid.lib", "strmiids.lib",
   "ole32.lib", "oleaut32.lib", "version.lib", "propsys.lib",
+
+  # libuv's Windows link set. `compat.libuv` declares it GNU-style
+  # (`-lpsapi`, …) because the index's Windows CI leg runs an llvm driver;
+  # mcpp propagates dependency ldflags VERBATIM (only -L and -Wl,-rpath are
+  # rewritten), so native link.exe sees `-lpsapi`, answers LNK4044 and drops
+  # it. Everything else libuv needs is already in the list above; these two
+  # were not.
+  "psapi.lib", "iphlpapi.lib",
 ]
 
 [profile.release]
@@ -90,15 +135,13 @@ ldflags = ["/DEBUG:FULL", "/NODEFAULTLIB:libucrt.lib", "/DEFAULTLIB:ucrt.lib"]
 kind = "bin"
 main = "src/main.cpp"
 
-# `[build] linkage = "static"` alone does not reach the compile lines: every TU
-# still gets /MD while the `std` object mcpp caches is built /MT, so the link
-# dies with LNK2038 RuntimeLibrary mismatch plus a pile of LNK2005 out of
-# msvcprt.lib. Spell the CRT out so compiler and cached std agree. Scoped to
-# Windows — /MT is an MSVC spelling and gcc treats it as a linker input.
-[target.'cfg(windows)'.build]
-cflags   = ["/MT"]
+# The hand-written `/MT` that used to live here is gone: `[build] cxx_runtime`
+# now derives it once, for the project AND its dependencies. Two spellings of
+# one physical switch is how the CRT drifted apart in the first place.
+#
 # /bigobj: the xmake build carried it, and it is not optional here — reflect-cpp
 # instantiates enough templates per RPC endpoint to blow past the 65,536-section
 # object limit. (/utf-8 is already in mcpp's MSVC baseline, so it is not
 # repeated.)
-cxxflags = ["/MT", "/bigobj"]
+[target.'cfg(windows)'.build]
+cxxflags = ["/bigobj"]

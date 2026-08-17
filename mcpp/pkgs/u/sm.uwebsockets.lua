@@ -42,10 +42,6 @@ package = {
         -- and friends, so the same backend/SSL shape has to be visible here.
         cxxflags     = { "-DLIBUS_USE_LIBUV", "-DLIBUS_NO_SSL", "-DUWS_NO_ZLIB" },
         targets      = { ["uWebSockets"] = { kind = "lib" } },
-        -- The consuming project links /MT (and mcpp's cached `std` object is
-        -- /MT too), but a dependency package compiles with its own flags and
-        -- would otherwise default to /MD — LNK2038 at the final link.
-        windows      = { cflags = { "/MT" }, cxxflags = { "/MT" } },
         deps         = { ["sm.usockets"] = "0.8.8" },
     },
 }

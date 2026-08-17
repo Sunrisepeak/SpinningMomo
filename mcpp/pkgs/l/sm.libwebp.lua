@@ -198,11 +198,5 @@ package = {
         macosx = {
             ldflags = { "-lpthread", "-lm" },
         },
-        -- The consuming project links /MT (and mcpp's cached `std` object is
-        -- /MT too), but a dependency package compiles with its own flags and
-        -- would otherwise default to /MD — LNK2038 at the final link.
-        windows = { cflags = { "/MT" }, cxxflags = { "/MT" },
-            ldflags = { },
-        },
     },
 }

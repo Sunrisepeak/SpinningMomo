@@ -1,14 +1,31 @@
-# SpinningMomo's own package index.
+# SpinningMomo's own package index — a STAGING AREA, not a permanent home.
 #
-# The official mcpp-index covers asio / spdlog / zlib; everything else this
-# project depends on (xxhash, wil, reflect-cpp, SQLiteCpp, sqlite3, uWebSockets
-# + uSockets + libuv, WebView2, libultrahdr) has no descriptor there yet. They
-# live here rather than upstream so the migration never blocks on cross-repo
-# coordination; anything that stabilises can be contributed to mcpp-index later.
+# What lives here is exactly what the official mcpp-index cannot serve yet:
+#
+#   * packages it has no descriptor for at all — xxhash, wil, SQLiteCpp,
+#     reflect-cpp, uWebSockets + uSockets, libwebp;
+#   * packages it has, but whose descriptor does not reach far enough for this
+#     project — these are written here first, proven by the Windows CI, and then
+#     upstreamed as an amendment to the official descriptor rather than as a
+#     competing one.
+#
+# Everything the official index already serves adequately is consumed from
+# there (see the root mcpp.toml): chriskohlhoff.asio, compat.spdlog,
+# compat.sqlite3, compat.libuv. This directory shrinks as descriptors land in
+# mcpplibs/mcpp-index, and is deleted when the last one does.
 #
 # Consumed via a path index in the root manifest:
 #     [indices]
-#     spinningmomo = { path = "mcpp" }
+#     sm = { path = "mcpp" }
+#
+# The index name MUST equal the descriptors' `package.namespace` — the
+# `[dependencies.sm]` table is read as both the namespace table and the index
+# selector.
 [index]
 spec     = "1"
-min_mcpp = "0.0.109"
+# The floor the descriptors here actually need. Raised from 0.0.109 together
+# with the project's own pin: the CRT is now derived from the root manifest's
+# `[build] cxx_runtime`, which is inert on the MSVC ABI before 2026.8.16, and a
+# client that old would silently compile these packages /MD against a /MT
+# project.
+min_mcpp = "2026.8.16"
