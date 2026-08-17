@@ -1,31 +1,5 @@
 add_rules("mode.debug", "mode.release")
 
--- MSVC 自带的 std.ixx，作为**普通工程模块单元**加进一个 target。
--- 路径解析与 xmake 自己的 rules/c++/modules/msvc/support.lua:get_stdmodules() 一致。
--- 为什么不用 xmake 的自动注入，见下面 build.c++.modules.std 那一段。
-function add_msvc_std_module(target)
-    import("core.tool.toolchain")
-    local msvc = target:toolchain("msvc") or toolchain.load("msvc", {plat = "windows", arch = "x64"})
-    if not (msvc and msvc:check()) then
-        return
-    end
-    local vcvars = msvc:config("vcvars")
-    if not (vcvars and vcvars.VCInstallDir and vcvars.VCToolsVersion) then
-        return
-    end
-    local stdixx = path.join(vcvars.VCInstallDir, "Tools", "MSVC",
-                             vcvars.VCToolsVersion, "modules", "std.ixx")
-    if os.isfile(stdixx) then
-        -- 这三条告警由 std.ixx 自己的形态决定，不是本工程的问题：模块 purview 里的
-        -- <> include、保留的模块名 `std`、以及标准库自己标的弃用项。xmake 给自己
-        -- 注入 std 时也是这么关的。
-        target:add("files", stdixx, {always_added = true, install = false,
-                                     cxflags = {"-Wno-include-angled-in-module-purview",
-                                                "-Wno-reserved-module-identifier",
-                                                "-Wno-deprecated-declarations"}})
-    end
-end
-
 -- 引入自定义任务
 includes("tasks/release.lua")
 includes("tasks/vs.lua")
@@ -38,31 +12,18 @@ set_languages("c++23")
 -- 依赖图由 xmake 自己扫描 —— 与 mcpp 侧看到的是同一份源码形态。
 set_policy("build.c++.modules", true)
 
--- `std` 模块由**本工程**编译，不走 xmake 的自动注入。
+-- xmake 3.1.0 在 clang-cl 下编不出可加载的 `std` 模块 BMI：作业下发后 4.4 秒就被
+-- 判定完成，紧接着第一个 `import std;` 的单元就报 `module 'std' not found`，而每轮
+-- 倒下的是不同的几个 —— 共同点是「唯一的模块依赖就是 std」。
 --
--- xmake 自己注入 std 时，它的 BMI 作业与导入方被并发下发：每轮都有几个单元
--- (且每轮不是同一批 —— events.cppm / crash_dump.cppm / version.cppm / long_exposure.cppm)
--- 死在 `fatal error: module 'std' not found`，共同点是「唯一的模块依赖就是 std」。
--- 补一条显式作业顺序边确实造出了屏障(日志里 445 条边、一个 5.5 秒的等待点)，
--- 但 std 的 BMI 在那 5.5 秒里并没有真正编完，说明这条路上 xmake 对 std 的
--- 完成判定本身就不成立。
+-- 六种改法逐一排除过（跑两遍 / 显式作业顺序边 / 把 std.ixx 当普通工程模块单元
+-- add_files 进来 / --files 单独先编 / 重试三次 / 关掉两阶段编译与模块复用），
+-- 全部无效，说明错的是 xmake 对这个作业的**完成信号**本身。完整证据链在
+-- .agents/docs/2026-08-18-migration-report.md §6.1 与
+-- scripts/patch-xmake-std-module-order.js 的文件头。
 --
--- 与其继续猜它内部怎么想，不如把 std 变成一个**普通的工程模块单元** —— 走
--- src/vendor/*.cppm 和 asio.cppm 同一条代码路径，而那条路径一直是对的。
--- 文件就是 MSVC 自带的 std.ixx，位置按 xmake 自己 get_stdmodules() 的算法取。
-set_policy("build.c++.modules.std", false)
+-- 所以这里保持 xmake 的默认行为，不带任何无效的绕行改动。
 
--- 两阶段编译（先出 BMI、再出 objectfile）关掉，模块复用也关掉。
---
--- 这两个开关正好套住出问题的那台机器：`std` 的 BMI 作业在下发 4.4 秒后被判定
--- 完成，而盘上没有可加载的 BMI —— 重试三次，每次都倒在同一批「唯一模块依赖就是
--- std」的单元上，说明它根本没编出来，而不是编到一半被读了。
---
--- 单阶段编译一次调用同时产出 BMI 与 objectfile，BMI 与目标文件的产出/判定就不再
--- 是两件可以各自出错的事。reuse 是 3.1.0 里刚改过 deps orders 的那套机制，
--- 本工程跨 target 也没有复用的需要，一并关掉少一个变量。
-set_policy("build.c++.modules.two_phases", false)
-set_policy("build.c++.modules.reuse", false)
 
 -- 默认使用 LLVM 工具链，可通过 --toolchain 覆盖
 set_config("toolchain", "clang-cl[llvm]")
@@ -94,9 +55,6 @@ target("SpinningMomo")
     -- #include，两者对同一份 SDK 头会给出不同的实体归属。mcpp 侧根本没有 PCH，
     -- 这里也一并去掉，两个构建系统看到的是同一份源码形态。
     add_cxflags("clang_cl::-Wno-microsoft-include")
-
-    -- std 作为普通模块单元加进来（见文件头的 add_msvc_std_module）
-    on_load(add_msvc_std_module)
 
     -- Release 也保留调试符号，便于分析生产崩溃 dump
     if is_mode("release") then

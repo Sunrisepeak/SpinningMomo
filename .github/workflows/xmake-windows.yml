@@ -110,9 +110,26 @@ jobs:
       - name: Configure (release, clang-cl)
         run: xmake f -m release --toolchain=clang-cl -y -v
 
-      # xmake.lua turns off two-phase compilation and module reuse for this
-      # build; the reasoning is there, next to the policies. If `module 'std'
-      # not found` comes back, that is where to start.
+      # KNOWN RED, and deliberately not papered over.
+      #
+      # xmake 3.1.0 cannot produce a loadable `std` module BMI under clang-cl:
+      # the job is considered finished 4.4 seconds after it is dispatched, and
+      # the first unit that says `import std;` then fails with `module 'std' not
+      # found` — a different unit each round, always one whose ONLY module
+      # dependency is `std`.
+      #
+      # Six approaches were tried and excluded: run it twice, add explicit job
+      # ordering edges (they land — the patch prints "445 edges added" — and the
+      # barrier is visible in the timestamps), add MSVC's std.ixx as an ordinary
+      # project module unit, `--files` it on its own first, retry three times,
+      # and turn off two-phase compilation plus module reuse. None of them
+      # changes the outcome, which is what places the defect in the COMPLETION
+      # SIGNAL rather than in dependency order.
+      #
+      # The full evidence chain is in
+      # .agents/docs/2026-08-18-migration-report.md §6.1. Marking this green
+      # would be lying about a build that does not build, so it stays red until
+      # xmake fixes it — mcpp-windows.yml is the build of record meanwhile.
       - name: Build
         run: xmake build -y -v
 

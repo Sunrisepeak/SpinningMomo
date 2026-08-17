@@ -21,7 +21,7 @@
 
 依赖来自**官方 mcpp 包索引**（`mcpplibs/mcpp-index`），项目不再自带包索引。
 
-关于详细的设计哲学、C++ 组件划分、模块命名规则以及**十六条机器强制的架构不变量**，
+关于详细的设计哲学、C++ 组件划分、模块命名规则以及**十八条机器强制的架构不变量**，
 见仓库根目录的 **[`AGENTS.md`](https://github.com/ChanIok/SpinningMomo/blob/main/AGENTS.md)**。
 
 ## 环境要求
@@ -158,7 +158,7 @@ npm run build:prepare
 
 ```bash
 python3 scripts/check-module-graph.py        # 模块图是 DAG；且没有漏写的 import
-python3 scripts/check-cpp-architecture.py    # 十六条架构不变量
+python3 scripts/check-cpp-architecture.py    # 十八条架构不变量
 python3 scripts/check-asio-module-parity.py  # xmake 侧的 asio 镜像与索引描述符一致
 python3 scripts/check-build-parity.py        # 两套构建的宏集合与源码集合一致
 bash    scripts/mcpp-preflight.sh            # 探针中 Linux 能判定的部分
