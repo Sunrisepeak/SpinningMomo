@@ -8,6 +8,7 @@ module sm.ui.floating_window.layout;
 import std;
 import sm.core.state.app_state;
 import sm.ui.floating_window.state;
+import sm.ui.floating_window.types;
 
 import sm.features.settings.state;
 

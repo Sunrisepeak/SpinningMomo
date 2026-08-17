@@ -2,6 +2,7 @@ module sm.core.rpc.endpoints.tasks.tasks;
 
 import std;
 import sm.core.state.app_state;
+import sm.core.tasks.state;
 import sm.core.tasks.tasks;
 
 import asio;

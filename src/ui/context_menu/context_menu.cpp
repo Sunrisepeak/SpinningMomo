@@ -16,6 +16,7 @@ import sm.core.i18n.state;
 import sm.core.i18n.types;
 import sm.core.state.app_state;
 import sm.features.settings.menu;
+import sm.features.window_control.types;
 import sm.features.window_control.window_control;
 import sm.ui.context_menu.interaction;
 import sm.ui.context_menu.layout;

@@ -3,6 +3,7 @@ module sm.extensions.infinity_nikki.task_service;
 import std;
 import sm.core.rpc.notification_hub;
 import sm.core.state.app_state;
+import sm.core.tasks.state;
 import sm.core.tasks.tasks;
 import sm.extensions.infinity_nikki.media_hardlinks;
 import sm.extensions.infinity_nikki.types;

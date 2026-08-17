@@ -4,19 +4,20 @@ module;
 
 module sm.features.update.update;
 
-import sm.core.state.app_state;
-import sm.features.update.state;
-import sm.features.update.types;
 import sm.core.events.events;
 import sm.core.http_client.types;
 import sm.core.i18n.state;
 import sm.core.notifications.notifications;
 import sm.core.notifications.types;
+import sm.core.state.app_state;
+import sm.core.tasks.state;
 import sm.core.tasks.tasks;
 import sm.core.version;
+import sm.features.settings.state;
+import sm.features.update.state;
+import sm.features.update.types;
 import sm.ui.floating_window.events;
 import sm.ui.webview_window.webview_window;
-import sm.features.settings.state;
 import std;
 import asio;
 import sm.core.async.async;

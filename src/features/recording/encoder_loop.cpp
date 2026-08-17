@@ -20,6 +20,7 @@ import sm.features.recording.time;
 import sm.features.recording.types;
 import sm.utils.graphics.capture;
 import sm.utils.graphics.capture_region;
+import sm.utils.media.state;
 import sm.utils.media.types;
 
 import sm.utils.logger.logger;

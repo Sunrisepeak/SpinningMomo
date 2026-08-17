@@ -124,13 +124,24 @@ jobs:
       # finds it up to date and every other edge in the graph is ordered
       # correctly. This is not a source problem, so it is fixed here and not in
       # xmake.lua, where it would read as if the project needed it.
-      - name: Pre-build the std module BMI (xmake ordering defect)
+      # `--files="**/std.ixx"` selects nothing (std.ixx is an absolute path
+      # outside the project), so the first invocation is the whole build: it
+      # gets as far as the std BMI and the four units that only depend on it,
+      # then dies. Whatever it leaves on disk is the answer to the one question
+      # the logs cannot settle — whether the std BMI is produced at all, or
+      # whether its compile is what fails and the dependents merely report it.
+      - name: Build round 1 (expected to hit the std ordering defect)
+        shell: bash
+        continue-on-error: true
+        run: xmake build -y -v 2>&1 | grep -viE '^"C:|clang-cl' | tail -40
+
+      - name: What landed on disk
         shell: bash
         run: |
-          set -o pipefail
-          xmake build -y -v --files="**/std.ixx" 2>&1 | tail -30
-          echo "--- BMIs on disk ---"
-          find build -name 'std.pcm' -o -name 'std.ifc' | head
+          echo "--- every BMI produced ---"
+          find build -name '*.pcm' -printf '%10s  %p\n' 2>/dev/null | sort -k2 | head -30
+          echo "--- std specifically ---"
+          find build -name 'std.pcm' -printf '%10s  %p\n' 2>/dev/null || echo "NO std.pcm — its own compile is what fails"
 
       - name: Build
         run: xmake build -y -v

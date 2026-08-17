@@ -18,6 +18,7 @@ import sm.features.overlay.state;
 import sm.features.preview.preview;
 import sm.features.preview.state;
 import sm.features.settings.menu;
+import sm.features.settings.menu_types;
 import sm.features.window_control.types;
 import sm.features.window_control.window_control;
 import sm.ui.floating_window.events;

@@ -6,6 +6,7 @@ import sm.core.rpc.endpoints.gallery.folder;
 import sm.core.rpc.endpoints.gallery.tag;
 import sm.core.rpc.notification_hub;
 import sm.core.state.app_state;
+import sm.core.tasks.state;
 import sm.core.tasks.tasks;
 import sm.features.gallery.gallery;
 import sm.features.gallery.types;

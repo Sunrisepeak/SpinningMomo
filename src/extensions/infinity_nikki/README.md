@@ -13,7 +13,7 @@
 - `src/extensions/infinity_nikki/role_profile.cpp`：识别新建 UID 目录，并异步补全账号昵称。
 - `src/extensions/infinity_nikki/media_hardlinks.cpp`：Infinity Nikki 照片/录像受管硬链接同步核心。
 - `src/extensions/infinity_nikki/task_service.cpp`：扩展任务编排与进度上报。
-- `src/extensions/infinity_nikki/types.hpp`：扩展请求/结果结构。
+- `src/extensions/infinity_nikki/types.cppm`：扩展请求/结果结构。
 - `src/core/initializer/initializer.cpp`：扩展在启动流程中的接入时机。
 
 ## 核心链路

@@ -60,9 +60,22 @@ but not VISIBLE, because nothing capture.cpp imports exports it. There is no
 this needs the entity names themselves: what each interface exports, and whether
 the namespace a unit has open would let unqualified lookup wander into it.
 
-Three implementation units had it, all the same shape — their own `.cppm`
-`import`s the types module instead of `export import`ing it, so the interface
-sees the names and the implementation does not.
+Eleven uses across nine implementation units had it, all the same shape — their
+own `.cppm` `import`s the types module instead of `export import`ing it, so the
+interface sees the names and the implementation does not.
+
+Resolving against the ENTITY rather than the namespace is what makes the
+qualified half work too, and the difference is not academic:
+
+    src/features/recording/encoder_loop.cpp:343: error: declaration of
+    'EncoderContext' must be imported from module 'sm.utils.media.state'
+    before it is required
+
+encoder_loop.cpp writes `utils::media::encoder::EncoderContext` in full and
+imports `sm.utils.media.encoder`, which opens that namespace and names the type
+in its own signatures — but does not define it. Six modules open
+`utils::media::`; asking only "is the namespace reachable" says yes and misses
+this every time.
 
     check-module-graph.py            # verify (exit 1 on a cycle or a missing import)
     check-module-graph.py --graph    # print the interface DAG, deepest first
@@ -354,12 +367,23 @@ def _namespace_entities(text: str, pattern: re.Pattern[str]) -> dict[str, set[st
     return out
 
 
-def unqualified_missing_imports(units: list[Unit]) -> list[str]:
-    """A unit uses a name unqualified that only a module it cannot see exports.
+def entity_missing_imports(units: list[Unit]) -> list[str]:
+    """A unit names an ENTITY that only a module it cannot see exports.
 
     Reachable-but-not-visible: the name resolves during the build only because
     someone else's import chain drags the module in, and it stops resolving the
     day that chain changes.
+
+    This is finer than missing_imports() above, which asks only whether the
+    NAMESPACE is reachable. That is not enough when several modules open the same
+    namespace, which is the normal shape here:
+
+        features/recording/encoder_loop.cpp names utils::media::encoder::
+        EncoderContext while importing sm.utils.media.encoder — which opens that
+        namespace, and mentions the type in its signatures, but does not define
+        it. The definition is in sm.utils.media.state.
+
+    So both halves — qualified and unqualified — resolve against the entity.
     """
     provider: dict[str, set[tuple[str, str]]] = defaultdict(set)   # name -> {(ns, module)}
     reexports: dict[str, set[str]] = defaultdict(set)
@@ -400,28 +424,39 @@ def unqualified_missing_imports(units: list[Unit]) -> list[str]:
         for names in _namespace_entities(text, NS_OPEN).values():
             mine |= names
         lines = text.splitlines()
-        reported: set[str] = set()
-        for m in re.finditer(r"(?<![\w:.])(?<!->)([A-Za-z_]\w*)\b(?!\s*::)", text):
-            name = m.group(1)
-            if name in reported or name in mine or name not in provider:
+        reported: set[tuple[str, str]] = set()
+        for m in re.finditer(r"(?<![\w:.])(?<!->)((?:\w+::)*)([A-Za-z_]\w*)\b(?!\s*::)", text):
+            qualifier, name = m.group(1)[:-2], m.group(2)
+            if (qualifier, name) in reported or name not in provider:
                 continue
-            before = text[:m.start()].rstrip()
-            tail = re.search(r"[\w>&*]+$", before)
-            if tail:
-                word = re.search(r"\w+$", tail.group(0))
-                if not word or word.group(0) in _BUILTIN_TYPE:
-                    continue            # `std::atomic<bool> x`, `T& p`, `int i`
-                if word.group(0) not in _NOT_A_TYPE:
-                    continue            # `SomeType name` — a declarator
-            # Unqualified lookup only escapes into an enclosing namespace.
-            cands = [(ns, mod) for ns, mod in provider[name]
-                     if any(o == ns or o.startswith(ns + "::") for o in opened)]
+            if not qualifier and name in mine:
+                continue                # this unit declares it; lookup stops here
+            if not qualifier:
+                before = text[:m.start()].rstrip()
+                tail = re.search(r"[\w>&*]+$", before)
+                if tail:
+                    word = re.search(r"\w+$", tail.group(0))
+                    if not word or word.group(0) in _BUILTIN_TYPE:
+                        continue        # `std::atomic<bool> x`, `T& p`, `int i`
+                    if word.group(0) not in _NOT_A_TYPE:
+                        continue        # `SomeType name` — a declarator
+                # Unqualified lookup only escapes into an ENCLOSING namespace.
+                cands = [(ns, mod) for ns, mod in provider[name]
+                         if any(o == ns or o.startswith(ns + "::") for o in opened)]
+                how = "unqualified"
+            else:
+                # Written in full, or relative to a namespace this unit has open.
+                cands = [(ns, mod) for ns, mod in provider[name]
+                         if ns == qualifier
+                         or (ns.endswith("::" + qualifier)
+                             and any(ns.startswith(o + "::") or ns == o for o in opened))]
+                how = f"as `{qualifier}::`"
             if not cands or any(mod in reach for _, mod in cands):
                 continue
-            reported.add(name)
+            reported.add((qualifier, name))
             line_no = text.count("\n", 0, m.start())
-            out.append(f"{u.label}:{line_no + 1}: uses `{name}` unqualified, but nothing "
-                       f"it imports exports {cands[0][0]}:: (try: {cands[0][1]})")
+            out.append(f"{u.label}:{line_no + 1}: names `{name}` {how}, but nothing "
+                       f"it imports exports it (try: {cands[0][1]})")
     return out
 
 
@@ -440,7 +475,7 @@ def main() -> int:
         problems.append("interface cycle: " + " -> ".join(cyc))
 
     problems += missing_imports(units)
-    problems += unqualified_missing_imports(units)
+    problems += entity_missing_imports(units)
 
     stuck = topo(len(units), edges)
     if stuck:

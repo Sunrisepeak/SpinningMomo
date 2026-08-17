@@ -77,7 +77,9 @@ forbids a set of top-level names (`core`, `util`, `common`, `std`, `detail`,
 a C++ keyword gets a `_` suffix (`http_server/static.cpp` →
 `sm.core.http_server.static_`).
 
-Four invariants, all machine-enforced by `scripts/check-cpp-architecture.py`:
+The invariants that bite most often, all machine-enforced by
+`scripts/check-cpp-architecture.py` (it checks more; these are the ones worth
+knowing before you write code):
 
 1. **One door to the standard library per unit kind** — a module unit writes
    `import std;`, a plain translation unit includes `vendor/std.hpp`.
@@ -92,10 +94,26 @@ Four invariants, all machine-enforced by `scripts/check-cpp-architecture.py`:
    the implementation unit. Templates, `inline`, `constexpr` and class members
    are part of an interface and are not flagged.
 
+5. **An import is not transitive.** `import A;` where A does `import B;` does NOT
+   make B's exports visible — only `export import B;` does. Write down every
+   module you actually name. In the header world a transitive `#include` did this
+   silently, so the dependency was never recorded; a unit that leans on it
+   compiles for exactly as long as something else happens to pull the module in.
+   Both halves are checked: naming `features::gallery::recovery::X` with no
+   import that exports it, and the unqualified case — a unit inside
+   `namespace features::overlay::capture` naming `WM_APPLY_CAPTURE_SIZE`, which
+   unqualified lookup finds one namespace out. The second one clang reports as
+   *"declaration of 'X' must be imported from module 'Y' before it is required"*:
+   reachable, but not visible.
+
 Plus one the module graph enforces by construction: **it must be a DAG**
 (`scripts/check-module-graph.py`). Header include guards used to hide cycles;
 modules do not. Fixing the one this tree had meant a core types module could no
 longer depend on the application root — see `src/core/notifications/types.cppm`.
+
+And one that spans both build systems: `mcpp.toml` and `xmake.lua` must define
+the same macros and compile the same files (`scripts/check-build-parity.py`).
+Disagreeing is not a build error — it silently compiles a different program.
 
 The layers:
 
@@ -126,11 +144,14 @@ The layers:
   A library consumed as a MODULE has no facade at all — the module is the
   interface. Asio is the one: `import asio;`, never `#include <asio.hpp>`.
 
-Every translation unit must be self-contained: name every dependency explicitly. There is no PCH — `src/pch.hpp` is gone, because a precompiled header is a textual snapshot and a module unit's purview admits no `#include` at all. mcpp has no PCH either.
+Every translation unit must be self-contained: name every dependency explicitly.
+There is no PCH — `src/pch.hpp` is gone, because a precompiled header is a
+textual snapshot and a module unit's purview admits no `#include` at all. mcpp
+has no PCH either.
 
-Reaching the standard library has exactly one door per unit kind: a module unit writes `import std;`, a plain translation unit includes `vendor/std.hpp`. `scripts/check-cpp-architecture.py` enforces the split.
-
-External angle-bracket includes are allowed only inside `src/vendor/`. Windows SDK facades under `src/vendor/windows/` map one-to-one to physical SDK headers; do not create domain aggregate facades. Keep low-frequency SDK dependencies local to their call sites.
+Windows SDK facades under `src/vendor/windows/` map one-to-one to physical SDK
+headers; do not create domain aggregate facades. Keep low-frequency SDK
+dependencies local to their call sites.
 
 A third-party library consumed as a **module** has no facade at all — the module IS the interface. Asio is the first: `import asio;`, never `#include <asio.hpp>`. That is not a style preference. While Asio lived in each module's global module fragment, MSVC re-instantiated `asio::detail::service_registry::use_service` in every importing TU and could not reconcile the copies (`fatal error C1116`); a real module instantiates them once.
 
