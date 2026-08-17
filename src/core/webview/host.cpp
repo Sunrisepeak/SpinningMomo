@@ -13,15 +13,15 @@
 #include "vendor/windows/wrl.hpp"
 
 #include "core/build_config.hpp"
-#include "core/rpc/types.hpp"
+import sm.core.rpc.types;
 #include "core/state/app_state.hpp"
-#include "core/webview/rpc_bridge.hpp"
+import sm.core.webview.rpc_bridge;
 #include "core/webview/state.hpp"
 #include "core/webview/static.hpp"
 #include "features/settings/state.hpp"
 #include "utils/logger/logger.hpp"
-import utils.path.path;
-import utils.string.string;
+import sm.utils.path.path;
+import sm.utils.string.string;
 
 namespace core::webview::host::detail {
 

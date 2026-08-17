@@ -1,16 +1,17 @@
-#pragma once
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
 #include "vendor/rfl.hpp"
-
 #include "core/build_config.hpp"
-#include "core/rpc/types.hpp"
 #include "core/state/app_state.hpp"
 #include "utils/logger/logger.hpp"
 
-namespace core::rpc {
+export module sm.core.rpc.rpc;
+
+import std;
+import asio;
+import sm.core.rpc.types;
+
+export namespace core::rpc {
 
 // 异步处理器签名
 template <typename Request, typename Response>

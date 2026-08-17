@@ -2,11 +2,11 @@
 
 #include "vendor/std.hpp"
 
-#include "vendor/asio.hpp"
+import asio;
 
-#include "core/rpc/rpc.hpp"
-#include "core/rpc/state.hpp"
-#include "core/rpc/types.hpp"
+import sm.core.rpc.rpc;
+import sm.core.rpc.state;
+import sm.core.rpc.types;
 #include "core/state/app_state.hpp"
 #include "features/settings/background.hpp"
 #include "features/settings/settings.hpp"

@@ -1,10 +1,9 @@
-#pragma once
+export module sm.core.rpc.state;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.rpc.types;
 
-#include "core/rpc/types.hpp"
-
-namespace core::rpc {
+export namespace core::rpc {
 
 struct RpcState {
   std::unordered_map<std::string, MethodInfo> registry;

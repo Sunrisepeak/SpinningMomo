@@ -5,7 +5,7 @@
 #include "vendor/windows.hpp"
 #include "vendor/windows/bcrypt.hpp"
 
-import utils.string.string;
+import sm.utils.string.string;
 
 namespace extensions::infinity_nikki::photo_extract::scan {
 

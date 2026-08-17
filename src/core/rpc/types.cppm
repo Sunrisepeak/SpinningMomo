@@ -1,11 +1,13 @@
-#pragma once
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
 #include "vendor/rfl.hpp"
 
-namespace core::rpc {
+export module sm.core.rpc.types;
+
+import std;
+import asio;
+
+export namespace core::rpc {
 
 // JSON-RPC 2.0 标准错误码
 enum class ErrorCode {

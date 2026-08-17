@@ -2,14 +2,14 @@
 
 #include "vendor/std.hpp"
 
-#include "vendor/asio.hpp"
+import asio;
 
-#include "core/async/async.hpp"
+import sm.core.async.async;
 #include "core/rpc/notification_hub.hpp"
 #include "core/state/app_state.hpp"
 #include "core/tasks/tasks.hpp"
 #include "extensions/infinity_nikki/media_hardlinks.hpp"
-#include "extensions/infinity_nikki/photo_extract/photo_extract.hpp"
+import sm.extensions.infinity_nikki.photo_extract.photo_extract;
 #include "extensions/infinity_nikki/types.hpp"
 #include "features/gallery/gallery.hpp"
 #include "features/gallery/types.hpp"

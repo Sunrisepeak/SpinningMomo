@@ -8,7 +8,7 @@
 #include "vendor/windows/windowsx.hpp"
 
 #include "core/build_config.hpp"
-#include "core/http_server/state.hpp"
+import sm.core.http_server.state;
 #include "core/state/app_state.hpp"
 #include "core/state/runtime_info.hpp"
 #include "core/webview/state.hpp"

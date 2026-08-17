@@ -25,6 +25,9 @@ amortises today, and what BMIs will amortise once enough of the tree is modules.
 
 Usage:  mcpp-modularize.py <header path relative to src/, without .hpp> ...
         mcpp-modularize.py --rewrite-consumers <module path> ...
+        mcpp-modularize.py --closure <seed header, src-relative WITH .hpp> ...
+        mcpp-modularize.py --normalize
+        mcpp-modularize.py --rename-prefix <old top-level module segment> ...
 """
 
 from __future__ import annotations
@@ -47,6 +50,25 @@ NAMESPACE_RE = re.compile(r'^namespace\s+([A-Za-z_][A-Za-z0-9_:]*)\s*\{')
 # built around, so every module carries the project's namespace prefix — the
 # same `sm` the package index uses.
 MODULE_PREFIX = "sm."
+
+# Vendor facades that are no longer headers: the library itself is consumed as a
+# module, so `#include "vendor/x.hpp"` becomes `import <module>;` everywhere —
+# in a module's purview AND in a plain .cpp, which may import without being a
+# module unit itself.
+#
+# asio is the first and the reason the rule exists. While it lived in each
+# module's global module fragment, its template specializations
+# (`service_registry::use_service<config_service>` and friends) were
+# re-instantiated in every importing TU and MSVC could not reconcile them:
+#   fatal error C1116: unrecoverable error importing module 'sm.core.rpc.state'
+# A real module instantiates them ONCE, inside asio.
+#
+# The consequence is that a facade listed here can no longer be reached from an
+# unconverted header — a header cannot `import`. So every .hpp that includes one
+# must be in the same conversion batch. `--closure` computes that set.
+VENDOR_MODULES = {
+    "vendor/asio.hpp": "asio",
+}
 
 
 def module_name(rel: str) -> str:
@@ -77,10 +99,12 @@ def split_top(lines: list[str], modules: set[str]) -> tuple[list[str], list[str]
         target = m.group(1)
         if target == "vendor/std.hpp":
             pass  # becomes `import std;`
+        elif target in VENDOR_MODULES:
+            imports.append(("raw", VENDOR_MODULES[target]))
         elif target.startswith("vendor/"):
             gmf.append(line.rstrip())
         elif target.removesuffix(".hpp") in modules:
-            imports.append(target.removesuffix(".hpp"))
+            imports.append(("project", target.removesuffix(".hpp")))
         else:
             gmf.append(line.rstrip())
         i += 1
@@ -108,8 +132,8 @@ def convert_header(rel: str, modules: set[str]) -> Path:
     out.append(f"export module {module_name(rel)};")
     out.append("")
     out.append("import std;")
-    for p in imports:
-        out.append(f"import {module_name(p)};")
+    for kind, p in imports:
+        out.append(f"import {p};" if kind == "raw" else f"import {module_name(p)};")
     out.append("")
     out += body
 
@@ -156,8 +180,8 @@ def convert_impl(rel: str, modules: set[str], iface_gmf: list[str] | None = None
     out.append(f"module {module_name(rel)};")
     out.append("")
     out.append("import std;")
-    for p in imports:
-        out.append(f"import {module_name(p)};")
+    for kind, p in imports:
+        out.append(f"import {p};" if kind == "raw" else f"import {module_name(p)};")
     out.append("")
     out += body
 
@@ -168,6 +192,7 @@ def convert_impl(rel: str, modules: set[str], iface_gmf: list[str] | None = None
 def rewrite_consumers(rels: list[str]) -> int:
     """Every `#include "<rel>.hpp"` anywhere in src/ becomes `import <mod>;`."""
     wanted = {f"{r}.hpp": module_name(r) for r in rels}
+    wanted.update(VENDOR_MODULES)
     touched = 0
     for path in list(SRC.rglob("*.hpp")) + list(SRC.rglob("*.cpp")) + list(SRC.rglob("*.cppm")):
         text = path.read_text(encoding="utf-8")
@@ -186,11 +211,148 @@ def rewrite_consumers(rels: list[str]) -> int:
     return touched
 
 
+MODULE_DECL_RE = re.compile(r'^(?:export )?module\s+[A-Za-z_]')
+IMPORT_RE = re.compile(r'^\s*import\s')
+
+
+def normalize_module_units() -> int:
+    """Move any `import` that landed in a global module fragment into the purview.
+
+    A GMF may hold ONLY preprocessing directives, so an `import` between
+    `module;` and the module declaration is ill-formed. It gets there naturally:
+    `rewrite_consumers` replaces an `#include` line in place, and in an
+    already-converted module unit that line was sitting in the GMF. Rewriting
+    the include is right; leaving the import where the include was is not.
+    """
+    fixed = 0
+    for path in list(SRC.rglob("*.cppm")) + list(SRC.rglob("*.cpp")):
+        lines = path.read_text(encoding="utf-8").splitlines()
+        if not lines or lines[0].strip() != "module;":
+            continue
+        decl = next((i for i, l in enumerate(lines) if MODULE_DECL_RE.match(l)), None)
+        if decl is None:
+            continue
+        stray = [i for i, l in enumerate(lines[:decl]) if IMPORT_RE.match(l)]
+        if not stray:
+            continue
+        moved = [lines[i] for i in stray]
+        rest = [l for i, l in enumerate(lines) if i not in set(stray)]
+
+        decl = next(i for i, l in enumerate(rest) if MODULE_DECL_RE.match(l))
+        # Land them at the head of the existing import block, or right after the
+        # declaration when there is none.
+        at = next((i for i in range(decl + 1, len(rest)) if IMPORT_RE.match(rest[i])), None)
+        if at is None:
+            at = decl + 1
+            rest[at:at] = [""] + moved
+        else:
+            rest[at:at] = moved
+
+        while len(rest) > 1 and rest[0] == "" :
+            rest.pop(0)
+        # collapse a GMF that is now empty: `module;` followed by blanks
+        out, blank = [], 0
+        for l in rest:
+            if l.strip() == "":
+                blank += 1
+                if blank > 1:
+                    continue
+            else:
+                blank = 0
+            out.append(l)
+        path.write_text("\n".join(strip_empty_gmf(out)).rstrip() + "\n", encoding="utf-8")
+        fixed += 1
+    return fixed
+
+
+def strip_empty_gmf(lines: list[str]) -> list[str]:
+    """Drop a `module;` that introduces nothing.
+
+    An empty global module fragment is well-formed but says something false —
+    it reads as "this unit reaches for the global module" when it no longer
+    does. Once asio moved from a GMF `#include` to `import asio;`, several units
+    were left with exactly that."""
+    if not lines or lines[0].strip() != "module;":
+        return lines
+    i = 1
+    while i < len(lines) and not lines[i].strip():
+        i += 1
+    if i < len(lines) and MODULE_DECL_RE.match(lines[i]):
+        return lines[i:]
+    return lines
+
+
+def rename_module_prefix(old_top: str) -> int:
+    """`module utils.x;` / `import utils.x;` -> the MODULE_PREFIX-carrying spelling.
+
+    mcpp forbids a handful of top-level module names (core / util / common / std
+    / detail / internal / base, modgraph/validate.cppm:48). `utils` is not among
+    them, which is why the first converted batch built without a prefix — but a
+    tree where some modules carry the project prefix and some do not is one
+    where the rule is "whatever the last batch did". One rule, no exceptions.
+    """
+    pat = re.compile(rf'^((?:export )?(?:module|import)\s+){re.escape(old_top)}\.', re.M)
+    touched = 0
+    for path in list(SRC.rglob("*.cppm")) + list(SRC.rglob("*.cpp")):
+        text = path.read_text(encoding="utf-8")
+        new_text = pat.sub(rf'\g<1>{MODULE_PREFIX}{old_top}.', text)
+        if new_text != text:
+            path.write_text(new_text, encoding="utf-8")
+            touched += 1
+    return touched
+
+
+def closure(seed_headers: list[str]) -> list[str]:
+    """The headers that MUST convert together with `seed_headers`.
+
+    A module unit may not `#include` in its purview and a HEADER may not
+    `import` at all. So the moment a header's dependency becomes a module, that
+    header has to become one too, and the requirement propagates up the include
+    graph until it reaches a `.cpp` — which can `import` while staying a plain
+    translation unit, and therefore ends the propagation.
+
+    Seeds are src-relative header paths (`vendor/asio.hpp`, `core/rpc/types.hpp`).
+    """
+    files = [q for q in SRC.rglob("*") if q.suffix in {".hpp", ".cpp", ".cppm"}]
+    by_rel = {str(q.relative_to(SRC)): q for q in files}
+
+    includers: dict[Path, set[Path]] = {}
+    for q in files:
+        for line in q.read_text(encoding="utf-8", errors="replace").splitlines():
+            m = INCLUDE_RE.match(line)
+            if not m:
+                continue
+            tgt = by_rel.get(m.group(1))
+            if tgt:
+                includers.setdefault(tgt, set()).add(q)
+
+    out: set[Path] = set()
+    frontier = [by_rel[s] for s in seed_headers if s in by_rel]
+    while frontier:
+        cur = frontier.pop()
+        for c in includers.get(cur, ()):
+            if c.suffix == ".hpp" and c not in out:
+                out.add(c)
+                frontier.append(c)
+    return sorted(str(q.relative_to(SRC)).removesuffix(".hpp") for q in out)
+
+
 def main() -> int:
     args = sys.argv[1:]
     if not args:
         print(__doc__)
         return 2
+    if args[0] == "--normalize":
+        print(f"normalized {normalize_module_units()} module units")
+        return 0
+    if args[0] == "--rename-prefix":
+        for top in args[1:]:
+            print(f"{top}. -> {MODULE_PREFIX}{top}.: {rename_module_prefix(top)} files")
+        return 0
+    if args[0] == "--closure":
+        for rel in closure(args[1:]):
+            print(rel)
+        return 0
     if args[0] == "--rewrite-consumers":
         n = rewrite_consumers(args[1:])
         print(f"rewrote includes in {n} files")
@@ -201,6 +363,7 @@ def main() -> int:
         i = convert_impl(rel, modules, convert_header.last_gmf)
         print(f"{rel}: {h.relative_to(ROOT)}" + (f" + {i.relative_to(ROOT)}" if i else " (header-only)"))
     rewrite_consumers(args)
+    normalize_module_units()
     return 0
 
 

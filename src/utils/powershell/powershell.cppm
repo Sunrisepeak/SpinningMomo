@@ -1,6 +1,4 @@
-module;
-
-export module utils.powershell.powershell;
+export module sm.utils.powershell.powershell;
 
 import std;
 

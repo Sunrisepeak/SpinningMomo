@@ -1,13 +1,14 @@
-#pragma once
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
 #include "vendor/windows/winhttp.hpp"
-
 #include "core/http_client/types.hpp"
 
-namespace core::http_client {
+export module sm.core.http_client.state;
+
+import std;
+import asio;
+
+export namespace core::http_client {
 
 struct UniqueHInternet {
   HINTERNET handle = nullptr;

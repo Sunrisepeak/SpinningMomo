@@ -1,13 +1,14 @@
-#pragma once
-
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
+module;
 
 #include "core/http_client/types.hpp"
 #include "core/state/app_state.hpp"
 
-namespace core::http_client {
+export module sm.core.http_client.http_client;
+
+import std;
+import asio;
+
+export namespace core::http_client {
 
 auto initialize(core::AppState& state) -> std::expected<void, std::string>;
 

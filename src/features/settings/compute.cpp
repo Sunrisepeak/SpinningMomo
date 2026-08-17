@@ -10,7 +10,7 @@
 #include "features/settings/state.hpp"
 #include "features/settings/types.hpp"
 #include "utils/logger/logger.hpp"
-import utils.string.string;
+import sm.utils.string.string;
 
 namespace features::settings::compute {
 

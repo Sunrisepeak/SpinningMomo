@@ -54,9 +54,13 @@ The backend uses **C++23 headers and implementation files** (`.hpp + .cpp`) with
 - `extensions::*` — game-specific integrations
 - `vendor/**/*.hpp` — project-owned include facades for the standard library, Win32, and third-party headers. These headers do not re-export external APIs through a project namespace.
 
-Every project header must remain self-contained without the PCH. Include `vendor/std.hpp` and the required vendor facades explicitly; `src/pch.hpp` only accelerates those same dependencies.
+Every translation unit must be self-contained: name every dependency explicitly. There is no PCH — `src/pch.hpp` is gone, because a precompiled header is a textual snapshot and a module unit's purview admits no `#include` at all. mcpp has no PCH either.
 
-External angle-bracket includes are allowed only inside `src/vendor/`. Windows SDK facades under `src/vendor/windows/` map one-to-one to physical SDK headers; do not create domain aggregate facades. Add only stable, high-frequency exact facades to `src/pch.hpp`, while new low-frequency SDK dependencies remain local to their call sites.
+Reaching the standard library has exactly one door per unit kind: a module unit writes `import std;`, a plain translation unit includes `vendor/std.hpp`. `scripts/check-cpp-architecture.py` enforces the split.
+
+External angle-bracket includes are allowed only inside `src/vendor/`. Windows SDK facades under `src/vendor/windows/` map one-to-one to physical SDK headers; do not create domain aggregate facades. Keep low-frequency SDK dependencies local to their call sites.
+
+A third-party library consumed as a **module** has no facade at all — the module IS the interface. Asio is the first: `import asio;`, never `#include <asio.hpp>`. That is not a style preference. While Asio lived in each module's global module fragment, MSVC re-instantiated `asio::detail::service_registry::use_service` in every importing TU and could not reconcile the copies (`fatal error C1116`); a real module instantiates them once.
 
 ### Design Philosophy
 The C++ backend does **NOT** use OOP class hierarchies. Instead it follows:

@@ -5,7 +5,7 @@ module;
 #include "vendor/windows/dxgi1_6.hpp"
 #include "utils/logger/logger.hpp"
 
-module utils.graphics.hdr;
+module sm.utils.graphics.hdr;
 
 import std;
 

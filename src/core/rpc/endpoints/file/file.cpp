@@ -2,15 +2,15 @@
 
 #include "vendor/std.hpp"
 
-#include "vendor/asio.hpp"
+import asio;
 
-#include "core/rpc/rpc.hpp"
-#include "core/rpc/state.hpp"
-#include "core/rpc/types.hpp"
+import sm.core.rpc.rpc;
+import sm.core.rpc.state;
+import sm.core.rpc.types;
 #include "core/state/app_state.hpp"
-import utils.file.file;
-import utils.path.path;
-import utils.system.system;
+import sm.utils.file.file;
+import sm.utils.path.path;
+import sm.utils.system.system;
 
 namespace core::rpc::endpoints::file {
 

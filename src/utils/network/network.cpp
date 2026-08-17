@@ -1,11 +1,8 @@
-module;
+module sm.utils.network.network;
 
-#include "vendor/asio.hpp"
-
-module utils.network.network;
-
+import asio;
 import std;
-import utils.string.string;
+import sm.utils.string.string;
 
 namespace utils::network::detail {
 

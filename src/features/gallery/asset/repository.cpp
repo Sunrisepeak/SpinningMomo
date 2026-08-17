@@ -11,8 +11,8 @@
 #include "features/gallery/state.hpp"
 #include "features/gallery/types.hpp"
 #include "utils/logger/logger.hpp"
-import utils.lru_cache;
-import utils.time;
+import sm.utils.lru_cache;
+import sm.utils.time;
 
 namespace features::gallery::asset::repository::detail {
 

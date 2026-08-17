@@ -19,13 +19,6 @@ windows = "msvc@system"
 [indices]
 sm = { path = "mcpp" }
 
-# Asio, as a C++23 MODULE (`import asio;`), not headers. Consuming it as a module
-# is what keeps its template specializations — `service_registry::use_service`
-# and friends — instantiated ONCE inside the asio module instead of once per
-# importing TU's global module fragment. The header form is what made
-# `sm.core.rpc.*` die with C1116 when those modules were first converted.
-[dependencies.chriskohlhoff]
-asio = "1.38.1"
 
 # The official index already carries these, so the project does not own them.
 # It could not use them before 2026.8.16, because a dependency package compiled
@@ -37,10 +30,25 @@ asio = "1.38.1"
 [dependencies.compat]
 spdlog = { version = "1.17.0", features = ["compiled"] }
 
-# Still project-owned — the official index has no descriptor for these yet.
+# Still project-owned. Two kinds live here:
+#
+#   * packages the official index has no descriptor for at all;
+#   * `asio`, which it DOES have — as a module, which is exactly the form this
+#     project needs — but whose published export surface predates
+#     mcpplibs/mcpp-index#213. That amendment is merged; this entry disappears
+#     when the published artifact catches up. `scripts/check-asio-override.sh`
+#     answers "is it time yet" in seconds, on Linux, without a CI round.
+#
+# Asio is consumed as a MODULE (`import asio;`), never as headers. That is what
+# keeps its template specializations — `service_registry::use_service` and
+# friends — instantiated ONCE inside the asio module rather than once per
+# importing TU's global module fragment. The header form is what made
+# `sm.core.rpc.*` die with C1116 when those modules were first converted.
+#
 # uwebsockets pulls usockets, which pulls compat.libuv; sqlitecpp pulls
 # compat.sqlite3.
 [dependencies.sm]
+asio        = "1.38.1"
 xxhash      = "0.8.3"
 wil         = "1.0.260126.7"
 sqlitecpp   = "3.3.3"

@@ -1,14 +1,15 @@
-#pragma once
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/uwebsockets.hpp"
-
-#include "core/http_server/state.hpp"
-#include "core/http_server/types.hpp"
 #include "core/state/app_state.hpp"
 
-namespace core::http_server::static_content {
+export module sm.core.http_server.static;
+
+import std;
+import sm.core.http_server.state;
+import sm.core.http_server.types;
+
+export namespace core::http_server::static_content {
 
 // 读取并发送下一个数据块
 auto read_and_send_next_chunk(std::shared_ptr<StreamContext> ctx) -> void;

@@ -20,9 +20,9 @@
 #include "utils/graphics/capture.hpp"
 #include "utils/graphics/capture_region.hpp"
 #include "utils/logger/logger.hpp"
-import utils.media.encoder;
+import sm.utils.media.encoder;
 #include "utils/media/types.hpp"
-import utils.string.string;
+import sm.utils.string.string;
 
 namespace features::recording::encoder_loop {
 

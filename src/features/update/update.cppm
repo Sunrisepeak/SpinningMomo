@@ -1,14 +1,15 @@
-#pragma once
-
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
+module;
 
 #include "core/state/app_state.hpp"
 #include "features/update/state.hpp"
 #include "features/update/types.hpp"
 
-namespace features::update {
+export module sm.features.update.update;
+
+import std;
+import asio;
+
+export namespace features::update {
 
 // 初始化Update模块
 auto initialize(core::AppState& app_state) -> std::expected<void, std::string>;

@@ -1,9 +1,6 @@
-module;
+export module sm.utils.network.network;
 
-#include "vendor/asio.hpp"
-
-export module utils.network.network;
-
+import asio;
 import std;
 
 export namespace utils::network {

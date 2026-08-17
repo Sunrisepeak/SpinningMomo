@@ -2,11 +2,11 @@
 
 #include "vendor/std.hpp"
 
-#include "vendor/asio.hpp"
+import asio;
 #include "vendor/rfl.hpp"
 
-#include "core/async/async.hpp"
-#include "core/http_client/http_client.hpp"
+import sm.core.async.async;
+import sm.core.http_client.http_client;
 #include "core/http_client/types.hpp"
 #include "core/rpc/notification_hub.hpp"
 #include "core/state/app_state.hpp"
@@ -15,8 +15,8 @@
 #include "features/gallery/types.hpp"
 #include "features/settings/state.hpp"
 #include "utils/logger/logger.hpp"
-import utils.path.path;
-import utils.string.string;
+import sm.utils.path.path;
+import sm.utils.string.string;
 
 namespace extensions::infinity_nikki::role_profile {
 

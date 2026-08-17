@@ -1,11 +1,13 @@
-#pragma once
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
 #include "vendor/uwebsockets.hpp"
 
-namespace core::http_server {
+export module sm.core.http_server.types;
+
+import std;
+import asio;
+
+export namespace core::http_server {
 
 // ============= 流式传输配置 =============
 

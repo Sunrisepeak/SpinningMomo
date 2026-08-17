@@ -1,12 +1,13 @@
-#pragma once
-
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
+module;
 
 #include "core/state/app_state.hpp"
 
-namespace core::webview::rpc_bridge {
+export module sm.core.webview.rpc_bridge;
+
+import std;
+import asio;
+
+export namespace core::webview::rpc_bridge {
 
 // 初始化rpc桥接
 auto initialize_rpc_bridge(core::AppState& state) -> void;

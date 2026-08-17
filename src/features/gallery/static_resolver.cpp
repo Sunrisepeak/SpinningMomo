@@ -3,16 +3,16 @@
 #include "vendor/std.hpp"
 
 #include "core/build_config.hpp"
-#include "core/http_server/static.hpp"
-#include "core/http_server/types.hpp"
+import sm.core.http_server.static;
+import sm.core.http_server.types;
 #include "core/state/app_state.hpp"
 #include "core/webview/state.hpp"
 #include "core/webview/webview.hpp"
 #include "features/gallery/original_locator.hpp"
 #include "features/gallery/state.hpp"
 #include "utils/logger/logger.hpp"
-import utils.path.path;
-import utils.string.string;
+import sm.utils.path.path;
+import sm.utils.string.string;
 
 namespace features::gallery::static_resolver {
 

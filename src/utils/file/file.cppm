@@ -1,9 +1,6 @@
-module;
+export module sm.utils.file.file;
 
-#include "vendor/asio.hpp"
-
-export module utils.file.file;
-
+import asio;
 import std;
 
 export namespace utils::file {

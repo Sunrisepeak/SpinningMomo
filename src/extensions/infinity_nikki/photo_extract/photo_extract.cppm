@@ -1,13 +1,14 @@
-#pragma once
-
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
+module;
 
 #include "core/state/app_state.hpp"
 #include "extensions/infinity_nikki/types.hpp"
 
-namespace extensions::infinity_nikki::photo_extract {
+export module sm.extensions.infinity_nikki.photo_extract.photo_extract;
+
+import std;
+import asio;
+
+export namespace extensions::infinity_nikki::photo_extract {
 
 auto extract_photo_params(
     core::AppState& app_state, const InfinityNikkiExtractPhotoParamsRequest& request,

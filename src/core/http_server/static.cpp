@@ -1,18 +1,20 @@
-#include "core/http_server/static.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
 #include "vendor/uwebsockets.hpp"
-
-#include "core/async/async.hpp"
-#include "core/http_server/types.hpp"
 #include "core/state/app_state.hpp"
-import utils.file.file;
-import utils.file.mime;
+
+module sm.core.http_server.static;
+
+import std;
+import asio;
+import sm.core.async.async;
+import sm.core.http_server.types;
+
+import sm.utils.file.file;
+import sm.utils.file.mime;
 #include "utils/logger/logger.hpp"
-import utils.path.path;
-import utils.time;
+import sm.utils.path.path;
+import sm.utils.time;
 
 namespace core::http_server::static_content {
 

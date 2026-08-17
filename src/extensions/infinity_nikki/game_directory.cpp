@@ -8,7 +8,7 @@
 
 #include "extensions/infinity_nikki/types.hpp"
 #include "utils/logger/logger.hpp"
-import utils.string.string;
+import sm.utils.string.string;
 
 namespace extensions::infinity_nikki::game_directory {
 

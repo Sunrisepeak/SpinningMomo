@@ -1,0 +1,30 @@
+[package]
+name      = "p6asiomodule"
+version   = "0.1.0"
+standard  = "c++23"
+platforms = ["windows"]
+
+[toolchain]
+windows = "msvc@system"
+
+# The project's own index, for the same reason the root manifest uses it: the
+# published `chriskohlhoff.asio` predates mcpplibs/mcpp-index#213, so the
+# amendment lives in `sm.asio` until the artifact catches up. The MODULE is
+# `asio` either way — a package name and a module name are independent.
+[indices]
+sm = { path = "../../mcpp" }
+
+[dependencies.sm]
+asio = "1.38.1"
+
+[build]
+# One derivation of the CRT, shared with the cached `std` module (mcpp#422).
+cxx_runtime = "self-contained"
+
+# The package's `separate-compilation` feature compiles its own TUs with these;
+# a consumer that must agree declares them itself, because an index descriptor's
+# feature defines do not reach consumers.
+defines = [
+  "ASIO_STANDALONE", "ASIO_SEPARATE_COMPILATION",
+  "ASIO_DISABLE_BOOST_CONTEXT_FIBER", "ASIO_HAS_THREADS", "ASIO_NO_IOSTREAM",
+]

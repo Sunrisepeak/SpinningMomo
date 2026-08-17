@@ -1,19 +1,20 @@
-#include "extensions/infinity_nikki/asset_service.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
-
+#include "core/state/app_state.hpp"
+#include "extensions/infinity_nikki/types.hpp"
+#include "features/gallery/types.hpp"
 #include "core/database/database.hpp"
 #include "core/database/types.hpp"
-#include "core/state/app_state.hpp"
-#include "extensions/infinity_nikki/metadata_dict.hpp"
-#include "extensions/infinity_nikki/types.hpp"
-#include "extensions/infinity_nikki/world_area.hpp"
 #include "features/gallery/asset/query_support.hpp"
 #include "features/gallery/asset/repository.hpp"
-#include "features/gallery/types.hpp"
 #include "utils/logger/logger.hpp"
+
+module sm.extensions.infinity_nikki.asset_service;
+
+import std;
+import asio;
+import sm.extensions.infinity_nikki.metadata_dict;
+import sm.extensions.infinity_nikki.world_area;
 
 namespace extensions::infinity_nikki::asset_service {
 

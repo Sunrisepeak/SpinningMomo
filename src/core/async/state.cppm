@@ -1,10 +1,9 @@
-#pragma once
+export module sm.core.async.state;
 
-#include "vendor/std.hpp"
+import std;
+import asio;
 
-#include "vendor/asio.hpp"
-
-namespace core::async {
+export namespace core::async {
 
 struct AsyncState {
   // 核心asio状态

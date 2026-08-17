@@ -3,9 +3,9 @@
 #include "vendor/std.hpp"
 
 #include "core/build_config.hpp"
-import utils.hash.xxhash;
-import utils.media.video_asset;
-import utils.string.string;
+import sm.utils.hash.xxhash;
+import sm.utils.media.video_asset;
+import sm.utils.string.string;
 
 namespace features::gallery::scanner::common {
 

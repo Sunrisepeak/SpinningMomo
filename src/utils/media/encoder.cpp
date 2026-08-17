@@ -15,7 +15,7 @@ module;
 #include "utils/logger/logger.hpp"
 #include "utils/media/hdr_convert.hpp"
 
-module utils.media.encoder;
+module sm.utils.media.encoder;
 
 import std;
 

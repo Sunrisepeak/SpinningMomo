@@ -1,5 +1,17 @@
 #!/usr/bin/env python3
-"""Validate the Headers/PCH architecture without compiling the project."""
+"""Validate the module architecture without compiling the project.
+
+The invariants are the ones the mcpp migration turns on:
+
+  * every translation unit reaches the standard library through ONE door —
+    `import std;` in a module unit, `#include "vendor/std.hpp"` in a plain one;
+  * external `<>` includes appear only under src/vendor/, so the global module
+    fragment has exactly one kind of entry;
+  * no header units (`import <h>;`), which mcpp rejects outright and which the
+    repository's abandoned first modularisation was built on;
+  * a module interface exports declarations, not definitions: a non-template
+    free function body belongs in the implementation unit.
+"""
 
 from __future__ import annotations
 
@@ -11,7 +23,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
 TESTS = ROOT / "tests"
-CPP_SUFFIXES = {".hpp", ".cpp"}
+CPP_SUFFIXES = {".hpp", ".cpp", ".cppm"}
+MODULE_SUFFIXES = {".cppm"}
 
 FORBIDDEN_TEXT = {
     r"\b(?:Core|Features|UI|Utils|Extensions|Vendor)::": "旧的大驼峰命名空间",
@@ -27,6 +40,8 @@ FORBIDDEN_TEXT = {
 }
 
 EXTERNAL_INCLUDE = re.compile(r"^\s*#include\s*<[^>]+>")
+
+MODULE_DECLARATION = re.compile(r"^(?:export\s+)?module\s+[A-Za-z_][\w.]*\s*;", re.MULTILINE)
 
 NAMESPACE_DECLARATION = re.compile(
     r"^\s*namespace\s+([A-Za-z_][A-Za-z0-9_:]*)\s*\{", re.MULTILINE
@@ -44,9 +59,25 @@ LOWERCASE_TYPE_EXCEPTIONS = {
     "ui_task",
 }
 
-REQUIRED_SYMBOL_INCLUDES = {
-    "utils::hash::": "utils/hash/xxhash.hpp",
+# A symbol whose provider must be named explicitly. Either spelling counts —
+# the provider is a module now, but a plain .cpp still reaches it by import and
+# an unconverted header still includes it.
+REQUIRED_SYMBOL_PROVIDERS = {
+    "utils::hash::": ('#include "utils/hash/xxhash.hpp"', "import sm.utils.hash.xxhash;"),
 }
+
+# A free function DEFINITION at namespace scope inside a module interface.
+# Templates, `inline`, `constexpr`/`consteval` and class-member definitions are
+# all legitimately part of an interface and are not matched: the target is the
+# ordinary function whose body only makes the BMI bigger and every consumer's
+# rebuild more likely.
+IFACE_FUNCTION_BODY = re.compile(
+    r"^(?!.*\b(?:inline|constexpr|consteval|template|friend|struct|class|enum|return)\b)"
+    r"(?:auto|[A-Za-z_][\w:<>,\s\*&]*?)\s+"
+    r"([A-Za-z_]\w*)\s*\([^;{}]*\)\s*(?:const\s*)?(?:noexcept\s*)?"
+    r"(?:->[^;{}]+?)?\{\s*$",
+    re.MULTILINE,
+)
 
 CXX_KEYWORDS = {
     "alignas", "alignof", "and", "and_eq", "asm", "atomic_cancel", "atomic_commit",
@@ -85,16 +116,30 @@ def validate_file(path: Path, errors: list[str]) -> None:
     vendor_root = SRC / "vendor"
     is_vendor_facade = vendor_root in path.parents
 
-    if not is_vendor_facade and '#include "vendor/std.hpp"' not in text:
-        report(errors, path, 1, '缺少显式 #include "vendor/std.hpp"')
+    is_module_unit = path.suffix in MODULE_SUFFIXES or MODULE_DECLARATION.search(text)
+    if not is_vendor_facade:
+        # One door to the standard library, and which door depends on what the
+        # unit is: a module unit may not `#include` in its purview, a plain
+        # translation unit has no purview to import into.
+        if is_module_unit:
+            if "import std;" not in text:
+                report(errors, path, 1, "模块单元缺少 import std;")
+        elif '#include "vendor/std.hpp"' not in text:
+            report(errors, path, 1, '缺少显式 #include "vendor/std.hpp"')
     if is_vendor_facade:
         facade_include = path.relative_to(SRC).as_posix()
         if f'#include "{facade_include}"' in text:
             report(errors, path, 1, "vendor 门面不能包含自身")
 
-    for symbol, required_header in REQUIRED_SYMBOL_INCLUDES.items():
-        if symbol in text and f'#include "{required_header}"' not in text:
-            report(errors, path, 1, f"使用 {symbol} 时必须包含 {required_header}")
+    for symbol, providers in REQUIRED_SYMBOL_PROVIDERS.items():
+        if symbol in text and not any(p in text for p in providers):
+            report(errors, path, 1, f"使用 {symbol} 时必须写明来源: {' 或 '.join(providers)}")
+
+    if path.suffix in MODULE_SUFFIXES:
+        for match in IFACE_FUNCTION_BODY.finditer(text):
+            line = text.count("\n", 0, match.start()) + 1
+            report(errors, path, line,
+                   f"模块接口只放声明，实现移到同名 .cpp: {match.group(1)}(...)")
 
     for pattern, description in FORBIDDEN_TEXT.items():
         regex = re.compile(pattern, re.MULTILINE)

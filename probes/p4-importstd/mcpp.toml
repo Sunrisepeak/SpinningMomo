@@ -8,13 +8,14 @@ platforms = ["windows"]
 windows = "msvc@system"
 
 [build]
+# The CRT, in ONE place. Hand-writing `/MT` into cxxflags used to work by
+# accident: mcpp passed no CRT flag when building the cached `std` module, so cl
+# defaulted it to /MT and the two happened to agree. Since 2026.8.16 mcpp DERIVES
+# the flag — from `linkage` / `cxx_runtime` — for the project's TUs and the std
+# module alike, so a manifest that says nothing gets /MD for std while its own
+# cxxflags still force /MT, and the link dies on `__imp__fwrite_nolock` with
+# LNK4098 'MSVCRT conflicts with use of other libs'.
+#
+# Say it once, the way mcpp asks (mcpp#422).
+cxx_runtime = "self-contained"
 include_dirs = ["src"]
-
-# `[build] linkage = "static"` alone does not reach the compile lines: every TU
-# still gets /MD while the `std` object mcpp caches is built /MT, so the link
-# dies with LNK2038 RuntimeLibrary mismatch plus a pile of LNK2005 out of
-# msvcprt.lib. Spell the CRT out so compiler and cached std agree. Scoped to
-# Windows — /MT is an MSVC spelling and gcc treats it as a linker input.
-[target.'cfg(windows)'.build]
-cflags   = ["/MT"]
-cxxflags = ["/MT"]

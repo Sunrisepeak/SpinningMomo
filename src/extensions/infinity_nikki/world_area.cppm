@@ -1,13 +1,14 @@
-#pragma once
-
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
+module;
 
 #include "core/state/app_state.hpp"
 #include "extensions/infinity_nikki/types.hpp"
 
-namespace extensions::infinity_nikki::world_area {
+export module sm.extensions.infinity_nikki.world_area;
+
+import std;
+import asio;
+
+export namespace extensions::infinity_nikki::world_area {
 
 // 游戏内原始坐标（来自照片 EXIF 提取）。
 struct GamePoint {

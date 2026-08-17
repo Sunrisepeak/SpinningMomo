@@ -23,8 +23,8 @@
 #include "utils/graphics/capture.hpp"
 #include "utils/logger/logger.hpp"
 #include "utils/media/audio_capture.hpp"
-import utils.string.string;
-import utils.system.system;
+import sm.utils.string.string;
+import sm.utils.system.system;
 
 namespace features::recording {
 

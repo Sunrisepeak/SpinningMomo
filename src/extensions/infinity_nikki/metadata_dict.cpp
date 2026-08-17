@@ -1,15 +1,16 @@
-#include "extensions/infinity_nikki/metadata_dict.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
-#include "vendor/rfl.hpp"
-
-#include "core/http_client/http_client.hpp"
-#include "core/http_client/types.hpp"
 #include "core/state/app_state.hpp"
 #include "extensions/infinity_nikki/types.hpp"
+#include "vendor/rfl.hpp"
+#include "core/http_client/types.hpp"
 #include "utils/logger/logger.hpp"
+
+module sm.extensions.infinity_nikki.metadata_dict;
+
+import std;
+import asio;
+import sm.core.http_client.http_client;
 
 namespace extensions::infinity_nikki::metadata_dict {
 

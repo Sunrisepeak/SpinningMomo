@@ -7,7 +7,7 @@
 #include "core/build_config.hpp"
 #include "core/http_server/routes.hpp"
 #include "core/http_server/sse_manager.hpp"
-#include "core/http_server/state.hpp"
+import sm.core.http_server.state;
 #include "core/state/app_state.hpp"
 #include "utils/logger/logger.hpp"
 

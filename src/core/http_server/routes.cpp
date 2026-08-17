@@ -2,15 +2,15 @@
 
 #include "vendor/std.hpp"
 
-#include "vendor/asio.hpp"
+import asio;
 #include "vendor/uwebsockets.hpp"
 
-#include "core/async/async.hpp"
+import sm.core.async.async;
 #include "core/build_config.hpp"
 #include "core/http_server/sse_manager.hpp"
-#include "core/http_server/state.hpp"
-#include "core/http_server/static.hpp"
-#include "core/rpc/rpc.hpp"
+import sm.core.http_server.state;
+import sm.core.http_server.static;
+import sm.core.rpc.rpc;
 #include "core/state/app_state.hpp"
 #include "utils/logger/logger.hpp"
 

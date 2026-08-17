@@ -45,6 +45,8 @@ jobs:
           - p3c-gmf-direct     # consumer includes vendor headers in its own GMF
           - p4-importstd       # real project sources as modules + import std
           - p5-index           # the project's own package index, five descriptors
+          - p6-asio-module     # asio as `import asio;` — the C1116 fix, and the
+                               # export surface mcpp-index#213 added
     steps:
       - uses: actions/checkout@v4
 

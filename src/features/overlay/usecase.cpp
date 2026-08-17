@@ -14,7 +14,7 @@
 #include "features/settings/state.hpp"
 #include "features/window_control/window_control.hpp"
 #include "utils/logger/logger.hpp"
-import utils.string.string;
+import sm.utils.string.string;
 
 namespace features::overlay {
 

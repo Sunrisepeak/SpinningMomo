@@ -13,7 +13,7 @@
 #include "ui/photography_panel/render_context.hpp"
 #include "ui/photography_panel/state.hpp"
 #include "utils/logger/logger.hpp"
-import utils.string.string;
+import sm.utils.string.string;
 
 namespace ui::photography_panel::painter {
 

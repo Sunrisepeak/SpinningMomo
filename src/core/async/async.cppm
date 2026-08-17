@@ -1,12 +1,13 @@
-#pragma once
-
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
+module;
 
 #include "core/state/app_state.hpp"
 
-namespace core::async {
+export module sm.core.async.async;
+
+import std;
+import asio;
+
+export namespace core::async {
 
 // 启动异步运行时（包含初始化）
 auto start(core::AppState& state, size_t thread_count = 0) -> std::expected<void, std::string>;

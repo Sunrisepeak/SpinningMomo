@@ -1,14 +1,15 @@
-#pragma once
-
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
+module;
 
 #include "core/state/app_state.hpp"
 #include "extensions/infinity_nikki/types.hpp"
 #include "features/gallery/types.hpp"
 
-namespace extensions::infinity_nikki::asset_service {
+export module sm.extensions.infinity_nikki.asset_service;
+
+import std;
+import asio;
+
+export namespace extensions::infinity_nikki::asset_service {
 
 auto query_photo_map_points(core::AppState& app_state, const QueryPhotoMapPointsParams& params)
     -> asio::awaitable<std::expected<std::vector<PhotoMapPoint>, std::string>>;

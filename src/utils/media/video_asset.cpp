@@ -11,10 +11,10 @@ module;
 #include "utils/image/image.hpp"
 #include "utils/logger/logger.hpp"
 
-module utils.media.video_asset;
+module sm.utils.media.video_asset;
 
 import std;
-import utils.file.mime;
+import sm.utils.file.mime;
 
 namespace utils::media::video_asset {
 

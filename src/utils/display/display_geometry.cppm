@@ -2,7 +2,7 @@ module;
 
 #include "vendor/windows.hpp"
 
-export module utils.display.display_geometry;
+export module sm.utils.display.display_geometry;
 
 import std;
 

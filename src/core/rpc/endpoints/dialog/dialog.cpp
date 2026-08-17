@@ -2,13 +2,13 @@
 
 #include "vendor/std.hpp"
 
-#include "vendor/asio.hpp"
+import asio;
 #include "vendor/windows.hpp"
 
 #include "core/dialog_service/dialog_service.hpp"
-#include "core/rpc/rpc.hpp"
-#include "core/rpc/state.hpp"
-#include "core/rpc/types.hpp"
+import sm.core.rpc.rpc;
+import sm.core.rpc.state;
+import sm.core.rpc.types;
 #include "core/state/app_state.hpp"
 #include "core/webview/state.hpp"
 #include "utils/dialog/dialog.hpp"

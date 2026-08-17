@@ -2,11 +2,11 @@
 
 #include "vendor/std.hpp"
 
-#include "core/async/async.hpp"
+import sm.core.async.async;
 #include "core/commands/registry.hpp"
 #include "core/database/database.hpp"
 #include "core/dialog_service/dialog_service.hpp"
-#include "core/http_client/http_client.hpp"
+import sm.core.http_client.http_client;
 #include "core/http_server/http_server.hpp"
 #include "core/state/app_state.hpp"
 #include "core/worker_pool/worker_pool.hpp"
@@ -19,7 +19,7 @@
 #include "features/recording/usecase.hpp"
 #include "features/screenshot/screenshot.hpp"
 #include "features/update/state.hpp"
-#include "features/update/update.hpp"
+import sm.features.update.update;
 #include "features/window_control/window_control.hpp"
 #include "ui/context_menu/context_menu.hpp"
 #include "ui/floating_window/floating_window.hpp"

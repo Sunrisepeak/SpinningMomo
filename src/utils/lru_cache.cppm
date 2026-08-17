@@ -1,6 +1,4 @@
-module;
-
-export module utils.lru_cache;
+export module sm.utils.lru_cache;
 
 import std;
 

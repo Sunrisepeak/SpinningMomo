@@ -2,17 +2,17 @@
 
 #include "vendor/std.hpp"
 
-#include "vendor/asio.hpp"
+import asio;
 
-#include "core/async/async.hpp"
+import sm.core.async.async;
 #include "core/state/app_state.hpp"
 #include "features/gallery/folder/repository.hpp"
 #include "features/gallery/state.hpp"
 #include "features/gallery/types.hpp"
 #include "utils/logger/logger.hpp"
-import utils.network.network;
-import utils.path.path;
-import utils.string.string;
+import sm.utils.network.network;
+import sm.utils.path.path;
+import sm.utils.string.string;
 
 namespace features::gallery::root_availability::detail {
 

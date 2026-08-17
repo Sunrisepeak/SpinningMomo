@@ -13,9 +13,9 @@
 #include "ui/floating_window/events.hpp"
 #include "utils/image/image.hpp"
 #include "utils/logger/logger.hpp"
-import utils.path.path;
-import utils.string.string;
-import utils.system.system;
+import sm.utils.path.path;
+import sm.utils.string.string;
+import sm.utils.system.system;
 
 namespace features::screenshot {
 

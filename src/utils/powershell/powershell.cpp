@@ -2,7 +2,7 @@ module;
 
 #include "vendor/windows.hpp"
 
-module utils.powershell.powershell;
+module sm.utils.powershell.powershell;
 
 import std;
 

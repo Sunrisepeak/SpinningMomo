@@ -1,12 +1,13 @@
-#include "core/async/async.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
-
-#include "core/async/state.hpp"
 #include "core/state/app_state.hpp"
 #include "utils/logger/logger.hpp"
+
+module sm.core.async.async;
+
+import std;
+import asio;
+import sm.core.async.state;
 
 namespace core::async {
 

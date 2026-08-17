@@ -100,3 +100,7 @@ mcpp/.xlings-index-cache.json
 # xlings' per-project scratch dir, created by any local `mcpp build`
 .xlings/
 probes/*/gen/
+
+# Python bytecode from the migration scripts
+__pycache__/
+*.pyc

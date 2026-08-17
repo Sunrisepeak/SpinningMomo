@@ -77,4 +77,4 @@ const core::AppState&
 - 显式包含所需项目头；
 - 在禁用 PCH 时能够独立作为第一个 include 编译。
 
-`src/pch.hpp` 是构建优化，不是正确性依赖。
+构建不依赖任何预编译头 —— `src/pch.hpp` 已随模块化删除（PCH 是文本快照，模块单元的 purview 里不允许 `#include`）。每个单元自己写全依赖。

@@ -8,7 +8,7 @@
 #include "core/state/app_state.hpp"
 #include "ui/floating_window/state.hpp"
 #include "ui/notification_window/notification_window.hpp"
-import utils.string.string;
+import sm.utils.string.string;
 
 namespace core::notifications {
 

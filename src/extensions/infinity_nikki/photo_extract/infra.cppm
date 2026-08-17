@@ -1,14 +1,15 @@
-#pragma once
-
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
+module;
 
 #include "core/state/app_state.hpp"
 #include "extensions/infinity_nikki/photo_extract/scan.hpp"
 #include "extensions/infinity_nikki/types.hpp"
 
-namespace extensions::infinity_nikki::photo_extract::infra {
+export module sm.extensions.infinity_nikki.photo_extract.infra;
+
+import std;
+import asio;
+
+export namespace extensions::infinity_nikki::photo_extract::infra {
 
 struct ParsedPhotoParamsRecord {
   std::optional<std::string> camera_params;

@@ -15,10 +15,10 @@
 #include "features/preview/types.hpp"
 #include "features/preview/window.hpp"
 #include "ui/floating_window/state.hpp"
-import utils.display.display;
+import sm.utils.display.display;
 #include "utils/graphics/capture.hpp"
 #include "utils/graphics/d3d.hpp"
-import utils.graphics.hdr;
+import sm.utils.graphics.hdr;
 #include "utils/logger/logger.hpp"
 
 namespace features::preview {

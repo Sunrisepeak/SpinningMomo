@@ -1,12 +1,13 @@
-#pragma once
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/uwebsockets.hpp"
 
-#include "core/http_server/types.hpp"
+export module sm.core.http_server.state;
 
-namespace core::http_server {
+import std;
+import sm.core.http_server.types;
+
+export namespace core::http_server {
 
 // HTTP服务器状态
 struct HttpServerState {

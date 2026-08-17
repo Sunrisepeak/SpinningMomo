@@ -1,13 +1,14 @@
-#pragma once
-
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
+module;
 
 #include "core/state/app_state.hpp"
 #include "extensions/infinity_nikki/types.hpp"
 
-namespace extensions::infinity_nikki::metadata_dict {
+export module sm.extensions.infinity_nikki.metadata_dict;
+
+import std;
+import asio;
+
+export namespace extensions::infinity_nikki::metadata_dict {
 
 auto resolve_metadata_names(core::AppState& app_state,
                             const GetInfinityNikkiMetadataNamesParams& params)

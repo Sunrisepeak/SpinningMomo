@@ -31,8 +31,9 @@ target("SpinningMomo")
     set_kind("binary")
     set_plat("windows")
     set_arch("x64")
-    -- 设置预编译头文件
-    set_pcxxheader("src/pch.hpp")
+    -- 具名模块与预编译头不能共存：PCH 是文本快照，模块单元的 purview 里不允许
+    -- #include，两者对同一份 SDK 头会给出不同的实体归属。mcpp 侧根本没有 PCH，
+    -- 这里也一并去掉，两个构建系统看到的是同一份源码形态。
     add_cxflags("clang_cl::-Wno-microsoft-include")
 
     -- Release 也保留调试符号，便于分析生产崩溃 dump
