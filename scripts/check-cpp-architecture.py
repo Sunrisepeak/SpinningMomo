@@ -152,6 +152,32 @@ def validate_file(path: Path, errors: list[str]) -> None:
         if symbol in text and not any(p in text for p in providers):
             report(errors, path, 1, f"使用 {symbol} 时必须写明来源: {' 或 '.join(providers)}")
 
+    if not is_module_unit and path.suffix == ".cpp":
+        # In a PLAIN translation unit, every #include must come before every
+        # import. Both orders are legal C++; only one compiles here.
+        #
+        # Importing a module whose global module fragment pulled in <windows.h>
+        # and THEN including <windows.h> textually gives clang two parses of the
+        # SDK, and the merge fails on winuser.h's unnamed structs
+        # (`typedef struct {…} FLASHWINFO, *PFLASHWINFO;`):
+        #
+        #   winuser.h:4698: error: conflicting types for 'FlashWindowEx'
+        #   winuser.h:4698: note: previous declaration is here   <- the same line
+        #
+        # The other direction merges fine. probes/p8-asio-windows is the
+        # experiment: import-first fails, include-first passes, nothing else
+        # changed.
+        first_import = None
+        for n, line in enumerate(lines, start=1):
+            stripped = line.lstrip()
+            if first_import is None and re.match(r"import\s", stripped):
+                first_import = n
+            elif first_import is not None and stripped.startswith("#include"):
+                report(errors, path, n,
+                       f"普通 TU 里 #include 必须全部在 import 之前"
+                       f"（第 {first_import} 行已经 import）: {stripped}")
+                break
+
     if is_module_unit:
         # A module name is a dot-separated sequence of IDENTIFIERS, so no
         # component may be a keyword. `core/http_server/static.cpp` maps to

@@ -7,9 +7,10 @@
 #include "core/build_config.hpp"
 #include "core/http_server/routes.hpp"
 #include "core/http_server/sse_manager.hpp"
-import sm.core.http_server.state;
 #include "core/state/app_state.hpp"
 #include "utils/logger/logger.hpp"
+
+import sm.core.http_server.state;
 
 namespace core::http_server {
 

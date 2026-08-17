@@ -2,11 +2,8 @@
 
 #include "vendor/std.hpp"
 
-import sm.core.async.async;
 #include "core/commands/registry.hpp"
-import sm.core.database.database;
 #include "core/dialog_service/dialog_service.hpp"
-import sm.core.http_client.http_client;
 #include "core/http_server/http_server.hpp"
 #include "core/state/app_state.hpp"
 #include "core/worker_pool/worker_pool.hpp"
@@ -19,7 +16,6 @@ import sm.core.http_client.http_client;
 #include "features/recording/usecase.hpp"
 #include "features/screenshot/screenshot.hpp"
 #include "features/update/state.hpp"
-import sm.features.update.update;
 #include "features/window_control/window_control.hpp"
 #include "ui/context_menu/context_menu.hpp"
 #include "ui/floating_window/floating_window.hpp"
@@ -29,6 +25,11 @@ import sm.features.update.update;
 #include "ui/tray_icon/tray_icon.hpp"
 #include "ui/webview_window/webview_window.hpp"
 #include "utils/logger/logger.hpp"
+
+import sm.core.async.async;
+import sm.core.database.database;
+import sm.core.http_client.http_client;
+import sm.features.update.update;
 
 namespace core::shutdown {
 

@@ -2,17 +2,17 @@
 
 #include "vendor/std.hpp"
 
-import asio;
-
-import sm.core.async.async;
 #include "core/events/events.hpp"
-import sm.core.rpc.rpc;
-import sm.core.rpc.state;
-import sm.core.rpc.types;
 #include "core/state/app_state.hpp"
 #include "features/backup/backup.hpp"
 #include "features/backup/types.hpp"
 #include "ui/floating_window/events.hpp"
+
+import asio;
+import sm.core.async.async;
+import sm.core.rpc.rpc;
+import sm.core.rpc.state;
+import sm.core.rpc.types;
 
 namespace core::rpc::endpoints::backup {
 

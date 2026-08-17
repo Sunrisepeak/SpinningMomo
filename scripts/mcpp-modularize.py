@@ -26,7 +26,7 @@ amortises today, and what BMIs will amortise once enough of the tree is modules.
 Usage:  mcpp-modularize.py <header path relative to src/, without .hpp> ...
         mcpp-modularize.py --rewrite-consumers <module path> ...
         mcpp-modularize.py --closure <seed header, src-relative WITH .hpp> ...
-        mcpp-modularize.py --normalize
+        mcpp-modularize.py --normalize        (also qualifies C types and orders imports)
         mcpp-modularize.py --rename-prefix <old top-level module segment> ...
 """
 
@@ -284,6 +284,78 @@ def _mask_comments_and_strings(text: str) -> bytearray:
     return mask
 
 
+def order_imports() -> tuple[int, list[str]]:
+    """In a PLAIN translation unit, put every `#include` before every `import`.
+
+    Both orders are legal C++. Only one of them compiles here.
+
+    A TU that imports a module whose global module fragment included
+    <windows.h>, and then ALSO includes <windows.h> textually, ends up with two
+    parses of the SDK. Under clang the merge fails on winuser.h's unnamed
+    structs — `typedef struct {…} FLASHWINFO, *PFLASHWINFO;` and BSMINFO — and
+    every function taking one becomes a redeclaration with a different
+    signature:
+
+        winuser.h:4698: error: conflicting types for 'FlashWindowEx'
+        winuser.h:4698: note: previous declaration is here     <- the same line
+
+    Seeing the textual declarations FIRST and merging the BMI into them is a
+    different path inside clang than the reverse, and only that direction works.
+    probes/p8-asio-windows is the two rounds of that experiment: import-first
+    fails, include-first passes, nothing else changed.
+
+    Module units need no help — their includes are in the global module fragment
+    and their imports in the purview, which is already this order.
+
+    Returns (files changed, files skipped-with-reason).
+    """
+    changed = 0
+    skipped: list[str] = []
+    for path in SRC.rglob("*.cpp"):
+        lines = path.read_text(encoding="utf-8").splitlines()
+        if any(MODULE_DECL_RE.match(l) for l in lines):
+            continue  # module unit: GMF/purview already orders it
+
+        # The prologue is everything before the first line of real code.
+        end = len(lines)
+        for i, l in enumerate(lines):
+            s = l.strip()
+            if not s or s.startswith(("//", "/*", "*", "#include", "import ")):
+                continue
+            end = i
+            break
+        prologue, rest = lines[:end], lines[end:]
+
+        imports = [i for i, l in enumerate(prologue) if IMPORT_RE.match(l)]
+        includes = [i for i, l in enumerate(prologue) if l.lstrip().startswith("#include")]
+        if not imports or not includes:
+            continue
+        if max(includes) < min(imports):
+            continue  # already ordered
+
+        # A conditional in the prologue means the order is not ours to decide.
+        if any(l.lstrip().startswith(("#if", "#el", "#endif", "#define", "#undef"))
+               for l in prologue):
+            skipped.append(str(path.relative_to(ROOT)))
+            continue
+
+        import_lines = [prologue[i] for i in imports]
+        kept = [l for i, l in enumerate(prologue) if i not in set(imports)]
+        # Removing an import can leave two blank lines where it used to be.
+        collapsed: list[str] = []
+        for l in kept:
+            if not l.strip() and collapsed and not collapsed[-1].strip():
+                continue
+            collapsed.append(l)
+        kept = collapsed
+        while kept and not kept[-1].strip():
+            kept.pop()
+        path.write_text("\n".join(kept + [""] + import_lines + [""] + rest).rstrip() + "\n",
+                        encoding="utf-8")
+        changed += 1
+    return changed, skipped
+
+
 def qualify_c_types() -> int:
     """`size_t` -> `std::size_t` in module units.
 
@@ -450,6 +522,10 @@ def main() -> int:
     if args[0] == "--normalize":
         print(f"normalized {normalize_module_units()} module units")
         print(f"qualified C types in {qualify_c_types()} module units")
+        n, skipped = order_imports()
+        print(f"ordered includes-before-imports in {n} plain TUs")
+        for s in skipped:
+            print(f"  SKIP {s} (preprocessor conditional in the prologue)")
         return 0
     if args[0] == "--rename-prefix":
         for top in args[1:]:
@@ -471,6 +547,7 @@ def main() -> int:
     rewrite_consumers(args)
     normalize_module_units()
     qualify_c_types()
+    order_imports()
     return 0
 
 

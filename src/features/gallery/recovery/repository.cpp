@@ -2,10 +2,11 @@
 
 #include "vendor/std.hpp"
 
-import sm.core.database.database;
 #include "core/database/types.hpp"
 #include "core/state/app_state.hpp"
 #include "features/gallery/recovery/types.hpp"
+
+import sm.core.database.database;
 
 namespace features::gallery::recovery::repository {
 

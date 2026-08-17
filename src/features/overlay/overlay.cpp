@@ -16,9 +16,10 @@
 #include "features/overlay/types.hpp"
 #include "features/overlay/window.hpp"
 #include "ui/floating_window/state.hpp"
+#include "utils/logger/logger.hpp"
+
 import sm.utils.display.display;
 import sm.utils.graphics.hdr;
-#include "utils/logger/logger.hpp"
 
 namespace features::overlay {
 auto send_overlay_control_message(HWND overlay_hwnd, UINT message) -> bool {

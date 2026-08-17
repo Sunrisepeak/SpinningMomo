@@ -5,11 +5,13 @@
 
 #include "app.hpp"
 #include "features/settings/settings.hpp"
-import sm.utils.crash_dump.crash_dump;
 #include "utils/logger/logger.hpp"
-import sm.utils.system.system;
 
 // Win32 入口
+
+import sm.utils.crash_dump.crash_dump;
+import sm.utils.system.system;
+
 auto __stdcall wWinMain(HINSTANCE hInstance, [[maybe_unused]] HINSTANCE hPrevInstance,
                         LPWSTR lpCmdLine, [[maybe_unused]] int nCmdShow) -> int {
   auto ui_com_init = wil::CoInitializeEx(COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);

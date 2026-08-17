@@ -2,8 +2,6 @@
 
 #include "vendor/std.hpp"
 
-import sm.vendor.dkm;
-import sm.vendor.webp;
 #include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
 #include "vendor/windows/shlwapi.hpp"
@@ -11,6 +9,9 @@ import sm.vendor.webp;
 #include "vendor/windows/winerror.hpp"
 
 #include "utils/logger/logger.hpp"
+
+import sm.vendor.dkm;
+import sm.vendor.webp;
 
 namespace utils::image {
 

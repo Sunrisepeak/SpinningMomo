@@ -4,10 +4,11 @@
 
 #include "vendor/windows.hpp"
 
-import sm.core.database.database;
 #include "core/state/app_state.hpp"
 #include "core/state/runtime_info.hpp"
 #include "features/backup/types.hpp"
+
+import sm.core.database.database;
 import sm.utils.path.path;
 import sm.utils.powershell.powershell;
 import sm.utils.string.string;

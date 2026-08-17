@@ -65,9 +65,22 @@ function main() {
   }
 
   if (!normalized.includes(BEFORE)) {
+    // The upstream fix landed in some shape other than this patch's AFTER text.
+    // Check the SUBSTANCE: the bug was that clang-cl was offered the MSVC-only
+    // `-std:c++23`, which it rejects, so xmake fell back to `-std:c++latest`
+    // (C++26 on Clang 21+). A file that hands clang-cl `-std=c++23` through the
+    // Clang frontend at all has already made that distinction.
+    if (normalized.includes("clang_cl") && normalized.includes("-std=c++23")) {
+      console.log(
+        `clang-cl C++23 selection already handled upstream: ${targetFile}\n` +
+        "Nothing to patch. Delete this script once the pinned xmake floor is >= that release.",
+      );
+      return;
+    }
     fail([
       `failed to match clang-cl C++23 patch rules: ${targetFile}`,
-      "This usually means the installed xmake version has changed, or already includes a different upstream fix.",
+      "The installed xmake changed shape and does not obviously contain the fix either.",
+      "Read the file and decide: update BEFORE/AFTER, or drop this script.",
     ].join("\n"));
   }
 

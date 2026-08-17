@@ -14,9 +14,10 @@
 #include "features/settings/state.hpp"
 #include "features/window_control/window_control.hpp"
 #include "ui/floating_window/events.hpp"
-import sm.utils.graphics.hdr;
 #include "utils/logger/logger.hpp"
 #include "utils/media/audio_capture.hpp"
+
+import sm.utils.graphics.hdr;
 import sm.utils.path.path;
 import sm.utils.string.string;
 

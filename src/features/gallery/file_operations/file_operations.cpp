@@ -7,8 +7,9 @@
 #include "features/gallery/folder/repository.hpp"
 #include "features/gallery/types.hpp"
 #include "features/gallery/watcher/watcher.hpp"
-import sm.utils.file.file;
 #include "utils/logger/logger.hpp"
+
+import sm.utils.file.file;
 import sm.utils.path.path;
 import sm.utils.string.string;
 import sm.utils.system.system;

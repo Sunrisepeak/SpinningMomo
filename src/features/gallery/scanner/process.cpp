@@ -5,7 +5,6 @@
 #include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
 
-import sm.core.database.database;
 #include "core/state/app_state.hpp"
 #include "core/worker_pool/worker_pool.hpp"
 #include "features/gallery/asset/repository.hpp"
@@ -15,6 +14,8 @@ import sm.core.database.database;
 #include "features/gallery/scanner/progress.hpp"
 #include "features/gallery/types.hpp"
 #include "utils/logger/logger.hpp"
+
+import sm.core.database.database;
 
 namespace features::gallery::scanner::process {
 

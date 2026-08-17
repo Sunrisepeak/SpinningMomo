@@ -4,7 +4,6 @@
 
 #include "vendor/windows.hpp"
 
-import sm.core.database.database;
 #include "core/state/app_state.hpp"
 #include "core/webview/state.hpp"
 #include "core/webview/webview.hpp"
@@ -16,6 +15,8 @@ import sm.core.database.database;
 #include "features/gallery/types.hpp"
 #include "features/gallery/watcher/watcher.hpp"
 #include "utils/logger/logger.hpp"
+
+import sm.core.database.database;
 import sm.utils.path.path;
 import sm.utils.string.string;
 import sm.utils.system.system;

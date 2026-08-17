@@ -2,20 +2,21 @@
 
 #include "vendor/std.hpp"
 
-import asio;
 #include "vendor/rfl.hpp"
 
 #include "core/rpc/notification_hub.hpp"
-import sm.core.rpc.rpc;
-import sm.core.rpc.state;
-import sm.core.rpc.types;
 #include "core/state/app_state.hpp"
-import sm.extensions.infinity_nikki.asset_service;
 #include "extensions/infinity_nikki/game_directory.hpp"
 #include "extensions/infinity_nikki/task_service.hpp"
 #include "extensions/infinity_nikki/types.hpp"
 #include "features/gallery/types.hpp"
 #include "utils/logger/logger.hpp"
+
+import asio;
+import sm.core.rpc.rpc;
+import sm.core.rpc.state;
+import sm.core.rpc.types;
+import sm.extensions.infinity_nikki.asset_service;
 
 namespace core::rpc::endpoints::extensions {
 

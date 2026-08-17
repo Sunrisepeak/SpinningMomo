@@ -2,14 +2,15 @@
 
 #include "vendor/std.hpp"
 
-import asio;
 #include "vendor/rfl.hpp"
 
+#include "core/state/app_state.hpp"
+#include "features/update/types.hpp"
+
+import asio;
 import sm.core.rpc.rpc;
 import sm.core.rpc.state;
 import sm.core.rpc.types;
-#include "core/state/app_state.hpp"
-#include "features/update/types.hpp"
 import sm.features.update.update;
 
 namespace core::rpc::endpoints::update {

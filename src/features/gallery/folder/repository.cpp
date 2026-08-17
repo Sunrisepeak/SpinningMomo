@@ -4,11 +4,12 @@
 
 #include "vendor/rfl.hpp"
 
-import sm.core.database.database;
 #include "core/database/types.hpp"
 #include "core/state/app_state.hpp"
 #include "features/gallery/types.hpp"
 #include "utils/logger/logger.hpp"
+
+import sm.core.database.database;
 import sm.utils.path.path;
 
 namespace features::gallery::folder::repository {

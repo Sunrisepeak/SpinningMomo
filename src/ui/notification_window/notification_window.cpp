@@ -12,8 +12,9 @@
 #include "ui/notification_window/render_context.hpp"
 #include "ui/notification_window/state.hpp"
 #include "ui/notification_window/types.hpp"
-import sm.utils.display.display;
 #include "utils/logger/logger.hpp"
+
+import sm.utils.display.display;
 
 namespace ui::notification_window::message_handler {
 LRESULT CALLBACK static_window_proc(HWND hwnd, UINT msg, WPARAM w_param, LPARAM l_param);

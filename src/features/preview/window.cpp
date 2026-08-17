@@ -13,10 +13,11 @@
 #include "features/preview/rendering.hpp"
 #include "features/preview/state.hpp"
 #include "features/preview/types.hpp"
-import sm.utils.display.display;
 #include "utils/graphics/capture.hpp"
 #include "utils/graphics/d3d.hpp"
 #include "utils/logger/logger.hpp"
+
+import sm.utils.display.display;
 
 namespace features::preview::window {
 

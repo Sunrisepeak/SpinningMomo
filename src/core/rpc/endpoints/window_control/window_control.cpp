@@ -2,14 +2,14 @@
 
 #include "vendor/std.hpp"
 
-import asio;
-
-import sm.core.rpc.rpc;
-import sm.core.rpc.state;
-import sm.core.rpc.types;
 #include "core/state/app_state.hpp"
 #include "features/window_control/types.hpp"
 #include "features/window_control/window_control.hpp"
+
+import asio;
+import sm.core.rpc.rpc;
+import sm.core.rpc.state;
+import sm.core.rpc.types;
 import sm.utils.string.string;
 
 namespace core::rpc::endpoints::window_control {

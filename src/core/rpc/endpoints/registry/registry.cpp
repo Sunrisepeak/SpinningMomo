@@ -2,14 +2,14 @@
 
 #include "vendor/std.hpp"
 
-import asio;
-
 #include "core/commands/registry.hpp"
 #include "core/commands/types.hpp"
+#include "core/state/app_state.hpp"
+
+import asio;
 import sm.core.rpc.rpc;
 import sm.core.rpc.state;
 import sm.core.rpc.types;
-#include "core/state/app_state.hpp"
 
 namespace core::rpc::endpoints::registry {
 

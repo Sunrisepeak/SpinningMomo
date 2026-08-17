@@ -13,13 +13,14 @@
 #include "vendor/windows/wrl.hpp"
 
 #include "core/build_config.hpp"
-import sm.core.rpc.types;
 #include "core/state/app_state.hpp"
-import sm.core.webview.rpc_bridge;
 #include "core/webview/state.hpp"
 #include "core/webview/static.hpp"
 #include "features/settings/state.hpp"
 #include "utils/logger/logger.hpp"
+
+import sm.core.rpc.types;
+import sm.core.webview.rpc_bridge;
 import sm.utils.path.path;
 import sm.utils.string.string;
 

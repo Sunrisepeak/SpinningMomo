@@ -2,15 +2,15 @@
 
 #include "vendor/std.hpp"
 
-import asio;
-
-import sm.core.rpc.rpc;
-import sm.core.rpc.state;
-import sm.core.rpc.types;
 #include "core/state/app_state.hpp"
 #include "features/settings/background.hpp"
 #include "features/settings/settings.hpp"
 #include "features/settings/types.hpp"
+
+import asio;
+import sm.core.rpc.rpc;
+import sm.core.rpc.state;
+import sm.core.rpc.types;
 
 namespace core::rpc::endpoints::settings {
 

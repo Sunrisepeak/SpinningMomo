@@ -2,7 +2,6 @@
 
 #include "vendor/std.hpp"
 
-import sm.core.database.database;
 #include "core/state/app_state.hpp"
 #include "core/tasks/tasks.hpp"
 #include "core/worker_pool/worker_pool.hpp"
@@ -19,6 +18,8 @@ import sm.core.database.database;
 #include "features/gallery/watcher/watcher.hpp"
 #include "features/settings/state.hpp"
 #include "utils/logger/logger.hpp"
+
+import sm.core.database.database;
 import sm.utils.path.path;
 
 namespace extensions::infinity_nikki::photo_service {

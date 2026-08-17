@@ -4,10 +4,11 @@
 
 #include "vendor/uwebsockets.hpp"
 
-import sm.core.http_server.state;
-import sm.core.http_server.types;
 #include "core/state/app_state.hpp"
 #include "utils/logger/logger.hpp"
+
+import sm.core.http_server.state;
+import sm.core.http_server.types;
 
 namespace core::http_server::sse_manager {
 

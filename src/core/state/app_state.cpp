@@ -2,15 +2,11 @@
 
 #include "vendor/std.hpp"
 
-import sm.core.async.state;
 #include "core/commands/state.hpp"
 #include "core/database/state.hpp"
 #include "core/dialog_service/state.hpp"
 #include "core/events/state.hpp"
-import sm.core.http_client.state;
-import sm.core.http_server.state;
 #include "core/i18n/state.hpp"
-import sm.core.rpc.state;
 #include "core/state/runtime_info.hpp"
 #include "core/tasks/state.hpp"
 #include "core/webview/state.hpp"
@@ -31,6 +27,11 @@ import sm.core.rpc.state;
 #include "ui/photography_panel/state.hpp"
 #include "ui/shared_render_resources/state.hpp"
 #include "ui/tray_icon/state.hpp"
+
+import sm.core.async.state;
+import sm.core.http_client.state;
+import sm.core.http_server.state;
+import sm.core.rpc.state;
 
 namespace core {
 

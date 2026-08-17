@@ -4,12 +4,13 @@
 
 #include "vendor/rfl.hpp"
 
-import sm.core.database.database;
 #include "core/migration/generated/schema.hpp"
 #include "core/state/app_state.hpp"
 #include "features/settings/settings.hpp"
 #include "features/settings/types.hpp"
 #include "utils/logger/logger.hpp"
+
+import sm.core.database.database;
 
 namespace core::migration::scripts {
 

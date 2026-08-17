@@ -2,11 +2,8 @@
 
 #include "vendor/std.hpp"
 
-import asio;
 #include "vendor/rfl.hpp"
 
-import sm.core.async.async;
-import sm.core.http_client.http_client;
 #include "core/http_client/types.hpp"
 #include "core/rpc/notification_hub.hpp"
 #include "core/state/app_state.hpp"
@@ -15,6 +12,10 @@ import sm.core.http_client.http_client;
 #include "features/gallery/types.hpp"
 #include "features/settings/state.hpp"
 #include "utils/logger/logger.hpp"
+
+import asio;
+import sm.core.async.async;
+import sm.core.http_client.http_client;
 import sm.utils.path.path;
 import sm.utils.string.string;
 

@@ -8,7 +8,6 @@
 #include "vendor/windows/windowsx.hpp"
 
 #include "core/build_config.hpp"
-import sm.core.http_server.state;
 #include "core/state/app_state.hpp"
 #include "core/state/runtime_info.hpp"
 #include "core/webview/state.hpp"
@@ -19,6 +18,8 @@ import sm.core.http_server.state;
 #include "ui/floating_window/state.hpp"
 #include "ui/tray_icon/types.hpp"
 #include "utils/logger/logger.hpp"
+
+import sm.core.http_server.state;
 
 namespace ui::webview_window {
 

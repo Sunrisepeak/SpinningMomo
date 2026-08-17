@@ -24,8 +24,9 @@
 #include "ui/floating_window/events.hpp"
 #include "ui/floating_window/floating_window.hpp"
 #include "ui/floating_window/state.hpp"
-import sm.utils.display.display;
 #include "utils/logger/logger.hpp"
+
+import sm.utils.display.display;
 import sm.utils.string.string;
 
 namespace features::window_control {
