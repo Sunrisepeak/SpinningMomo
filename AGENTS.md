@@ -20,16 +20,37 @@ Full setup steps live in `docs/developer/architecture.md`.
 
 Build Policy: Do not run builds automatically; let the user confirm or run manually. 
 
-Common commands:
-```
-# C++ backend — debug
-xmake build
+The backend builds under **two build systems, both of record**. They are not a
+primary and a fallback: anything that passes both is a property of the source,
+anything that passes only one is a property of that build.
 
-# C++ backend — release
-xmake release
+```
+# C++ backend — mcpp (the primary; dependencies from the official mcpp-index)
+mcpp build
+mcpp build --release
+
+# C++ backend — xmake + vcpkg
+xmake f -m release --toolchain=clang-cl -y && xmake build
 
 # Web frontend
 npm run build --prefix web
+```
+
+Both target the **MSVC ABI through LLVM**, not native `cl.exe`. That is forced,
+not preferred: `import asio;` does not compile under cl.exe 19.51 — it cannot
+round-trip asio's `io_context::service` (a nested class declared in-class and
+defined at namespace scope) through a BMI, and the module form of asio is what
+keeps its template specializations from being re-instantiated per importing TU.
+`probes/p6-asio-module` runs under both toolchains and records the difference.
+
+Checks that cost seconds and prevent a 40-minute Windows round — run them before
+pushing:
+
+```
+python3 scripts/check-module-graph.py        # the module graph is a DAG
+python3 scripts/check-cpp-architecture.py    # the invariants below
+python3 scripts/check-asio-module-parity.py  # xmake's asio mirror == the descriptor
+bash    scripts/mcpp-preflight.sh            # what Linux can judge of the probes
 ```
 
 `web/` uses a Vite dev server and proxies `/rpc` and `/static` to the backend at `localhost:51206`.
@@ -44,15 +65,66 @@ The application is a **native Win32 C++ backend** that hosts an embedded **WebVi
 
 The frontend auto-detects its environment (`window.chrome.webview` presence) and selects the appropriate transport.
 
-### C++ Header Architecture
-The backend uses **C++23 headers and implementation files** (`.hpp + .cpp`) with a precompiled header for build acceleration:
+### C++ Module Architecture
+The backend is **C++23 named modules**: a `.cppm` module interface per unit,
+implementation in the matching `.cpp`. There is no precompiled header and no
+project header outside `src/vendor/`.
+
+Module names mirror the path, with the project prefix: `src/utils/path/path.cppm`
+is `sm.utils.path.path`. The prefix is one rule rather than an exception — mcpp
+forbids a set of top-level names (`core`, `util`, `common`, `std`, `detail`,
+`internal`, `base`) and `core/` is this tree's backbone. A path component that is
+a C++ keyword gets a `_` suffix (`http_server/static.cpp` →
+`sm.core.http_server.static_`).
+
+Four invariants, all machine-enforced by `scripts/check-cpp-architecture.py`:
+
+1. **One door to the standard library per unit kind** — a module unit writes
+   `import std;`, a plain translation unit includes `vendor/std.hpp`.
+2. **In a plain TU, every `#include` comes before every `import`.** Both orders
+   are legal C++; only one compiles. Importing a module whose global module
+   fragment pulled in `<windows.h>` and then including `<windows.h>` textually
+   gives clang two parses of the SDK, and the merge fails on winuser.h's unnamed
+   structs. `probes/p8-asio-windows` is that experiment.
+3. **No header units** (`import <h>;`) — mcpp rejects them outright, and they
+   are what this repository's abandoned first modularisation was built on.
+4. **A module interface holds declarations**; ordinary function bodies belong in
+   the implementation unit. Templates, `inline`, `constexpr` and class members
+   are part of an interface and are not flagged.
+
+Plus one the module graph enforces by construction: **it must be a DAG**
+(`scripts/check-module-graph.py`). Header include guards used to hide cycles;
+modules do not. Fixing the one this tree had meant a core types module could no
+longer depend on the application root — see `src/core/notifications/types.cppm`.
+
+The layers:
 
 - `core::*` — framework infrastructure (async runtime, database, events, HTTP client, HTTP server, RPC, WebView, i18n, commands, migration, worker pool, tasks, runtime info, shutdown, state)
 - `features::*` — business logic such as gallery, letterbox, notifications, overlay, preview, recording, screenshot, settings, update, and window_control
 - `ui::*` — native Win32 UI (floating_window, tray_icon, context_menu, webview_window)
 - `utils::*` — shared utilities such as logger, file, graphics, image, media, path, string, system, throttle, timer, dialog, crash_dump, and crypto
 - `extensions::*` — game-specific integrations
-- `vendor/**/*.hpp` — project-owned include facades for the standard library, Win32, and third-party headers. These headers do not re-export external APIs through a project namespace.
+- `vendor/**` — the only place an external `<>` include may appear, and the only
+  headers left in the tree. Two shapes, and which one a library gets is decided
+  by MACROS, not by preference:
+  - **`vendor/*.cppm`** — a third-party library whose API is declarations
+    (`sm.vendor.{xxhash,webp,dkm,sqlite,spdlog,rfl,uwebsockets}`). The header is
+    parsed once, here, and consumers get a BMI. Each exports only what the
+    project actually calls, so a new dependency on a library shows up in review
+    rather than arriving with an `#include`.
+  - **`vendor/windows.hpp`, `vendor/windows/**`, `vendor/wil.hpp`,
+    `vendor/webview2.hpp`** — still headers, pulled into each module's global
+    module fragment. **Macros do not enter a BMI**, and this tree uses ~600 of
+    them (`FAILED` 295, `SUCCEEDED` 49, `IID_PPV_ARGS` 42, `WM_*` ~100). Turning
+    these into modules would mean a `constexpr` replacement per macro plus a
+    rewrite of every call site — a semantic refactor with nothing to do with
+    modularisation. `probes/p9-win-module` is what that costs, measured.
+
+  Neither shape re-exports an external API through a project namespace: Win32
+  symbols stay in the global namespace, WinRT in `winrt::`.
+
+  A library consumed as a MODULE has no facade at all — the module is the
+  interface. Asio is the one: `import asio;`, never `#include <asio.hpp>`.
 
 Every translation unit must be self-contained: name every dependency explicitly. There is no PCH — `src/pch.hpp` is gone, because a precompiled header is a textual snapshot and a module unit's purview admits no `#include` at all. mcpp has no PCH either.
 
