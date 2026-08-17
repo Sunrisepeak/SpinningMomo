@@ -173,12 +173,16 @@ main = "src/main.cpp"
 # now derives it once, for the project AND its dependencies. Two spellings of
 # one physical switch is how the CRT drifted apart in the first place.
 #
-# -mbig-obj is clang's spelling of what the xmake build wrote `/bigobj`, and it
-# is not optional: reflect-cpp instantiates enough templates per RPC endpoint to
-# blow past COFF's 65,536-section limit.
+# There is NO `/bigobj` equivalent here, and none is needed. The xmake build
+# carried `/bigobj` because reflect-cpp instantiates enough templates per RPC
+# endpoint to blow past COFF's 65,536-section limit, and cl.exe refuses rather
+# than adapting. LLVM's COFF writer decides per object: it emits the big-object
+# format automatically once the section count exceeds the 16-bit limit, which is
+# why clang-cl accepts `/bigobj` as a no-op and the GNU driver has no spelling
+# for it at all (`error: unknown argument: '-mbig-obj'`).
 #
 # -Wno-microsoft-include: the xmake build already carried this for clang-cl. The
 # Windows SDK and the C++/WinRT projection both resolve some includes the way
 # MSVC does rather than the way the standard says, and clang reports each one.
 [target.'cfg(windows)'.build]
-cxxflags = ["-mbig-obj", "-Wno-microsoft-include"]
+cxxflags = ["-Wno-microsoft-include"]
