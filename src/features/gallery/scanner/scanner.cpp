@@ -1,25 +1,25 @@
-#include "features/gallery/scanner/scanner.hpp"
+module sm.features.gallery.scanner.scanner;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.state.app_state;
+import sm.features.gallery.asset.repository;
+import sm.features.gallery.asset.service;
+import sm.features.gallery.folder.repository;
+import sm.features.gallery.folder.service;
+import sm.features.gallery.ignore.repository;
+import sm.features.gallery.ignore.service;
+import sm.features.gallery.scanner.analysis;
+import sm.features.gallery.scanner.asset_pipeline;
+import sm.features.gallery.scanner.cleanup;
+import sm.features.gallery.scanner.common;
+import sm.features.gallery.scanner.discovery;
+import sm.features.gallery.scanner.process;
+import sm.features.gallery.scanner.progress;
+import sm.features.gallery.state;
+import sm.features.gallery.types;
 
-#include "core/state/app_state.hpp"
-#include "features/gallery/asset/repository.hpp"
-#include "features/gallery/asset/service.hpp"
-#include "features/gallery/folder/repository.hpp"
-#include "features/gallery/folder/service.hpp"
-#include "features/gallery/ignore/repository.hpp"
-#include "features/gallery/ignore/service.hpp"
-#include "features/gallery/scanner/analysis.hpp"
-#include "features/gallery/scanner/asset_pipeline.hpp"
-#include "features/gallery/scanner/cleanup.hpp"
-#include "features/gallery/scanner/common.hpp"
-#include "features/gallery/scanner/discovery.hpp"
-#include "features/gallery/scanner/process.hpp"
-#include "features/gallery/scanner/progress.hpp"
-#include "features/gallery/state.hpp"
-#include "features/gallery/types.hpp"
-#include "utils/logger/logger.hpp"
-#include "utils/path/path.hpp"
+import sm.utils.logger.logger;
+import sm.utils.path.path;
 
 namespace features::gallery::scanner {
 

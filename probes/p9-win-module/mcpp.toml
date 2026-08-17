@@ -1,0 +1,23 @@
+[package]
+name      = "p9winmodule"
+version   = "0.1.0"
+standard  = "c++23"
+platforms = ["windows"]
+
+# No [toolchain] pin: the matrix chooses.
+
+# The OFFICIAL package. The project's path index is gone — every descriptor in
+# it was contributed to mcpplibs/mcpp-index (#213-#216).
+[dependencies.chriskohlhoff]
+asio = "1.38.1"
+
+[build]
+cxx_runtime = "self-contained"
+
+# EXACTLY the project's Windows macro state, same as p8.
+defines = [
+  "NOMINMAX", "UNICODE", "_UNICODE", "WIN32_LEAN_AND_MEAN", "_WIN32_WINNT=0x0A00",
+  "ASIO_STANDALONE", "ASIO_SEPARATE_COMPILATION",
+  "ASIO_DISABLE_BOOST_CONTEXT_FIBER", "ASIO_HAS_THREADS", "ASIO_NO_IOSTREAM",
+]
+ldflags = ["-luser32"]

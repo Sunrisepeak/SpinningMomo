@@ -1,15 +1,14 @@
-#include "core/i18n/i18n.hpp"
+module sm.core.i18n.i18n;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.i18n.embedded.en_us;
+import sm.core.i18n.embedded.zh_cn;
+import sm.core.i18n.state;
+import sm.core.i18n.types;
+import sm.core.state.app_state;
 
-#include "vendor/rfl.hpp"
-
-#include "core/i18n/embedded/en_us.hpp"
-#include "core/i18n/embedded/zh_cn.hpp"
-#include "core/i18n/state.hpp"
-#include "core/i18n/types.hpp"
-#include "core/state/app_state.hpp"
-#include "utils/logger/logger.hpp"
+import sm.vendor.rfl;
+import sm.utils.logger.logger;
 
 namespace core::i18n {
 

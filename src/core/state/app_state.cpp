@@ -1,36 +1,36 @@
-#include "core/state/app_state.hpp"
+module sm.core.state.app_state;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.commands.state;
+import sm.core.database.state;
+import sm.core.dialog_service.state;
+import sm.core.events.state;
+import sm.core.i18n.state;
+import sm.core.state.runtime_info;
+import sm.core.tasks.state;
+import sm.core.webview.state;
+import sm.core.worker_pool.state;
+import sm.features.gallery.state;
+import sm.features.letterbox.state;
+import sm.features.overlay.state;
+import sm.features.photography.state;
+import sm.features.preview.state;
+import sm.features.recording.state;
+import sm.features.screenshot.state;
+import sm.features.update.state;
+import sm.features.window_control.state;
+import sm.ui.context_menu.state;
+import sm.ui.floating_window.state;
+import sm.ui.notification_window.state;
+import sm.ui.photography_panel.state;
+import sm.ui.shared_render_resources.state;
+import sm.ui.tray_icon.state;
 
-#include "core/async/state.hpp"
-#include "core/commands/state.hpp"
-#include "core/database/state.hpp"
-#include "core/dialog_service/state.hpp"
-#include "core/events/state.hpp"
-#include "core/http_client/state.hpp"
-#include "core/http_server/state.hpp"
-#include "core/i18n/state.hpp"
-#include "core/rpc/state.hpp"
-#include "core/state/runtime_info.hpp"
-#include "core/tasks/state.hpp"
-#include "core/webview/state.hpp"
-#include "core/worker_pool/state.hpp"
-#include "features/gallery/state.hpp"
-#include "features/letterbox/state.hpp"
-#include "features/overlay/state.hpp"
-#include "features/photography/state.hpp"
-#include "features/preview/state.hpp"
-#include "features/recording/state.hpp"
-#include "features/screenshot/state.hpp"
-#include "features/settings/state.hpp"
-#include "features/update/state.hpp"
-#include "features/window_control/state.hpp"
-#include "ui/context_menu/state.hpp"
-#include "ui/floating_window/state.hpp"
-#include "ui/notification_window/state.hpp"
-#include "ui/photography_panel/state.hpp"
-#include "ui/shared_render_resources/state.hpp"
-#include "ui/tray_icon/state.hpp"
+import sm.features.settings.state;
+import sm.core.async.state;
+import sm.core.http_client.state;
+import sm.core.http_server.state;
+import sm.core.rpc.state;
 
 namespace core {
 

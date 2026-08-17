@@ -8,10 +8,30 @@ includes("tests")
 -- 设置C++23标准
 set_languages("c++23")
 
+-- 具名模块。src/ 下的 .cppm 与 third_party/asio-module/asio.cppm 都是模块单元，
+-- 依赖图由 xmake 自己扫描 —— 与 mcpp 侧看到的是同一份源码形态。
+set_policy("build.c++.modules", true)
+
+-- xmake 3.1.0 在 clang-cl 下编不出可加载的 `std` 模块 BMI：作业下发后 4.4 秒就被
+-- 判定完成，紧接着第一个 `import std;` 的单元就报 `module 'std' not found`，而每轮
+-- 倒下的是不同的几个 —— 共同点是「唯一的模块依赖就是 std」。
+--
+-- 六种改法逐一排除过（跑两遍 / 显式作业顺序边 / 把 std.ixx 当普通工程模块单元
+-- add_files 进来 / --files 单独先编 / 重试三次 / 关掉两阶段编译与模块复用），
+-- 全部无效，说明错的是 xmake 对这个作业的**完成信号**本身。完整证据链在
+-- .agents/docs/2026-08-18-migration-report.md §6.1 与
+-- scripts/patch-xmake-std-module-order.js 的文件头。
+--
+-- 所以这里保持 xmake 的默认行为，不带任何无效的绕行改动。
+
+
 -- 默认使用 LLVM 工具链，可通过 --toolchain 覆盖
 set_config("toolchain", "clang-cl[llvm]")
 
--- 统一源文件编码
+-- 统一源文件编码。/bigobj 在 cl.exe 下是必需的：reflect-cpp 每个 RPC 端点实例化的
+-- 模板足以撞破 COFF 的 65536 段上限。clang-cl 接受它但当空操作 —— LLVM 的 COFF
+-- writer 段数超限时自动改用 big-object 格式，这也是 mcpp 侧(clang++ driver)根本
+-- 没有对应拼法的原因。
 add_cxflags("/utf-8", "/bigobj")
 
 -- 设置运行时库
@@ -31,8 +51,9 @@ target("SpinningMomo")
     set_kind("binary")
     set_plat("windows")
     set_arch("x64")
-    -- 设置预编译头文件
-    set_pcxxheader("src/pch.hpp")
+    -- 具名模块与预编译头不能共存：PCH 是文本快照，模块单元的 purview 里不允许
+    -- #include，两者对同一份 SDK 头会给出不同的实体归属。mcpp 侧根本没有 PCH，
+    -- 这里也一并去掉，两个构建系统看到的是同一份源码形态。
     add_cxflags("clang_cl::-Wno-microsoft-include")
 
     -- Release 也保留调试符号，便于分析生产崩溃 dump
@@ -45,6 +66,20 @@ target("SpinningMomo")
     
     -- Windows特定宏定义
     add_defines("NOMINMAX", "UNICODE", "_UNICODE", "WIN32_LEAN_AND_MEAN", "_WIN32_WINNT=0x0A00", "SPDLOG_COMPILED_LIB", "yyjson_api_inline=yyjson_inline")
+
+    -- asio 的分离编译契约。这五个宏在 mcpp 侧由 chriskohlhoff.asio 的默认
+    -- feature 提供，这里必须手写出来 —— 模块单元与消费者 TU 都要看到同一套，
+    -- 否则消费者会把包已经编成 out-of-line 的实现再 inline 展开一遍。
+    --
+    -- _WIN32_WINNT 已在上面声明，且这里天然没有 mcpp 侧那个问题：asio 的模块单元
+    -- 是**在工程内**编译的，与其他 TU 共享同一份宏状态。mcpp 侧它在包里编译，
+    -- 所以要在描述符里单独钉一遍(见 mcpp/pkgs/a/sm.asio.lua)。
+    add_defines("ASIO_STANDALONE", "ASIO_SEPARATE_COMPILATION",
+                "ASIO_DISABLE_BOOST_CONTEXT_FIBER", "ASIO_HAS_THREADS", "ASIO_NO_IOSTREAM")
+
+    -- uSockets 的后端/SSL 形态会改变 libusockets.h 里 us_loop_t 的布局，
+    -- 每个看到 uWS 头文件的 TU 都必须与库的构建方式一致。
+    add_defines("LIBUS_USE_LIBUV", "LIBUS_NO_SSL", "UWS_NO_ZLIB")
     
     -- 添加包含目录
     add_includedirs("src")
@@ -53,7 +88,19 @@ target("SpinningMomo")
     -- 添加源文件
     add_files("src/main.cpp")
     add_files("src/**.cpp")
+    add_files("src/**.cppm")
     add_files("resources/*.rc")
+
+    -- asio 的模块单元。项目只以 `import asio;` 消费 asio —— 那是阻止它的模板特化
+    -- 在每个导入方重新实例化(C1116)的机制。mcpp 侧这个模块由索引包
+    -- chriskohlhoff.asio 提供；vcpkg 只发头文件，所以 xmake 侧必须自己编。
+    --
+    -- asio.cppm 是那个包生成物的**逐字镜像**，asio_src.cpp 是
+    -- ASIO_SEPARATE_COMPILATION 要求的那唯一一个实现 TU(mcpp 侧由包编译
+    -- `*/src/asio.cpp`)。两份 wrapper 会漂移，所以
+    -- scripts/check-asio-module-parity.py 负责 diff 它们。
+    add_files("third_party/asio-module/asio.cppm")
+    add_files("third_party/asio-module/asio_src.cpp")
     
     -- 链接vcpkg包
     add_packages("vcpkg::uwebsockets", "vcpkg::spdlog", "vcpkg::asio", "vcpkg::reflectcpp", 

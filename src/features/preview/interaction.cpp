@@ -1,21 +1,23 @@
-#include "features/preview/interaction.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 #include "vendor/windows/dwmapi.hpp"
 #include "vendor/windows/windowsx.hpp"
 
-#include "core/state/app_state.hpp"
-#include "features/preview/capture.hpp"
-#include "features/preview/rendering.hpp"
-#include "features/preview/state.hpp"
-#include "features/preview/types.hpp"
-#include "features/preview/window.hpp"
-#include "utils/display/display_geometry.hpp"
-#include "utils/graphics/capture.hpp"
-#include "utils/logger/logger.hpp"
-#include "utils/throttle/throttle.hpp"
+module sm.features.preview.interaction;
+
+import std;
+import sm.core.state.app_state;
+import sm.features.preview.capture;
+import sm.features.preview.rendering;
+import sm.features.preview.state;
+import sm.features.preview.types;
+import sm.features.preview.window;
+import sm.utils.graphics.capture;
+import sm.utils.throttle.throttle;
+
+import sm.utils.logger.logger;
+import sm.utils.display.display_geometry;
 
 namespace features::preview::interaction {
 

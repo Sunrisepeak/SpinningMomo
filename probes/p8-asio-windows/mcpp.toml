@@ -1,0 +1,30 @@
+[package]
+name      = "p8asiowindows"
+version   = "0.1.0"
+standard  = "c++23"
+platforms = ["windows"]
+
+# No [toolchain] pin: the matrix chooses.
+
+# The OFFICIAL package, not the project's override. That is the point: the
+# override pins `_WIN32_WINNT=0x0A00` into asio's own compile so its BMI parses
+# <windows.h> the way this project does, and the published descriptor has no way
+# to say that. If this probe is green WITHOUT the pin, the include-before-import
+# rule is doing all the work and the override can be deleted — which is what P7
+# needs to know before the project can drop its `[indices]` table.
+[dependencies.chriskohlhoff]
+asio = "1.38.1"
+
+[build]
+cxx_runtime = "self-contained"
+
+# EXACTLY the project's Windows macro state. That is the point of this probe:
+# the asio PACKAGE is compiled with its own defines, and if the two disagree
+# about how <windows.h> is configured, the two parses of it produce declarations
+# clang refuses to merge.
+defines = [
+  "NOMINMAX", "UNICODE", "_UNICODE", "WIN32_LEAN_AND_MEAN", "_WIN32_WINNT=0x0A00",
+  "ASIO_STANDALONE", "ASIO_SEPARATE_COMPILATION",
+  "ASIO_DISABLE_BOOST_CONTEXT_FIBER", "ASIO_HAS_THREADS", "ASIO_NO_IOSTREAM",
+]
+ldflags = ["-luser32"]

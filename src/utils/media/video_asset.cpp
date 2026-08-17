@@ -1,6 +1,4 @@
-#include "utils/media/video_asset.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
@@ -11,9 +9,12 @@
 #include "vendor/windows/mfreadwrite.hpp"
 #include "vendor/windows/propvarutil.hpp"
 
-#include "utils/file/mime.hpp"
-#include "utils/image/image.hpp"
-#include "utils/logger/logger.hpp"
+module sm.utils.media.video_asset;
+
+import std;
+import sm.utils.image.image;
+import sm.utils.logger.logger;
+import sm.utils.file.mime;
 
 namespace utils::media::video_asset {
 

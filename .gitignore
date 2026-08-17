@@ -54,7 +54,12 @@ docs/node_modules/
 ehthumbs.db
 Thumbs.db 
 
-third_party/
+# Fetched third-party sources (scripts/fetch-third-party.js clones into here).
+# `third_party/*` rather than `third_party/`: git cannot re-include a path whose
+# PARENT directory is excluded, and asio-module/ is tracked source — the module
+# unit the xmake build compiles in place of the mcpp index package.
+third_party/*
+!third_party/asio-module/
 test/
 /playground/
 tools/
@@ -91,3 +96,15 @@ web/src/assets/fonts/harmonyos-sans-sc/*.woff2
 web/src/assets/fonts/harmonyos-sans-sc/charset-generated.txt
 web/src/assets/fonts/harmonyos-sans-sc/manifest.json
 web/src/assets/fonts/harmonyos-sans-sc/LICENSE.txt
+
+# mcpp build outputs and the per-project index sandbox
+target/
+.mcpp/
+mcpp.lock
+# xlings' per-project scratch dir, created by any local `mcpp build`
+.xlings/
+probes/*/gen/
+
+# Python bytecode from the migration scripts
+__pycache__/
+*.pyc

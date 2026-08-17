@@ -1,25 +1,25 @@
-#include "features/gallery/watcher/sync.hpp"
+module sm.features.gallery.watcher.sync;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.i18n.state;
+import sm.core.notifications.notifications;
+import sm.core.notifications.types;
+import sm.core.rpc.notification_hub;
+import sm.core.state.app_state;
+import sm.features.gallery.asset.thumbnail;
+import sm.features.gallery.folder.repository;
+import sm.features.gallery.folder.service;
+import sm.features.gallery.ignore.service;
+import sm.features.gallery.scanner.asset_pipeline;
+import sm.features.gallery.scanner.common;
+import sm.features.gallery.scanner.scanner;
+import sm.features.gallery.state;
+import sm.features.gallery.types;
+import sm.features.gallery.watcher.watcher;
 
-#include "core/i18n/state.hpp"
-#include "core/notifications/notifications.hpp"
-#include "core/notifications/types.hpp"
-#include "core/rpc/notification_hub.hpp"
-#include "core/state/app_state.hpp"
-#include "features/gallery/asset/thumbnail.hpp"
-#include "features/gallery/folder/repository.hpp"
-#include "features/gallery/folder/service.hpp"
-#include "features/gallery/ignore/service.hpp"
-#include "features/gallery/scanner/asset_pipeline.hpp"
-#include "features/gallery/scanner/common.hpp"
-#include "features/gallery/scanner/scanner.hpp"
-#include "features/gallery/state.hpp"
-#include "features/gallery/types.hpp"
-#include "features/gallery/watcher/watcher.hpp"
-#include "utils/logger/logger.hpp"
-#include "utils/string/string.hpp"
-#include "utils/time.hpp"
+import sm.utils.logger.logger;
+import sm.utils.string.string;
+import sm.utils.time;
 
 namespace features::gallery::watcher::sync {
 
@@ -195,8 +195,8 @@ auto notify_sync_faulted(core::AppState& app_state, FolderWatcherState& watcher,
       .label =
           utils::string::FromUtf8(get_i18n_text(app_state, "notification.action.retry", "Retry")),
       .callback =
-          [watcher_key = std::move(watcher_key)](core::AppState& callback_state) {
-            retry_faulted_sync(callback_state, watcher_key);
+          [&app_state, watcher_key = std::move(watcher_key)] {
+            retry_faulted_sync(app_state, watcher_key);
           },
   };
   core::notifications::post_notification_request(app_state, std::move(options));

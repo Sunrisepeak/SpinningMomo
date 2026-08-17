@@ -1,9 +1,9 @@
-#include "features/gallery/scanner/progress.hpp"
+module sm.features.gallery.scanner.progress;
 
-#include "vendor/std.hpp"
+import std;
+import sm.features.gallery.types;
 
-#include "features/gallery/types.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 namespace features::gallery::scanner::progress {
 

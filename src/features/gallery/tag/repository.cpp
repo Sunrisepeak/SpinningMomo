@@ -1,13 +1,14 @@
-#include "features/gallery/tag/repository.hpp"
+module sm.features.gallery.tag.repository;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.database.state;
+import sm.core.database.types;
+import sm.core.state.app_state;
+import sm.features.gallery.types;
 
-#include "core/database/database.hpp"
-#include "core/database/state.hpp"
-#include "core/database/types.hpp"
-#include "core/state/app_state.hpp"
-#include "features/gallery/types.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
+
+import sm.core.database.database;
 
 namespace features::gallery::tag::repository {
 
@@ -288,7 +289,7 @@ auto remove_tag_from_assets(core::AppState& app_state, const RemoveTagFromAssets
   // 这里按“一个标签 -> 多个资产”的粒度做对称批处理，
   // 这样能和 add_tag_to_assets 共用同一套前端交互模型与结果语义。
   std::string placeholders = std::string(normalized_asset_ids.size() * 2 - 1, '?');
-  for (size_t i = 1; i < normalized_asset_ids.size(); ++i) {
+  for (std::size_t i = 1; i < normalized_asset_ids.size(); ++i) {
     placeholders[i * 2 - 1] = ',';
   }
 
@@ -336,7 +337,7 @@ auto remove_tags_from_asset(core::AppState& app_state, const RemoveTagsFromAsset
 
   // 构建 IN 子句
   std::string placeholders = std::string(params.tag_ids.size() * 2 - 1, '?');
-  for (size_t i = 1; i < params.tag_ids.size(); ++i) {
+  for (std::size_t i = 1; i < params.tag_ids.size(); ++i) {
     placeholders[i * 2 - 1] = ',';
   }
 
@@ -385,7 +386,7 @@ auto get_tags_by_asset_ids(core::AppState& app_state, const std::vector<std::int
 
   // 构建 IN 子句
   std::string placeholders = std::string(asset_ids.size() * 2 - 1, '?');
-  for (size_t i = 1; i < asset_ids.size(); ++i) {
+  for (std::size_t i = 1; i < asset_ids.size(); ++i) {
     placeholders[i * 2 - 1] = ',';
   }
 

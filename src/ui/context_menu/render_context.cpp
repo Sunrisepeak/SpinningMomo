@@ -1,21 +1,23 @@
-#include "ui/context_menu/render_context.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
+#include "vendor/wil.hpp"
 #include "vendor/windows/d2d1_3.hpp"
 #include "vendor/windows/d3d11.hpp"
 #include "vendor/windows/dcomp.hpp"
 #include "vendor/windows/dwrite_3.hpp"
 #include "vendor/windows/dxgi1_2.hpp"
 
-#include "core/state/app_state.hpp"
-#include "features/settings/state.hpp"
-#include "ui/context_menu/state.hpp"
-#include "ui/shared_render_resources/shared_render_resources.hpp"
-#include "ui/shared_render_resources/state.hpp"
-#include "utils/logger/logger.hpp"
+module sm.ui.context_menu.render_context;
+
+import std;
+import sm.core.state.app_state;
+import sm.ui.context_menu.state;
+import sm.ui.shared_render_resources.shared_render_resources;
+import sm.ui.shared_render_resources.state;
+
+import sm.features.settings.state;
+import sm.utils.logger.logger;
 
 namespace ui::context_menu::render_context {
 

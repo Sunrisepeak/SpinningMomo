@@ -1,18 +1,16 @@
-#include "extensions/infinity_nikki/photo_extract/infra.hpp"
+module sm.extensions.infinity_nikki.photo_extract.infra;
 
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
-#include "vendor/rfl.hpp"
-
-#include "core/database/database.hpp"
-#include "core/database/types.hpp"
-#include "core/http_client/http_client.hpp"
-#include "core/http_client/types.hpp"
-#include "core/state/app_state.hpp"
-#include "extensions/infinity_nikki/photo_extract/scan.hpp"
-#include "extensions/infinity_nikki/types.hpp"
-#include "features/gallery/folder/repository.hpp"
+import std;
+import sm.core.state.app_state;
+import sm.extensions.infinity_nikki.photo_extract.scan;
+import sm.extensions.infinity_nikki.types;
+import sm.core.database.types;
+import sm.core.http_client.types;
+import sm.features.gallery.folder.repository;
+import sm.vendor.rfl;
+import sm.core.database.database;
+import asio;
+import sm.core.http_client.http_client;
 
 namespace extensions::infinity_nikki::photo_extract::infra {
 
@@ -266,14 +264,14 @@ auto align_decode_photo2_response(const std::vector<scan::PreparedPhotoExtractEn
 }
 
 template <typename T>
-  requires std::same_as<T, std::string> || std::same_as<T, std::int64_t> ||
-           std::same_as<T, double> || std::same_as<T, bool>
+  requires std::is_same_v<T, std::string> || std::is_same_v<T, std::int64_t> ||
+           std::is_same_v<T, double> || std::is_same_v<T, bool>
 auto to_db_param(const std::optional<T>& value) -> core::database::DbParam {
   if (!value) {
     return core::database::DbParam{std::monostate{}};
   }
 
-  if constexpr (std::same_as<T, bool>) {
+  if constexpr (std::is_same_v<T, bool>) {
     return core::database::DbParam{static_cast<std::int64_t>(*value)};
   } else {
     return core::database::DbParam{*value};

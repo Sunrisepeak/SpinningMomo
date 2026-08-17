@@ -1,10 +1,8 @@
-#include "utils/network/network.hpp"
+module sm.utils.network.network;
 
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
-
-#include "utils/string/string.hpp"
+import std;
+import asio;
+import sm.utils.string.string;
 
 namespace utils::network::detail {
 
@@ -80,8 +78,9 @@ auto with_timeout(CancelFn&& cancel_fn, AwaitFn&& await_fn, std::chrono::millise
   co_await await_fn(operation_error);
   completed = true;
 
-  asio::error_code ignored;
-  timer.cancel(ignored);
+  // asio dropped the error_code-taking cancel() overloads in 1.30; cancel()
+  // has been noexcept and non-failing since. (vcpkg's asio predated that.)
+  timer.cancel();
 
   co_return std::pair{timed_out, operation_error};
 }
@@ -94,7 +93,7 @@ auto connect_endpoint(asio::ip::tcp::endpoint endpoint, std::chrono::millisecond
   auto [timed_out, connect_error] = co_await with_timeout(
       [&]() {
         asio::error_code ignored;
-        socket.cancel(ignored);
+        socket.cancel();
         socket.close(ignored);
       },
       [&](asio::error_code& operation_error) -> asio::awaitable<void> {
@@ -152,7 +151,7 @@ auto connect_resolved(asio::ip::tcp::resolver::results_type endpoints,
   auto [timed_out, connect_error] = co_await with_timeout(
       [&]() {
         asio::error_code ignored;
-        socket.cancel(ignored);
+        socket.cancel();
         socket.close(ignored);
       },
       [&](asio::error_code& operation_error) -> asio::awaitable<void> {

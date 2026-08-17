@@ -1,0 +1,36 @@
+[package]
+name      = "p3bwinrt"
+version   = "0.1.0"
+standard  = "c++23"
+platforms = ["windows"]
+
+# NO [toolchain] pin. mcpp's own default on Windows is llvm targeting the MSVC
+# ABI, and that is what this project now uses — see the root mcpp.toml. Leaving
+# the pin out lets the CI matrix run a probe under either toolchain, which is
+# how the asio/MSVC difference was found in the first place.
+
+[build]
+# The CRT, in ONE place. Hand-writing `/MT` into cxxflags used to work by
+# accident: mcpp passed no CRT flag when building the cached `std` module, so cl
+# defaulted it to /MT and the two happened to agree. Since 2026.8.16 mcpp DERIVES
+# the flag — from `linkage` / `cxx_runtime` — for the project's TUs and the std
+# module alike, so a manifest that says nothing gets /MD for std while its own
+# cxxflags still force /MT, and the link dies on `__imp__fwrite_nolock` with
+# LNK4098 'MSVCRT conflicts with use of other libs'.
+#
+# Say it once, the way mcpp asks (mcpp#422).
+cxx_runtime = "self-contained"
+include_dirs = [
+  "src",
+  # Populated by prebuild.sh: a junction to the Windows SDK's C++/WinRT
+  # projection headers. It has to be a project-relative, space-free path for
+  # two independent reasons — mcpp does not add Include/<ver>/cppwinrt to the
+  # synthesised INCLUDE (msvc.cppm:457-460 covers ucrt/um/shared/winrt only,
+  # and that bare `winrt` dir is the ABI header set, not the C++ projection),
+  # and it emits an include_dirs entry containing spaces unquoted, so the SDK
+  # path split across three cl.exe arguments and the tail landed in the
+  # source-file position.
+  "gen/cppwinrt",
+]
+defines = ["NOMINMAX", "UNICODE", "_UNICODE", "WIN32_LEAN_AND_MEAN", "_WIN32_WINNT=0x0A00"]
+ldflags = ["-lwindowsapp", "-luser32", "-ld3d11", "-ldxgi"]

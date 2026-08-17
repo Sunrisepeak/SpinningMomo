@@ -1,16 +1,19 @@
-#include "features/window_control/window_control.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 
-#include "core/state/app_state.hpp"
-#include "features/settings/state.hpp"
-#include "features/window_control/state.hpp"
-#include "ui/floating_window/state.hpp"
-#include "utils/display/display.hpp"
-#include "utils/logger/logger.hpp"
-#include "utils/string/string.hpp"
+module sm.features.window_control.window_control;
+
+import std;
+import sm.core.state.app_state;
+import sm.features.window_control.state;
+import sm.features.window_control.types;
+import sm.ui.floating_window.state;
+
+import sm.features.settings.state;
+import sm.utils.display.display;
+import sm.utils.logger.logger;
+import sm.utils.string.string;
 
 namespace features::window_control {
 

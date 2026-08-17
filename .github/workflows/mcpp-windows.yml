@@ -1,0 +1,286 @@
+name: mcpp-windows
+
+# Windows-only CI for the mcpp migration.
+#
+# Local development happens on Linux, where mcpp's MSVC toolchain is hard-gated
+# off (`msvc is only available on Windows hosts`). So EVERY MSVC fact has to be
+# established here. The probe matrix exists to answer independent questions in
+# one round-trip instead of serialising them across pushes: each entry is a
+# self-contained mcpp project under `probes/`, and `fail-fast: false` keeps a
+# failing probe from hiding the others' answers.
+
+on:
+  # push only. A PR's checks are resolved by head SHA, so the push run shows up
+  # on the PR anyway; adding a `pull_request` trigger would just double every
+  # matrix (14 cold bootstraps instead of 7) without adding a single fact.
+  push:
+    branches: ['mcpp/**']
+  workflow_dispatch:
+
+concurrency:
+  group: mcpp-windows-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Pinned via .xlings.json + bare `xlings install` (passing a package name
+  # makes xlings resolve "newest in this runner's index copy" and silently
+  # ignore the workspace pin — mcpp's own CI learned this the hard way).
+  XLINGS_VERSION: '2026.8.17.2'
+  XLINGS_NON_INTERACTIVE: '1'
+
+jobs:
+  # ── Everything that can be judged without a Windows runner ────────────────
+  # These are seconds on Linux and answer questions that otherwise cost a
+  # 40-minute Windows compile: is the module graph acyclic, do the architecture
+  # invariants hold, has the xmake mirror of the asio module drifted. The heavy
+  # jobs wait on it, so a source-level mistake never buys Windows minutes.
+  preflight:
+    name: preflight (linux)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Module graph is acyclic
+        run: python3 scripts/check-module-graph.py --graph
+
+      - name: C++ architecture invariants
+        run: python3 scripts/check-cpp-architecture.py
+
+      - name: asio module mirror matches the index descriptor
+        run: python3 scripts/check-asio-module-parity.py
+
+      - name: The two builds compile the same source under the same contract
+        run: python3 scripts/check-build-parity.py
+
+  probe:
+    name: ${{ matrix.probe }} (${{ matrix.toolchain }})
+    needs: preflight
+    continue-on-error: ${{ matrix.expect == 'red' }}
+    runs-on: windows-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        # `toolchain` is what the CI selects with `mcpp toolchain default`; a
+        # probe that pins one in its own manifest ignores this (a manifest
+        # toolchain is never overruled), which is why p6 and p7 carry no pin.
+        #
+        # Windows has TWO MSVC-ABI toolchains and they are not interchangeable
+        # for modules: native `cl.exe`, and mcpp's own Windows default, llvm
+        # (clang-cl) targeting the same ABI. p6/p7 run under both because the
+        # difference decides whether `import asio;` is viable at all.
+        include:
+          - { probe: p0-hello,         toolchain: llvm }  # mcpp installs, import std works
+          - { probe: p1-win32gui,      toolchain: llvm }  # WinMain + windows subsystem + system libs
+          - { probe: p2-rc,            toolchain: llvm }  # rc.exe -> .res reaches the linker
+          - { probe: p3a-win32-export, toolchain: llvm }  # module wrapping windows.h, re-export to ::
+          - { probe: p3b-winrt-export, toolchain: llvm }  # module wrapping C++/WinRT
+          - { probe: p3c-gmf-direct,   toolchain: llvm }  # consumer includes vendor headers in its GMF
+          - { probe: p4-importstd,     toolchain: llvm }  # real project sources as modules + import std
+          - { probe: p5-official-index, toolchain: llvm }  # the whole dependency set, from the PUBLISHED index
+          - { probe: p6-asio-module,   toolchain: llvm }  # asio as `import asio;` — the C1116 fix
+          - { probe: p8-asio-windows,  toolchain: llvm }  # `import asio;` + textual <windows.h> in one TU
+          - { probe: p9-win-module,    toolchain: llvm }  # …and the same pair with Win32 as a module too
+          # ── Known-red, on purpose ────────────────────────────────────────
+          # These two run under NATIVE cl.exe, where `import asio;` does not
+          # compile (see the [toolchain] note in the root mcpp.toml). They are
+          # kept so that the day a newer MSVC fixes it, this workflow says so —
+          # a comparison that only exists in a document goes stale silently.
+          # `continue-on-error` keeps the run green: a job that is red every
+          # time teaches people to ignore red.
+          - { probe: p6-asio-module,   toolchain: msvc, expect: red }
+          - { probe: p7-nested-class,  toolchain: msvc, expect: red }
+          - { probe: p7-nested-class,  toolchain: llvm }
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache xlings
+        uses: actions/cache@v4
+        with:
+          path: ~/.xlings
+          key: xlings-windows-xl${{ env.XLINGS_VERSION }}
+
+      - name: Cache mcpp sandbox
+        uses: actions/cache@v4
+        with:
+          path: ~/.mcpp
+          # The index tree is part of the key: the sandbox remembers which
+          # indices are registered, so a restored sandbox from before an index
+          # rename keeps searching the old name and every package misses.
+          # Exact key only — NO restore-keys. The sandbox remembers which
+          # indices are registered and mcpp registers each one once, so a
+          # prefix-restored sandbox from before an index rename keeps searching
+          # the old name and every `sm:` package misses no matter how often the
+          # build is retried.
+          key: mcpp-sandbox-windows-${{ matrix.toolchain }}-xl${{ env.XLINGS_VERSION }}-${{ hashFiles('.xlings.json', 'mcpp.toml') }}
+
+      - name: Bootstrap xlings + mcpp
+        shell: bash
+        run: |
+          set -euo pipefail
+          REPO_DIR="$(pwd)"
+          WORK=$(mktemp -d)
+          zipfile="xlings-${XLINGS_VERSION}-windows-x86_64.zip"
+          curl -fsSL -o "${WORK}/${zipfile}" \
+            "https://github.com/d2learn/xlings/releases/download/v${XLINGS_VERSION}/${zipfile}"
+          (cd "${WORK}" && unzip -q "${zipfile}")
+          "$WORK/xlings-${XLINGS_VERSION}-windows-x86_64/subos/default/bin/xlings.exe" self install
+          echo "$USERPROFILE/.xlings/subos/default/bin" >> "$GITHUB_PATH"
+          XL="$USERPROFILE/.xlings/subos/default/bin/xlings.exe"
+          "$XL" --version
+          # No package NAME on the command line: with one, xlings resolves
+          # "newest in this runner's index copy" and the .xlings.json workspace
+          # pin never applies. `-u` activates what was just installed (a plain
+          # install leaves the shim pointing at whatever was there before) and
+          # `-g` makes it global. This is mcpp's own CI invocation verbatim.
+          cd "$REPO_DIR"
+          echo "::group::xlings install"
+          "$XL" install -y -u -g
+          echo "::endgroup::"
+          MCPP="$USERPROFILE/.xlings/subos/default/bin/mcpp.exe"
+          test -x "$MCPP" || MCPP=$(command -v mcpp || true)
+          test -n "$MCPP" || { echo "FAIL: mcpp not on PATH after install"; exit 1; }
+          echo "MCPP=$MCPP" >> "$GITHUB_ENV"
+          "$MCPP" --version
+
+      - name: Diagnose environment
+        shell: bash
+        continue-on-error: true
+        run: |
+          "$MCPP" self doctor || true
+          "$MCPP" toolchain list || true
+
+      - name: Select toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          # llvm is not preinstalled in the sandbox; msvc is discovered on the
+          # host. `toolchain install` is a no-op when it is already there.
+          if [ "${{ matrix.toolchain }}" != "msvc" ]; then
+            "$MCPP" toolchain install ${{ matrix.toolchain }}
+          fi
+          "$MCPP" toolchain default ${{ matrix.toolchain }}
+          "$MCPP" toolchain list
+
+      - name: Pre-build step
+        shell: bash
+        working-directory: probes/${{ matrix.probe }}
+        run: |
+          set -euo pipefail
+          if [ -f prebuild.sh ]; then
+            bash prebuild.sh
+          else
+            echo "no prebuild.sh"
+          fi
+
+      - name: Build probe
+        shell: bash
+        working-directory: probes/${{ matrix.probe }}
+        run: |
+          set -uo pipefail
+          "$MCPP" build -v 2>&1 | tail -200
+
+      - name: Run probe check
+        shell: bash
+        working-directory: probes/${{ matrix.probe }}
+        run: |
+          set -euo pipefail
+          if [ -f check.sh ]; then
+            bash check.sh
+          else
+            echo "no check.sh — build success is the whole assertion"
+          fi
+
+  # ── The real thing ────────────────────────────────────────────────────────
+  # Builds SpinningMomo itself from the root mcpp.toml. Kept in the same
+  # workflow so it shares the probe matrix's bootstrap and cache lineage, but
+  # in its own job so a probe failure never masks it and vice versa.
+  full-build:
+    name: SpinningMomo (full)
+    needs: preflight
+    runs-on: windows-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache xlings
+        uses: actions/cache@v4
+        with:
+          path: ~/.xlings
+          key: xlings-windows-xl${{ env.XLINGS_VERSION }}
+
+      - name: Cache mcpp sandbox
+        uses: actions/cache@v4
+        with:
+          path: ~/.mcpp
+          key: mcpp-sandbox-windows-full-llvm-xl${{ env.XLINGS_VERSION }}-${{ hashFiles('.xlings.json', 'mcpp.toml') }}
+
+      - name: Cache build outputs
+        uses: actions/cache@v4
+        with:
+          path: target
+          key: mcpp-target-windows-llvm-${{ hashFiles('src/**', 'mcpp.toml') }}
+          restore-keys: mcpp-target-windows-llvm-
+
+      - name: Bootstrap xlings + mcpp
+        shell: bash
+        run: |
+          set -euo pipefail
+          REPO_DIR="$(pwd)"
+          WORK=$(mktemp -d)
+          zipfile="xlings-${XLINGS_VERSION}-windows-x86_64.zip"
+          curl -fsSL -o "${WORK}/${zipfile}" \
+            "https://github.com/d2learn/xlings/releases/download/v${XLINGS_VERSION}/${zipfile}"
+          (cd "${WORK}" && unzip -q "${zipfile}")
+          "$WORK/xlings-${XLINGS_VERSION}-windows-x86_64/subos/default/bin/xlings.exe" self install
+          echo "$USERPROFILE/.xlings/subos/default/bin" >> "$GITHUB_PATH"
+          XL="$USERPROFILE/.xlings/subos/default/bin/xlings.exe"
+          cd "$REPO_DIR"
+          "$XL" install -y -u -g
+          MCPP="$USERPROFILE/.xlings/subos/default/bin/mcpp.exe"
+          test -n "$MCPP" && test -x "$MCPP"
+          echo "MCPP=$MCPP" >> "$GITHUB_ENV"
+          "$MCPP" --version
+
+      - name: Select toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          # The root mcpp.toml pins `llvm@22.1.8`, so the manifest decides and
+          # this only makes sure the payload is present before the build starts
+          # (and puts the resolved version in the log).
+          "$MCPP" toolchain install llvm
+          "$MCPP" toolchain default llvm
+          "$MCPP" toolchain list
+
+      - name: Fetch header-only third-party (dkm)
+        shell: bash
+        run: node scripts/fetch-third-party.js
+
+      - name: Pre-build (resources, cppwinrt, WebView2)
+        shell: bash
+        run: bash scripts/mcpp-prebuild.sh
+
+      - name: Build
+        shell: bash
+        run: |
+          set -uo pipefail
+          "$MCPP" build -v 2>&1 | tail -400
+
+      - name: Report artefact
+        shell: bash
+        run: |
+          set -euo pipefail
+          exe=$(find target -name 'SpinningMomo.exe' | head -1)
+          test -n "$exe" || { echo "FAIL: no SpinningMomo.exe"; exit 1; }
+          ls -la "$exe"
+          powershell -NoProfile -Command \
+            "(Get-Item '$(cygpath -w "$exe")').VersionInfo | Format-List ProductName,ProductVersion,FileVersion"
+
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: SpinningMomo-mcpp
+          path: target/**/bin/SpinningMomo.exe
+          if-no-files-found: error

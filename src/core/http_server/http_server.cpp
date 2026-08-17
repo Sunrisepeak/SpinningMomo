@@ -1,19 +1,18 @@
-#include "core/http_server/http_server.hpp"
+module sm.core.http_server.http_server;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.build_config;
+import sm.core.state.app_state;
 
-#include "vendor/uwebsockets.hpp"
-
-#include "core/build_config.hpp"
-#include "core/http_server/routes.hpp"
-#include "core/http_server/sse_manager.hpp"
-#include "core/http_server/state.hpp"
-#include "core/state/app_state.hpp"
-#include "utils/logger/logger.hpp"
+import sm.vendor.uwebsockets;
+import sm.core.http_server.routes;
+import sm.core.http_server.sse_manager;
+import sm.utils.logger.logger;
+import sm.core.http_server.state;
 
 namespace core::http_server {
 
-namespace {
+namespace detail {
 
 constexpr std::array kReleaseCandidatePorts{51206, 61206, 11206, 21206, 31206, 41206};
 
@@ -35,7 +34,14 @@ auto format_candidate_ports(std::span<const int> ports) -> std::string {
   return result;
 }
 
-}  // namespace
+}  // namespace detail
+
+// A named namespace instead of an anonymous one (AGENTS.md; the tree already
+// spells it `detail` in 20+ places). The names therefore gain EXTERNAL linkage,
+// which is the one real difference — they were TU-local before. Nothing else
+// in the project declares them, and the using-directive keeps unqualified
+// lookup at their call sites exactly as it was.
+using namespace detail;
 
 auto initialize(core::AppState& state) -> std::expected<void, std::string> {
   try {
@@ -172,7 +178,7 @@ auto shutdown(core::AppState& state) -> void {
   Logger().info("HTTP server shut down");
 }
 
-auto get_sse_connection_count(const core::AppState& state) -> size_t {
+auto get_sse_connection_count(const core::AppState& state) -> std::size_t {
   return core::http_server::sse_manager::get_connection_count(state);
 }
 }  // namespace core::http_server

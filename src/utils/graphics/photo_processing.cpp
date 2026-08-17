@@ -1,13 +1,15 @@
-#include "utils/graphics/photo_processing.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
 #include "vendor/windows/d3d11.hpp"
 
-#include "utils/graphics/d3d.hpp"
-#include "utils/logger/logger.hpp"
+module sm.utils.graphics.photo_processing;
+
+import std;
+import sm.utils.graphics.d3d;
+
+import sm.utils.logger.logger;
 
 namespace utils::graphics::photo_processing {
 

@@ -1,15 +1,13 @@
-#include "extensions/infinity_nikki/photo_extract/photo_extract.hpp"
+module sm.extensions.infinity_nikki.photo_extract.photo_extract;
 
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
-
-#include "core/state/app_state.hpp"
-#include "core/worker_pool/worker_pool.hpp"
-#include "extensions/infinity_nikki/photo_extract/infra.hpp"
-#include "extensions/infinity_nikki/photo_extract/scan.hpp"
-#include "extensions/infinity_nikki/types.hpp"
-#include "utils/logger/logger.hpp"
+import std;
+import sm.core.state.app_state;
+import sm.extensions.infinity_nikki.types;
+import sm.core.worker_pool.worker_pool;
+import sm.extensions.infinity_nikki.photo_extract.scan;
+import sm.utils.logger.logger;
+import asio;
+import sm.extensions.infinity_nikki.photo_extract.infra;
 
 namespace extensions::infinity_nikki::photo_extract {
 

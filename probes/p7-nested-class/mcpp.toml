@@ -1,0 +1,13 @@
+[package]
+name      = "p7nestedclass"
+version   = "0.1.0"
+standard  = "c++23"
+platforms = ["windows"]
+
+# NO [toolchain] pin on purpose. The whole point of this probe is to compare
+# toolchains, and a manifest pin is never overruled by the CLI — so the CI
+# matrix chooses with `mcpp toolchain default <x>` instead.
+
+[build]
+cxx_runtime  = "self-contained"
+include_dirs = ["inc"]

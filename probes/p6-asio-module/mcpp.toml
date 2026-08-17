@@ -1,0 +1,24 @@
+[package]
+name      = "p6asiomodule"
+version   = "0.1.0"
+standard  = "c++23"
+platforms = ["windows"]
+
+# NO [toolchain] pin on purpose: the CI matrix runs this probe under BOTH
+# `msvc` and `llvm`, and a manifest pin is never overruled by the CLI.
+# The OFFICIAL package. The project's path index is gone — every descriptor in
+# it was contributed to mcpplibs/mcpp-index (#213-#216).
+[dependencies.chriskohlhoff]
+asio = "1.38.1"
+
+[build]
+# One derivation of the CRT, shared with the cached `std` module (mcpp#422).
+cxx_runtime = "self-contained"
+
+# The package's `separate-compilation` feature compiles its own TUs with these;
+# a consumer that must agree declares them itself, because an index descriptor's
+# feature defines do not reach consumers.
+defines = [
+  "ASIO_STANDALONE", "ASIO_SEPARATE_COMPILATION",
+  "ASIO_DISABLE_BOOST_CONTEXT_FIBER", "ASIO_HAS_THREADS", "ASIO_NO_IOSTREAM",
+]

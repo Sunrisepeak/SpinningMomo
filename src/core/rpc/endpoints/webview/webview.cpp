@@ -1,17 +1,16 @@
-#include "core/rpc/endpoints/webview/webview.hpp"
+module sm.core.rpc.endpoints.webview.webview;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.state.app_state;
+import sm.core.webview.state;
+import sm.ui.webview_window.webview_window;
 
-#include "vendor/asio.hpp"
-#include "vendor/rfl.hpp"
-
-#include "core/rpc/rpc.hpp"
-#include "core/rpc/state.hpp"
-#include "core/rpc/types.hpp"
-#include "core/state/app_state.hpp"
-#include "core/webview/state.hpp"
-#include "ui/webview_window/webview_window.hpp"
-#include "utils/string/string.hpp"
+import sm.vendor.rfl;
+import asio;
+import sm.core.rpc.rpc;
+import sm.core.rpc.state;
+import sm.core.rpc.types;
+import sm.utils.string.string;
 
 namespace core::rpc::endpoints::webview {
 

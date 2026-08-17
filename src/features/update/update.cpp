@@ -1,31 +1,34 @@
-#include "features/update/update.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
 #include "vendor/windows.hpp"
 
-#include "core/async/async.hpp"
-#include "core/events/events.hpp"
-#include "core/http_client/http_client.hpp"
-#include "core/http_client/types.hpp"
-#include "core/i18n/state.hpp"
-#include "core/notifications/notifications.hpp"
-#include "core/notifications/types.hpp"
-#include "core/state/app_state.hpp"
-#include "core/tasks/tasks.hpp"
-#include "core/version.hpp"
-#include "features/settings/state.hpp"
-#include "features/update/state.hpp"
-#include "features/update/types.hpp"
-#include "ui/floating_window/events.hpp"
-#include "ui/webview_window/webview_window.hpp"
-#include "utils/crypto/crypto.hpp"
-#include "utils/logger/logger.hpp"
-#include "utils/path/path.hpp"
-#include "utils/powershell/powershell.hpp"
-#include "utils/string/string.hpp"
-#include "utils/throttle/throttle.hpp"
+module sm.features.update.update;
+
+import std;
+import sm.core.events.events;
+import sm.core.http_client.types;
+import sm.core.i18n.state;
+import sm.core.notifications.notifications;
+import sm.core.notifications.types;
+import sm.core.state.app_state;
+import sm.core.tasks.state;
+import sm.core.tasks.tasks;
+import sm.core.version;
+import sm.features.settings.state;
+import sm.features.update.state;
+import sm.features.update.types;
+import sm.ui.floating_window.events;
+import sm.ui.webview_window.webview_window;
+import asio;
+import sm.core.async.async;
+import sm.core.http_client.http_client;
+
+import sm.utils.crypto.crypto;
+import sm.utils.logger.logger;
+import sm.utils.path.path;
+import sm.utils.powershell.powershell;
+import sm.utils.string.string;
+import sm.utils.throttle.throttle;
 
 namespace features::update {
 
@@ -45,7 +48,7 @@ auto post_update_notification(core::AppState& app_state, const std::string& mess
     options.action = core::notifications::NotificationAction{
         .label = utils::string::FromUtf8(action_label_it->second),
         .callback =
-            [](core::AppState& state) { ui::webview_window::activate_window(state, L"/about"); },
+            [&app_state] { ui::webview_window::activate_window(app_state, L"/about"); },
     };
   } else {
     Logger().warn("Skip update notification action: view action text is missing");
@@ -81,7 +84,7 @@ auto is_update_needed(const std::string& current_version, const std::string& lat
   auto v1_parts = split_version(latest_version);
   auto v2_parts = split_version(current_version);
 
-  for (size_t i = 0; i < 4; ++i) {
+  for (std::size_t i = 0; i < 4; ++i) {
     if (v1_parts[i] > v2_parts[i]) {
       return true;
     } else if (v1_parts[i] < v2_parts[i]) {
@@ -134,7 +137,7 @@ auto parse_sha256sum_for_filename(const std::string& checksums_content, const st
       continue;
     }
 
-    size_t hash_end = 0;
+    std::size_t hash_end = 0;
     while (hash_end < trimmed_line.size() &&
            !std::isspace(static_cast<unsigned char>(trimmed_line[hash_end]))) {
       hash_end++;

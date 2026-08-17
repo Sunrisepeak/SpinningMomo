@@ -1,20 +1,21 @@
-#include "ui/notification_window/render_context.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
+#include "vendor/wil.hpp"
 #include "vendor/windows/d2d1_3.hpp"
 #include "vendor/windows/d3d11.hpp"
 #include "vendor/windows/dcomp.hpp"
 #include "vendor/windows/dwrite_3.hpp"
 #include "vendor/windows/dxgi1_2.hpp"
 
-#include "core/state/app_state.hpp"
-#include "ui/notification_window/state.hpp"
-#include "ui/notification_window/types.hpp"
-#include "ui/shared_render_resources/shared_render_resources.hpp"
-#include "ui/shared_render_resources/state.hpp"
+module sm.ui.notification_window.render_context;
+
+import std;
+import sm.core.state.app_state;
+import sm.ui.notification_window.state;
+import sm.ui.notification_window.types;
+import sm.ui.shared_render_resources.shared_render_resources;
+import sm.ui.shared_render_resources.state;
 
 namespace ui::notification_window::render_context {
 

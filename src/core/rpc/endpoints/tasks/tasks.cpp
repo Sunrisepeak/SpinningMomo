@@ -1,14 +1,14 @@
-#include "core/rpc/endpoints/tasks/tasks.hpp"
+module sm.core.rpc.endpoints.tasks.tasks;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.state.app_state;
+import sm.core.tasks.state;
+import sm.core.tasks.tasks;
 
-#include "vendor/asio.hpp"
-
-#include "core/rpc/rpc.hpp"
-#include "core/rpc/state.hpp"
-#include "core/rpc/types.hpp"
-#include "core/state/app_state.hpp"
-#include "core/tasks/tasks.hpp"
+import asio;
+import sm.core.rpc.rpc;
+import sm.core.rpc.state;
+import sm.core.rpc.types;
 
 namespace core::rpc::endpoints::tasks {
 

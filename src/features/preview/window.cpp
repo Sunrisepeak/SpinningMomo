@@ -1,22 +1,25 @@
-#include "features/preview/window.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 #include "vendor/windows/dwmapi.hpp"
 #include "vendor/windows/windowsx.hpp"
 
-#include "core/state/app_state.hpp"
-#include "core/state/runtime_info.hpp"
-#include "features/preview/capture.hpp"
-#include "features/preview/interaction.hpp"
-#include "features/preview/rendering.hpp"
-#include "features/preview/state.hpp"
-#include "features/preview/types.hpp"
-#include "utils/display/display.hpp"
-#include "utils/graphics/capture.hpp"
-#include "utils/graphics/d3d.hpp"
-#include "utils/logger/logger.hpp"
+module sm.features.preview.window;
+
+import std;
+import sm.core.state.app_state;
+import sm.core.state.runtime_info;
+import sm.features.preview.capture;
+import sm.features.preview.interaction;
+import sm.features.preview.rendering;
+import sm.features.preview.state;
+import sm.features.preview.types;
+import sm.utils.graphics.capture;
+import sm.utils.graphics.d3d;
+
+import sm.utils.logger.logger;
+
+import sm.utils.display.display;
 
 namespace features::preview::window {
 

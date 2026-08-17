@@ -1,24 +1,26 @@
-#include "features/gallery/watcher/notify.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 
-#include "core/state/app_state.hpp"
-#include "features/gallery/asset/repository.hpp"
-#include "features/gallery/folder/repository.hpp"
-#include "features/gallery/ignore/service.hpp"
-#include "features/gallery/scanner/common.hpp"
-#include "features/gallery/state.hpp"
-#include "features/gallery/types.hpp"
-#include "features/gallery/watcher/sync.hpp"
-#include "features/gallery/watcher/watcher.hpp"
-#include "utils/logger/logger.hpp"
-#include "utils/path/path.hpp"
+module sm.features.gallery.watcher.notify;
+
+import std;
+import sm.core.state.app_state;
+import sm.features.gallery.asset.repository;
+import sm.features.gallery.folder.repository;
+import sm.features.gallery.ignore.service;
+import sm.features.gallery.scanner.common;
+import sm.features.gallery.state;
+import sm.features.gallery.types;
+import sm.features.gallery.watcher.sync;
+import sm.features.gallery.watcher.watcher;
+
+import sm.utils.logger.logger;
+import sm.utils.path.path;
 
 namespace features::gallery::watcher::notify {
 
-constexpr size_t kWatchBufferSize = 64 * 1024;
+constexpr std::size_t kWatchBufferSize = 64 * 1024;
 
 // Extended 能区分文件和目录；Basic 缺乏属性时保留 Unknown，不伪装成文件。
 enum class NotificationEntryType {
@@ -163,10 +165,10 @@ auto parse_extended_notification_buffer(const std::filesystem::path& root_path,
   std::vector<ParsedNotification> parsed_notifications;
 
   // 通知是链表结构，按 NextEntryOffset 一条条解析。
-  size_t offset = 0;
+  std::size_t offset = 0;
   while (offset < bytes_returned) {
     auto* info = reinterpret_cast<const FILE_NOTIFY_EXTENDED_INFORMATION*>(buffer + offset);
-    size_t filename_len = static_cast<size_t>(info->FileNameLength / sizeof(wchar_t));
+    std::size_t filename_len = static_cast<std::size_t>(info->FileNameLength / sizeof(wchar_t));
     std::wstring relative_name(info->FileName, filename_len);
 
     auto full_path = root_path / std::filesystem::path(relative_name);
@@ -199,10 +201,10 @@ auto parse_basic_notification_buffer(const std::filesystem::path& root_path,
     -> std::vector<ParsedNotification> {
   std::vector<ParsedNotification> parsed_notifications;
 
-  size_t offset = 0;
+  std::size_t offset = 0;
   while (offset < bytes_returned) {
     auto* info = reinterpret_cast<const FILE_NOTIFY_INFORMATION*>(buffer + offset);
-    size_t filename_len = static_cast<size_t>(info->FileNameLength / sizeof(wchar_t));
+    std::size_t filename_len = static_cast<std::size_t>(info->FileNameLength / sizeof(wchar_t));
     std::wstring relative_name(info->FileName, filename_len);
 
     auto full_path = root_path / std::filesystem::path(relative_name);

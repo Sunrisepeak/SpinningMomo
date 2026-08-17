@@ -27,7 +27,7 @@ Gallery 负责把文件系统中的照片和视频维护为可查询的图库索
 - `asset/`、`folder/`、`tag/`、`color/`：索引查询与各自的数据操作。
 - `asset/thumbnail.cpp`：缩略图生成、修复和缓存对账。
 - `static_resolver.cpp`：缩略图与原图的静态访问入口。
-- `types.hpp`：跨扫描器、watcher、RPC 和扩展共享的稳定语义。
+- `types.cppm`：跨扫描器、watcher、RPC 和扩展共享的稳定语义。
 
 ## 资产身份
 

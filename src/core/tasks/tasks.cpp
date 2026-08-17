@@ -1,13 +1,12 @@
-#include "core/tasks/tasks.hpp"
+module sm.core.tasks.tasks;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.rpc.notification_hub;
+import sm.core.state.app_state;
+import sm.core.tasks.state;
 
-#include "vendor/rfl.hpp"
-
-#include "core/rpc/notification_hub.hpp"
-#include "core/state/app_state.hpp"
-#include "core/tasks/state.hpp"
-#include "utils/logger/logger.hpp"
+import sm.vendor.rfl;
+import sm.utils.logger.logger;
 
 namespace core::tasks {
 

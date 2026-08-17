@@ -1,0 +1,167 @@
+name: xmake-windows
+
+# The SECOND build of the same source tree.
+#
+# SpinningMomo builds under two toolchains-of-record: mcpp (mcpp-windows.yml) and
+# xmake + vcpkg (this file). That is not redundancy — the two disagree about
+# enough to be a real check on the code rather than on one build's quirks:
+#
+#   * dependencies come from the mcpp index vs. from vcpkg;
+#   * the module `asio` comes from a package vs. from a module unit compiled
+#     in-tree (third_party/asio-module/, kept in step by
+#     scripts/check-asio-module-parity.py);
+#   * the driver is `clang++` targeting the MSVC ABI vs. `clang-cl`, so the flag
+#     dialect is GNU on one side and MSVC on the other;
+#   * `.rc` goes through a prebuild script vs. through xmake's own rule.
+#
+# Anything that passes both is a property of the SOURCE. Anything that passes one
+# is a property of that build, and worth knowing which.
+
+on:
+  push:
+    branches: ['mcpp/**']
+  workflow_dispatch:
+
+concurrency:
+  group: xmake-windows-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: SpinningMomo (xmake)
+    runs-on: windows-latest
+    timeout-minutes: 90
+    env:
+      # Keep xmake/vcpkg caches inside the workspace: actions/cache restores
+      # reliably there, and the runner's %LOCALAPPDATA% does not survive.
+      XMAKE_GLOBALDIR: ${{ github.workspace }}\.xmake-global
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Fetch header-only third-party (dkm)
+        run: node scripts/fetch-third-party.js
+
+      - name: Setup xmake
+        uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: latest
+
+      # Three upstream defects this project has to route around; each script
+      # patches the INSTALLED xmake in place and says what and why. Each also
+      # detects the upstream fix by SUBSTANCE and exits cleanly, so none of them
+      # turns into a wall the day xmake fixes it.
+      - name: Patch xmake (vcpkg manifest mode, xmake-io/xmake#7554)
+        run: node scripts/patch-xmake-7554.js
+
+      - name: Patch xmake (clang-cl C++23 selection)
+        run: node scripts/patch-xmake-clang-cl-cxx23.js
+
+      - name: Patch xmake (std module build order)
+        run: node scripts/patch-xmake-std-module-order.js
+
+      - name: Cache xmake/vcpkg dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            .xmake
+            .xmake-global
+            build/.packages/v
+          key: ${{ runner.os }}-xmake-vcpkg-${{ hashFiles('xmake.lua', 'xmake-requires.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-xmake-vcpkg-
+
+      - name: Ensure cache directories exist
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path ".xmake" | Out-Null
+          New-Item -ItemType Directory -Force -Path ".xmake-global" | Out-Null
+          New-Item -ItemType Directory -Force -Path "build/.packages/v" | Out-Null
+
+      # The xmake side's `asio` module unit is a copy of what the mcpp index
+      # package generates. Two copies of one interface drift silently, so the
+      # diff runs BEFORE the build — a mismatch is a source problem, and finding
+      # it after a 40-minute compile teaches nothing extra.
+      - name: Check asio module parity with the index descriptor
+        shell: bash
+        run: python3 scripts/check-asio-module-parity.py
+
+      - name: Check C++ architecture invariants
+        shell: bash
+        run: python3 scripts/check-cpp-architecture.py
+
+      - name: Check the module graph is acyclic
+        shell: bash
+        run: python3 scripts/check-module-graph.py
+
+      - name: Check both builds compile the same source under the same contract
+        shell: bash
+        run: python3 scripts/check-build-parity.py
+
+      # clang-cl, matching xmake.lua's own default and the LLVM/MSVC-ABI
+      # toolchain the mcpp side uses. Native cl.exe is NOT usable here: it cannot
+      # round-trip asio's `io_context::service` through a BMI, which is exactly
+      # what probes/p6-asio-module (msvc) records on the other workflow.
+      - name: Configure (release, clang-cl)
+        run: xmake f -m release --toolchain=clang-cl -y -v
+
+      # KNOWN RED, and deliberately not papered over.
+      #
+      # xmake 3.1.0 cannot produce a loadable `std` module BMI under clang-cl:
+      # the job is considered finished 4.4 seconds after it is dispatched, and
+      # the first unit that says `import std;` then fails with `module 'std' not
+      # found` — a different unit each round, always one whose ONLY module
+      # dependency is `std`.
+      #
+      # Six approaches were tried and excluded: run it twice, add explicit job
+      # ordering edges (they land — the patch prints "445 edges added" — and the
+      # barrier is visible in the timestamps), add MSVC's std.ixx as an ordinary
+      # project module unit, `--files` it on its own first, retry three times,
+      # and turn off two-phase compilation plus module reuse. None of them
+      # changes the outcome, which is what places the defect in the COMPLETION
+      # SIGNAL rather than in dependency order.
+      #
+      # The full evidence chain is in
+      # .agents/docs/2026-08-18-migration-report.md §6.1. Marking this green
+      # would be lying about a build that does not build, so it stays red until
+      # xmake fixes it — mcpp-windows.yml is the build of record meanwhile.
+      - name: Build
+        run: xmake build -y -v
+
+      # The backend regression suite (doctest). It is a separate target with
+      # `set_default(false)`, so `xmake build` does not touch it — and until now
+      # neither did CI, which meant the one place in this repository that asserts
+      # RUNTIME behaviour was never executed. It is cheap here: two modules plus
+      # their implementation units and three test TUs, on top of an already-warm
+      # package cache.
+      #
+      # It also checks something the main build cannot. `time.cppm` and
+      # `path.cppm` are compiled again, in a target with a smaller macro set and
+      # no asio anywhere — so if either had come to depend on something it never
+      # names, this is where that shows up.
+      - name: Build and run the backend tests
+        run: |
+          xmake build -y SpinningMomoTests
+          xmake test -v
+
+      - name: Report artefact
+        shell: bash
+        run: |
+          set -euo pipefail
+          exe=$(find build -name 'SpinningMomo.exe' | head -1)
+          test -n "$exe" || { echo "FAIL: no SpinningMomo.exe"; exit 1; }
+          ls -la "$exe"
+          powershell -NoProfile -Command \
+            "(Get-Item '$(cygpath -w "$exe")').VersionInfo | Format-List ProductName,ProductVersion,FileVersion"
+
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: SpinningMomo-xmake
+          path: build/**/SpinningMomo.exe
+          if-no-files-found: error

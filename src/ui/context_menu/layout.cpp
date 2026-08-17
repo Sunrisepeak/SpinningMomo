@@ -1,15 +1,16 @@
-#include "ui/context_menu/layout.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
+#include "vendor/wil.hpp"
 #include "vendor/windows/dwrite_3.hpp"
 
-#include "core/state/app_state.hpp"
-#include "ui/context_menu/state.hpp"
-#include "ui/context_menu/types.hpp"
-#include "ui/shared_render_resources/state.hpp"
+module sm.ui.context_menu.layout;
+
+import std;
+import sm.core.state.app_state;
+import sm.ui.context_menu.state;
+import sm.ui.context_menu.types;
+import sm.ui.shared_render_resources.state;
 
 namespace ui::context_menu::layout {
 
@@ -81,7 +82,7 @@ auto calculate_menu_position(const core::AppState& state, const POINT& cursor_po
 auto get_menu_item_at_point(const core::AppState& state, const POINT& pt) -> int {
   const auto& menu_state = *state.context_menu;
   int current_y = menu_state.layout.padding;
-  for (size_t i = 0; i < menu_state.items.size(); ++i) {
+  for (std::size_t i = 0; i < menu_state.items.size(); ++i) {
     const auto& item = menu_state.items[i];
     int item_height = (item.type == MenuItemType::Separator) ? menu_state.layout.separator_height
                                                              : menu_state.layout.item_height;

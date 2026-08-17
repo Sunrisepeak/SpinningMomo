@@ -1,15 +1,13 @@
-#include "extensions/infinity_nikki/world_area.hpp"
+module sm.extensions.infinity_nikki.world_area;
 
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
-#include "vendor/rfl.hpp"
-
-#include "core/http_client/http_client.hpp"
-#include "core/http_client/types.hpp"
-#include "core/state/app_state.hpp"
-#include "extensions/infinity_nikki/types.hpp"
-#include "utils/logger/logger.hpp"
+import std;
+import sm.core.state.app_state;
+import sm.extensions.infinity_nikki.types;
+import sm.core.http_client.types;
+import sm.vendor.rfl;
+import sm.utils.logger.logger;
+import asio;
+import sm.core.http_client.http_client;
 
 namespace extensions::infinity_nikki::world_area {
 

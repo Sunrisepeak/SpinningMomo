@@ -1,15 +1,18 @@
-#include "features/letterbox/letterbox.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 #include "vendor/windows/dwmapi.hpp"
 
-#include "core/state/app_state.hpp"
-#include "features/letterbox/state.hpp"
-#include "ui/floating_window/state.hpp"
-#include "utils/display/display.hpp"
-#include "utils/logger/logger.hpp"
+module sm.features.letterbox.letterbox;
+
+import std;
+import sm.core.state.app_state;
+import sm.features.letterbox.state;
+import sm.ui.floating_window.state;
+
+import sm.utils.logger.logger;
+
+import sm.utils.display.display;
 
 namespace features::letterbox {
 

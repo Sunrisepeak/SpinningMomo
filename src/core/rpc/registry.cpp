@@ -1,22 +1,22 @@
-#include "core/rpc/registry.hpp"
+module sm.core.rpc.registry;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.rpc.endpoints.backup.backup;
+import sm.core.rpc.endpoints.clipboard.clipboard;
+import sm.core.rpc.endpoints.dialog.dialog;
+import sm.core.rpc.endpoints.extensions.extensions;
+import sm.core.rpc.endpoints.file.file;
+import sm.core.rpc.endpoints.gallery.gallery;
+import sm.core.rpc.endpoints.registry.registry;
+import sm.core.rpc.endpoints.runtime_info.runtime_info;
+import sm.core.rpc.endpoints.settings.settings;
+import sm.core.rpc.endpoints.tasks.tasks;
+import sm.core.rpc.endpoints.update.update;
+import sm.core.rpc.endpoints.webview.webview;
+import sm.core.rpc.endpoints.window_control.window_control;
+import sm.core.state.app_state;
 
-#include "core/rpc/endpoints/backup/backup.hpp"
-#include "core/rpc/endpoints/clipboard/clipboard.hpp"
-#include "core/rpc/endpoints/dialog/dialog.hpp"
-#include "core/rpc/endpoints/extensions/extensions.hpp"
-#include "core/rpc/endpoints/file/file.hpp"
-#include "core/rpc/endpoints/gallery/gallery.hpp"
-#include "core/rpc/endpoints/registry/registry.hpp"
-#include "core/rpc/endpoints/runtime_info/runtime_info.hpp"
-#include "core/rpc/endpoints/settings/settings.hpp"
-#include "core/rpc/endpoints/tasks/tasks.hpp"
-#include "core/rpc/endpoints/update/update.hpp"
-#include "core/rpc/endpoints/webview/webview.hpp"
-#include "core/rpc/endpoints/window_control/window_control.hpp"
-#include "core/state/app_state.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 namespace core::rpc::registry {
 

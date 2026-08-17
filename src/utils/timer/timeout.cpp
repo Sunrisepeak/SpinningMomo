@@ -1,10 +1,12 @@
-#include "utils/timer/timeout.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 
-#include "utils/logger/logger.hpp"
+module sm.utils.timer.timeout;
+
+import std;
+
+import sm.utils.logger.logger;
 
 namespace utils::timeout {
 

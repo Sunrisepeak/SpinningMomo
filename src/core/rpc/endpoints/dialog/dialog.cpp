@@ -1,22 +1,24 @@
-#include "core/rpc/endpoints/dialog/dialog.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
 #include "vendor/windows.hpp"
 
-#include "core/dialog_service/dialog_service.hpp"
-#include "core/rpc/rpc.hpp"
-#include "core/rpc/state.hpp"
-#include "core/rpc/types.hpp"
-#include "core/state/app_state.hpp"
-#include "core/webview/state.hpp"
-#include "utils/dialog/dialog.hpp"
+module sm.core.rpc.endpoints.dialog.dialog;
+
+import std;
+import sm.core.dialog_service.dialog_service;
+import sm.core.state.app_state;
+import sm.core.webview.state;
+import sm.utils.dialog.dialog;
+
+import asio;
+import sm.core.rpc.rpc;
+import sm.core.rpc.state;
+import sm.core.rpc.types;
 
 namespace core::rpc::endpoints::dialog {
 
 // 获取父窗口句柄的辅助函数
-auto get_parent_window(core::AppState& app_state, int8_t mode) -> HWND {
+auto get_parent_window(core::AppState& app_state, std::int8_t mode) -> HWND {
   switch (mode) {
     case 0:  // 无父窗口
       return nullptr;

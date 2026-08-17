@@ -1,6 +1,4 @@
-#include "ui/context_menu/context_menu.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 #include "vendor/windows/d2d1.hpp"
@@ -8,26 +6,31 @@
 #include "vendor/windows/dwrite.hpp"
 #include "vendor/windows/wrl/client.hpp"
 
-#include "core/commands/registry.hpp"
-#include "core/commands/types.hpp"
-#include "core/events/events.hpp"
-#include "core/i18n/state.hpp"
-#include "core/i18n/types.hpp"
-#include "core/state/app_state.hpp"
-#include "features/settings/menu.hpp"
-#include "features/window_control/window_control.hpp"
-#include "ui/context_menu/interaction.hpp"
-#include "ui/context_menu/layout.hpp"
-#include "ui/context_menu/message_handler.hpp"
-#include "ui/context_menu/painter.hpp"
-#include "ui/context_menu/render_context.hpp"
-#include "ui/context_menu/state.hpp"
-#include "ui/context_menu/types.hpp"
-#include "ui/floating_window/events.hpp"
-#include "ui/floating_window/state.hpp"
-#include "ui/floating_window/types.hpp"
-#include "utils/logger/logger.hpp"
-#include "utils/string/string.hpp"
+module sm.ui.context_menu.context_menu;
+
+import std;
+import sm.core.commands.registry;
+import sm.core.commands.types;
+import sm.core.events.events;
+import sm.core.i18n.state;
+import sm.core.i18n.types;
+import sm.core.state.app_state;
+import sm.features.settings.menu;
+import sm.features.window_control.types;
+import sm.features.window_control.window_control;
+import sm.ui.context_menu.interaction;
+import sm.ui.context_menu.layout;
+import sm.ui.context_menu.message_handler;
+import sm.ui.context_menu.painter;
+import sm.ui.context_menu.render_context;
+import sm.ui.context_menu.state;
+import sm.ui.context_menu.types;
+import sm.ui.floating_window.events;
+import sm.ui.floating_window.state;
+import sm.ui.floating_window.types;
+
+import sm.utils.logger.logger;
+import sm.utils.string.string;
 
 namespace ui::context_menu {
 

@@ -1,16 +1,19 @@
-#include "ui/context_menu/painter.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
+#include "vendor/windows/d2d1.hpp"
 #include "vendor/windows/d2d1_3.hpp"
 
-#include "core/state/app_state.hpp"
-#include "ui/context_menu/interaction.hpp"
-#include "ui/context_menu/render_context.hpp"
-#include "ui/context_menu/state.hpp"
-#include "ui/context_menu/types.hpp"
-#include "utils/logger/logger.hpp"
+module sm.ui.context_menu.painter;
+
+import std;
+import sm.core.state.app_state;
+import sm.ui.context_menu.interaction;
+import sm.ui.context_menu.render_context;
+import sm.ui.context_menu.state;
+import sm.ui.context_menu.types;
+
+import sm.utils.logger.logger;
 
 namespace ui::context_menu::painter {
 
@@ -138,7 +141,7 @@ auto draw_menu_items(core::AppState& state, const D2D1_RECT_F& rect) -> void {
   const auto& layout = menu_state.layout;
   const int highlight_index = ui::context_menu::interaction::get_main_highlight_index(state);
   float current_y = rect.top + static_cast<float>(layout.padding);
-  for (size_t i = 0; i < menu_state.items.size(); ++i) {
+  for (std::size_t i = 0; i < menu_state.items.size(); ++i) {
     const auto& item = menu_state.items[i];
     const bool is_hovered = static_cast<int>(i) == highlight_index;
     if (item.type == MenuItemType::Separator) {
@@ -252,7 +255,7 @@ auto draw_submenu_items(core::AppState& state, const D2D1_RECT_F& rect) -> void 
   const auto& layout = menu_state.layout;
   const auto& current_submenu = menu_state.get_current_submenu();
   float current_y = rect.top + static_cast<float>(layout.padding);
-  for (size_t i = 0; i < current_submenu.size(); ++i) {
+  for (std::size_t i = 0; i < current_submenu.size(); ++i) {
     const auto& item = current_submenu[i];
     const bool is_hovered = static_cast<int>(i) == menu_state.interaction.submenu_hover_index;
     if (item.type == MenuItemType::Separator) {

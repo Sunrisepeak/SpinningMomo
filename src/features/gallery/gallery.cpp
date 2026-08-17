@@ -1,24 +1,27 @@
-#include "features/gallery/gallery.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
 #include "vendor/windows/mfapi.hpp"
 
-#include "core/async/async.hpp"
-#include "core/rpc/notification_hub.hpp"
-#include "core/state/app_state.hpp"
-#include "features/gallery/asset/thumbnail.hpp"
-#include "features/gallery/folder/service.hpp"
-#include "features/gallery/root_availability.hpp"
-#include "features/gallery/scanner/common.hpp"
-#include "features/gallery/scanner/scanner.hpp"
-#include "features/gallery/state.hpp"
-#include "features/gallery/static_resolver.hpp"
-#include "features/gallery/types.hpp"
-#include "features/gallery/watcher/watcher.hpp"
-#include "utils/logger/logger.hpp"
-#include "utils/path/path.hpp"
+module sm.features.gallery.gallery;
+
+import std;
+import sm.core.rpc.notification_hub;
+import sm.core.state.app_state;
+import sm.features.gallery.asset.thumbnail;
+import sm.features.gallery.folder.service;
+import sm.features.gallery.root_availability;
+import sm.features.gallery.scanner.common;
+import sm.features.gallery.scanner.scanner;
+import sm.features.gallery.state;
+import sm.features.gallery.static_resolver;
+import sm.features.gallery.types;
+import sm.features.gallery.watcher.watcher;
+
+import sm.utils.logger.logger;
+
+import asio;
+import sm.core.async.async;
+import sm.utils.path.path;
 
 namespace features::gallery {
 

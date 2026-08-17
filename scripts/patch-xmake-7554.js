@@ -95,9 +95,22 @@ function main() {
   }
 
   if (!normalized.includes(BEFORE)) {
+    // The upstream fix landed (xmake >= 3.1.0), in a shape that is not this
+    // patch's AFTER text. Check for the SUBSTANCE rather than the spelling:
+    // the bug was that manifest mode still passed a package name to
+    // `vcpkg depend-info`, so a file that mentions both is aware of the
+    // distinction and needs nothing from us.
+    if (normalized.includes("depend-info") && normalized.includes("manifest_mode")) {
+      console.log(
+        `xmake#7554 already fixed upstream (manifest mode is handled): ${targetFile}\n` +
+        "Nothing to patch. Delete this script once the pinned xmake floor is >= that release.",
+      );
+      return;
+    }
     fail([
       `failed to match xmake#7554 patch rules: ${targetFile}`,
-      "This usually means the installed xmake version has changed, or already includes a different upstream fix.",
+      "The installed xmake changed shape and does not obviously contain the fix either.",
+      "Read the file and decide: update BEFORE/AFTER, or drop this script.",
     ].join("\n"));
   }
 

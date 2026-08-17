@@ -1,6 +1,6 @@
-#include "features/photography/long_exposure.hpp"
+module sm.features.photography.long_exposure;
 
-#include "vendor/std.hpp"
+import std;
 
 namespace features::photography::long_exposure {
 
