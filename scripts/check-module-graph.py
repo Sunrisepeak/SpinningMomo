@@ -32,7 +32,20 @@ closed:
 The header world had hidden it behind include guards. See the note in
 src/core/notifications/types.cppm for how it was cut.
 
-    check-module-graph.py            # verify (exit 1 on a cycle)
+It also checks the other half of the same fact: that every project namespace a
+unit NAMES is provided by a module that unit can actually see. A module import
+is not transitive — `import A;` where A does `import B;` does NOT make B's
+exports visible, only `export import B;` does. In the header world a transitive
+`#include` did that job silently, so the dependency was never written down:
+
+    features/gallery/watcher/watcher.cpp names features::gallery::recovery::
+    StartupRecoveryPlan while importing only …recovery.service
+
+which compiles for exactly as long as something else happens to pull the types
+module in. Each instance of this costs a 40-minute Windows round to discover, so
+it is worth a second of Linux.
+
+    check-module-graph.py            # verify (exit 1 on a cycle or a missing import)
     check-module-graph.py --graph    # print the interface DAG, deepest first
 """
 
@@ -53,6 +66,15 @@ IMPORT = re.compile(r"^(?:export\s+)?import\s+([\w.:]+)\s*;", re.MULTILINE)
 
 # Provided by the toolchain or by a package, not by this tree.
 EXTERNAL = {"std", "std.compat", "asio"}
+
+EXPORT_MODULE_DECL = re.compile(r"^export\s+module\s+([\w.]+)\s*;", re.MULTILINE)
+REEXPORT = re.compile(r"^export\s+import\s+([\w.]+)\s*;", re.MULTILINE)
+PLAIN_IMPORT = re.compile(r"^import\s+([\w.]+)\s*;", re.MULTILINE)
+EXPORT_NAMESPACE = re.compile(r"^export namespace ([\w:]+)", re.MULTILINE)
+NAMESPACE_DECL = re.compile(r"^\s*(?:export\s+)?namespace\s+([\w:]+)", re.MULTILINE)
+# A qualified use of one of the project's own top-level namespaces.
+PROJECT_USE = re.compile(
+    r"(?<![\w:])((?:core|features|ui|utils|extensions)(?:::\w+)*)::\w")
 
 
 class Unit:
@@ -156,6 +178,60 @@ def interface_cycles(units: list[Unit], producer: dict[str, int]) -> list[list[s
     return found
 
 
+def missing_imports(units: list[Unit]) -> list[str]:
+    """A unit names a project namespace no module it can see exports."""
+    provider_of: dict[str, set[str]] = defaultdict(set)
+    reexports: dict[str, set[str]] = defaultdict(set)
+    for u in units:
+        text = u.path.read_text(encoding="utf-8", errors="replace")
+        m = EXPORT_MODULE_DECL.search(text)
+        if not m:
+            continue
+        for ns in EXPORT_NAMESPACE.findall(text):
+            provider_of[ns].add(m.group(1))
+        reexports[m.group(1)] |= set(REEXPORT.findall(text))
+
+    def visible(seeds: set[str]) -> set[str]:
+        seen: set[str] = set()
+        stack = list(seeds)
+        while stack:
+            mod = stack.pop()
+            if mod in seen:
+                continue
+            seen.add(mod)
+            stack.extend(reexports.get(mod, ()))
+        return seen
+
+    out: list[str] = []
+    for u in units:
+        text = u.path.read_text(encoding="utf-8", errors="replace")
+        lines = text.splitlines()
+        own = {u.provides, u.implements} - {None}
+        reach = visible(set(PLAIN_IMPORT.findall(text))
+                        | set(REEXPORT.findall(text)) | own)          # type: ignore[arg-type]
+        own_ns = set(NAMESPACE_DECL.findall(text))
+        reported: set[str] = set()
+        for m in PROJECT_USE.finditer(text):
+            ns = m.group(1)
+            if ns in reported:
+                continue
+            line_no = text.count("\n", 0, m.start())
+            line = lines[line_no] if line_no < len(lines) else ""
+            if re.match(r"^\s*(export\s+)?namespace\b", line):
+                continue                                   # a declaration, not a use
+            if line.lstrip().startswith(("//", "*", "/*")):
+                continue                                   # a comment
+            if any(ns == o or o.startswith(ns + "::") or ns.startswith(o + "::")
+                   for o in own_ns):
+                continue                                   # our own subtree
+            providers = provider_of.get(ns)
+            if providers and not (providers & reach):
+                reported.add(ns)
+                out.append(f"{u.label}:{line_no + 1}: names `{ns}::` but imports no module "
+                           f"that exports it (try: {sorted(providers)[0]})")
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--graph", action="store_true", help="print the interface DAG")
@@ -169,6 +245,8 @@ def main() -> int:
 
     for cyc in interface_cycles(units, producer):
         problems.append("interface cycle: " + " -> ".join(cyc))
+
+    problems += missing_imports(units)
 
     stuck = topo(len(units), edges)
     if stuck:

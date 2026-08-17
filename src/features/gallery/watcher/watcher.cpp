@@ -11,6 +11,7 @@ import sm.features.gallery.asset.repository;
 import sm.features.gallery.asset.thumbnail;
 import sm.features.gallery.folder.repository;
 import sm.features.gallery.recovery.service;
+import sm.features.gallery.recovery.types;
 import sm.features.gallery.root_availability;
 import sm.features.gallery.state;
 import sm.features.gallery.types;
