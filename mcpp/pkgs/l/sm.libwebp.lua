@@ -1,202 +1,170 @@
--- libwebp — WebP encode path used by utils::image and the screenshot pipeline
--- (src/vendor/webp.hpp pulls <webp/encode.h> and <webp/types.h>).
+-- TEMPORARY COPY of `compat.libwebp`, pending mcpplibs/mcpp-index#214.
 --
--- Adapted from mbun-pub's mbun.libwebp: same upstream tarball, same source
--- list, re-identified into this project's `sm` namespace because mbun's index
--- is a local path on one machine and CI has no access to it. The 118-entry
--- source list is that descriptor's, which is already proven to build on
--- Windows/MSVC.
--- mbun.libwebp — WebP 编解码库（libwebp + 内置 sharpyuv），官方 mcpp-index 未
--- 收录，收入 mbun 本地索引。
+-- Identical to the upstream descriptor except for the namespace. Do not edit it
+-- here — edit it upstream and re-copy, or the project stops testing what it will
+-- ship against. This file disappears when #214 lands and the root mcpp.toml
+-- moves libwebp to `[dependencies.compat]`.
 --
--- 选型：与 bun 对齐，从上游 release 源码 tarball 编译，而非链接系统
--- libwebp-dev（后者会把 /usr/lib 引入链接搜索路径，遮蔽 bun-webkit 自带的
--- ICU 75，导致 app/cli 链接期 utext_setup_75 等符号未定义）。范式同
--- mbun.zlib/zstd/brotli/sqlite3：下载源码 tarball + 编译静态 lib，跨平台
--- 可复现、不依赖 host 第三方库。
+-- The previous project-local version listed all 117 sources with a hardcoded
+-- `libwebp-1.5.0/` prefix and left SSE4.1 on. That was verified under cl.exe,
+-- where every intrinsic is available without a target flag. It is not true of
+-- clang, which this project now uses:
 --
--- 版本 1.5.0（2024-12，webmproject/libwebp v1.5.0）。编译 dec+enc+dsp+utils
--- + sharpyuv 全量 .c 打成单一静态库 `webp`（sharpyuv 归并进同一 archive，
--- 编码器 picture_csp_enc 依赖之）。dsp 的 SSE2/SSE41/NEON/MIPS/MSA 变体各文件
--- 由 src/dsp/cpu.h 依 __SSE2__/__SSE4_1__/__aarch64__ 等编译器内建宏自门控：
--- 不匹配当前 target 的变体编译为空 TU，运行期 CPU 检测走标量回退，功能不减。
--- 未定义 HAVE_CONFIG_H，故 SSE2（x86-64 基线）/NEON（aarch64 基线）自动启用；
--- SSE4.1 需 per-file -msse4.1，本包不加（保持产物不强制 SSE4.1 CPU），对应
--- dsp 走 SSE2/标量路径 —— DEFERRED：SSE4.1 dsp 优化路径。
+--   always_inline function '_mm_shuffle_epi8' requires target feature 'ssse3',
+--   but would be inlined into function 'VP8PlanarTo24b_SSE41' ...
 --
--- demux/mux（WebPDemux*/WebPMux* 动图/元数据）未纳入，与 webp_native.cppm 的
--- DEFERRED 一致（Image 管线只跑 WebPDecodeRGBA / WebPEncode(Lossless)RGBA 的
--- 扁平 RGBA 往返）。
+-- libwebp — the WebP image codec, encode + decode, built from upstream
+-- source rather than linked against a host libwebp.
 --
--- 内部源码用 root 相对包含（#include "src/...", "sharpyuv/..."），故 include
--- root 目录；消费者 include <webp/decode.h> 需 src 目录 —— 两个 include_dirs
--- 都随包传播给依赖方。
+-- Shape A (C-source compat): a consumer writes `#include <webp/encode.h>` /
+-- `<webp/decode.h>` and links one lib.
+--
+-- WHAT IS IN THE LIB. dec + enc + dsp + utils + sharpyuv, as five directory
+-- globs. sharpyuv is inside the SAME archive rather than a package of its own
+-- because the encoder's picture_csp_enc.c calls into it directly — upstream's
+-- CMake builds it as a separate target only to reuse it elsewhere, and there is
+-- nothing else here to reuse it.
+--
+-- WHAT IS NOT. `src/demux` and `src/mux` (animation and metadata containers:
+-- WebPDemux* / WebPMux*) are separate upstream libraries with their own public
+-- headers; they belong in a feature, and nothing asks for them yet.
+-- `examples/`, `extras/`, `imageio/` and `swig/` are tools and bindings.
+--
+-- SIMD, and the one thing this package has to decide. Every
+-- `src/dsp/*_sse2.c`, `*_sse41.c`, `*_neon.c`, `*_mips*.c`, `*_msa.c` variant is
+-- compiled unconditionally; which of them produce CODE is decided by
+-- `src/dsp/cpu.h`, and the ones that do not fall back to a `WEBP_DSP_INIT_STUB`
+-- so the link stays complete either way. That is what makes the directory glob
+-- safe and why there are no per-file flags here.
+--
+-- SSE4.1 IS TURNED OFF, on purpose. Its gate is
+--
+--     #if (defined(__SSE4_1__) || defined(WEBP_MSC_SSE41)) && \
+--         (!defined(HAVE_CONFIG_H) || defined(WEBP_HAVE_SSE41))
+--
+-- and `WEBP_MSC_SSE41` keys off `_MSC_VER` alone. Every MSVC-ABI compiler
+-- defines that — including clang — but only cl.exe actually lets any intrinsic
+-- be used without a target flag. Under clang the SSE4.1 sources then fail with
+--
+--     always_inline function '_mm_shuffle_epi8' requires target feature 'ssse3',
+--     but would be inlined into function 'VP8L32bToPlanar_SSE41' that is
+--     compiled without support for 'ssse3'
+--
+-- Upstream's CMake answers this with a PER-FILE `-msse4.1`, which mcpp has no
+-- field for. Adding it package-wide instead would let clang emit SSE4.1 in the
+-- BASELINE translation units too, past libwebp's own runtime CPU dispatch — an
+-- artifact that SIGILLs on a pre-2008 CPU rather than falling back. So this
+-- package takes the other half of upstream's mechanism: `HAVE_CONFIG_H` plus a
+-- generated `src/webp/config.h` that names SSE2 and NEON and NOT SSE4.1.
+-- x86-64's baseline SSE2 and aarch64's baseline NEON both need no flag and stay
+-- on; SSE4.1's `VP8DspInitSSE41` becomes the stub and its call site disappears
+-- with `WEBP_HAVE_SSE41`.
+--
+-- INCLUDE ROOTS, both of them. The library's own sources include flat from the
+-- archive root (`#include "src/dsp/dsp.h"`, `"sharpyuv/sharpyuv.h"`), while
+-- consumers include `<webp/decode.h>` — which lives at `src/webp/decode.h`. Both
+-- roots therefore travel to dependents.
 package = {
     spec        = "1",
     namespace   = "sm",
     name        = "libwebp",
-    description = "libWebP: WebP image codec (decode + encode + sharpyuv), compiled from upstream source as bun bundles it",
-    licenses    = { "BSD-3-Clause" },
+    description = "WebP image codec: encode + decode + sharpyuv, built from upstream sources",
+    licenses    = {"BSD-3-Clause"},
     repo        = "https://github.com/webmproject/libwebp",
     type        = "package",
 
     xpm = {
         linux = {
             ["1.5.0"] = {
-                url    = "https://github.com/webmproject/libwebp/archive/refs/tags/v1.5.0.tar.gz",
+                url = {
+                    GLOBAL = "https://github.com/webmproject/libwebp/archive/refs/tags/v1.5.0.tar.gz",
+                    CN     = "https://gitcode.com/mcpp-res/libwebp/releases/download/1.5.0/libwebp-1.5.0.tar.gz",
+                },
                 sha256 = "668c9aba45565e24c27e17f7aaf7060a399f7f31dba6c97a044e1feacb930f37",
             },
         },
         macosx = {
             ["1.5.0"] = {
-                url    = "https://github.com/webmproject/libwebp/archive/refs/tags/v1.5.0.tar.gz",
+                url = {
+                    GLOBAL = "https://github.com/webmproject/libwebp/archive/refs/tags/v1.5.0.tar.gz",
+                    CN     = "https://gitcode.com/mcpp-res/libwebp/releases/download/1.5.0/libwebp-1.5.0.tar.gz",
+                },
                 sha256 = "668c9aba45565e24c27e17f7aaf7060a399f7f31dba6c97a044e1feacb930f37",
             },
         },
         windows = {
             ["1.5.0"] = {
-                url    = "https://github.com/webmproject/libwebp/archive/refs/tags/v1.5.0.tar.gz",
+                url = {
+                    GLOBAL = "https://github.com/webmproject/libwebp/archive/refs/tags/v1.5.0.tar.gz",
+                    CN     = "https://gitcode.com/mcpp-res/libwebp/releases/download/1.5.0/libwebp-1.5.0.tar.gz",
+                },
                 sha256 = "668c9aba45565e24c27e17f7aaf7060a399f7f31dba6c97a044e1feacb930f37",
             },
         },
     },
 
     mcpp = {
-        schema       = "0.1",
         language     = "c++23",
-        import_std   = false,  -- 纯 C，无 C++/import std
+        import_std   = false,
         c_standard   = "c11",
-        -- root：内部 src/... 与 sharpyuv/... 包含；src：消费者 <webp/*.h>。
-        include_dirs = { "libwebp-1.5.0", "libwebp-1.5.0/src" },
-        sources      = {
-            "libwebp-1.5.0/src/dec/alpha_dec.c",
-            "libwebp-1.5.0/src/dec/buffer_dec.c",
-            "libwebp-1.5.0/src/dec/frame_dec.c",
-            "libwebp-1.5.0/src/dec/idec_dec.c",
-            "libwebp-1.5.0/src/dec/io_dec.c",
-            "libwebp-1.5.0/src/dec/quant_dec.c",
-            "libwebp-1.5.0/src/dec/tree_dec.c",
-            "libwebp-1.5.0/src/dec/vp8_dec.c",
-            "libwebp-1.5.0/src/dec/vp8l_dec.c",
-            "libwebp-1.5.0/src/dec/webp_dec.c",
-            "libwebp-1.5.0/src/enc/alpha_enc.c",
-            "libwebp-1.5.0/src/enc/analysis_enc.c",
-            "libwebp-1.5.0/src/enc/backward_references_cost_enc.c",
-            "libwebp-1.5.0/src/enc/backward_references_enc.c",
-            "libwebp-1.5.0/src/enc/config_enc.c",
-            "libwebp-1.5.0/src/enc/cost_enc.c",
-            "libwebp-1.5.0/src/enc/filter_enc.c",
-            "libwebp-1.5.0/src/enc/frame_enc.c",
-            "libwebp-1.5.0/src/enc/histogram_enc.c",
-            "libwebp-1.5.0/src/enc/iterator_enc.c",
-            "libwebp-1.5.0/src/enc/near_lossless_enc.c",
-            "libwebp-1.5.0/src/enc/picture_csp_enc.c",
-            "libwebp-1.5.0/src/enc/picture_enc.c",
-            "libwebp-1.5.0/src/enc/picture_psnr_enc.c",
-            "libwebp-1.5.0/src/enc/picture_rescale_enc.c",
-            "libwebp-1.5.0/src/enc/picture_tools_enc.c",
-            "libwebp-1.5.0/src/enc/predictor_enc.c",
-            "libwebp-1.5.0/src/enc/quant_enc.c",
-            "libwebp-1.5.0/src/enc/syntax_enc.c",
-            "libwebp-1.5.0/src/enc/token_enc.c",
-            "libwebp-1.5.0/src/enc/tree_enc.c",
-            "libwebp-1.5.0/src/enc/vp8l_enc.c",
-            "libwebp-1.5.0/src/enc/webp_enc.c",
-            "libwebp-1.5.0/src/dsp/alpha_processing.c",
-            "libwebp-1.5.0/src/dsp/alpha_processing_mips_dsp_r2.c",
-            "libwebp-1.5.0/src/dsp/alpha_processing_neon.c",
-            "libwebp-1.5.0/src/dsp/alpha_processing_sse2.c",
-            "libwebp-1.5.0/src/dsp/alpha_processing_sse41.c",
-            "libwebp-1.5.0/src/dsp/cost.c",
-            "libwebp-1.5.0/src/dsp/cost_mips32.c",
-            "libwebp-1.5.0/src/dsp/cost_mips_dsp_r2.c",
-            "libwebp-1.5.0/src/dsp/cost_neon.c",
-            "libwebp-1.5.0/src/dsp/cost_sse2.c",
-            "libwebp-1.5.0/src/dsp/cpu.c",
-            "libwebp-1.5.0/src/dsp/dec.c",
-            "libwebp-1.5.0/src/dsp/dec_clip_tables.c",
-            "libwebp-1.5.0/src/dsp/dec_mips32.c",
-            "libwebp-1.5.0/src/dsp/dec_mips_dsp_r2.c",
-            "libwebp-1.5.0/src/dsp/dec_msa.c",
-            "libwebp-1.5.0/src/dsp/dec_neon.c",
-            "libwebp-1.5.0/src/dsp/dec_sse2.c",
-            "libwebp-1.5.0/src/dsp/dec_sse41.c",
-            "libwebp-1.5.0/src/dsp/enc.c",
-            "libwebp-1.5.0/src/dsp/enc_mips32.c",
-            "libwebp-1.5.0/src/dsp/enc_mips_dsp_r2.c",
-            "libwebp-1.5.0/src/dsp/enc_msa.c",
-            "libwebp-1.5.0/src/dsp/enc_neon.c",
-            "libwebp-1.5.0/src/dsp/enc_sse2.c",
-            "libwebp-1.5.0/src/dsp/enc_sse41.c",
-            "libwebp-1.5.0/src/dsp/filters.c",
-            "libwebp-1.5.0/src/dsp/filters_mips_dsp_r2.c",
-            "libwebp-1.5.0/src/dsp/filters_msa.c",
-            "libwebp-1.5.0/src/dsp/filters_neon.c",
-            "libwebp-1.5.0/src/dsp/filters_sse2.c",
-            "libwebp-1.5.0/src/dsp/lossless.c",
-            "libwebp-1.5.0/src/dsp/lossless_enc.c",
-            "libwebp-1.5.0/src/dsp/lossless_enc_mips32.c",
-            "libwebp-1.5.0/src/dsp/lossless_enc_mips_dsp_r2.c",
-            "libwebp-1.5.0/src/dsp/lossless_enc_msa.c",
-            "libwebp-1.5.0/src/dsp/lossless_enc_neon.c",
-            "libwebp-1.5.0/src/dsp/lossless_enc_sse2.c",
-            "libwebp-1.5.0/src/dsp/lossless_enc_sse41.c",
-            "libwebp-1.5.0/src/dsp/lossless_mips_dsp_r2.c",
-            "libwebp-1.5.0/src/dsp/lossless_msa.c",
-            "libwebp-1.5.0/src/dsp/lossless_neon.c",
-            "libwebp-1.5.0/src/dsp/lossless_sse2.c",
-            "libwebp-1.5.0/src/dsp/lossless_sse41.c",
-            "libwebp-1.5.0/src/dsp/rescaler.c",
-            "libwebp-1.5.0/src/dsp/rescaler_mips32.c",
-            "libwebp-1.5.0/src/dsp/rescaler_mips_dsp_r2.c",
-            "libwebp-1.5.0/src/dsp/rescaler_msa.c",
-            "libwebp-1.5.0/src/dsp/rescaler_neon.c",
-            "libwebp-1.5.0/src/dsp/rescaler_sse2.c",
-            "libwebp-1.5.0/src/dsp/ssim.c",
-            "libwebp-1.5.0/src/dsp/ssim_sse2.c",
-            "libwebp-1.5.0/src/dsp/upsampling.c",
-            "libwebp-1.5.0/src/dsp/upsampling_mips_dsp_r2.c",
-            "libwebp-1.5.0/src/dsp/upsampling_msa.c",
-            "libwebp-1.5.0/src/dsp/upsampling_neon.c",
-            "libwebp-1.5.0/src/dsp/upsampling_sse2.c",
-            "libwebp-1.5.0/src/dsp/upsampling_sse41.c",
-            "libwebp-1.5.0/src/dsp/yuv.c",
-            "libwebp-1.5.0/src/dsp/yuv_mips32.c",
-            "libwebp-1.5.0/src/dsp/yuv_mips_dsp_r2.c",
-            "libwebp-1.5.0/src/dsp/yuv_neon.c",
-            "libwebp-1.5.0/src/dsp/yuv_sse2.c",
-            "libwebp-1.5.0/src/dsp/yuv_sse41.c",
-            "libwebp-1.5.0/src/utils/bit_reader_utils.c",
-            "libwebp-1.5.0/src/utils/bit_writer_utils.c",
-            "libwebp-1.5.0/src/utils/color_cache_utils.c",
-            "libwebp-1.5.0/src/utils/filters_utils.c",
-            "libwebp-1.5.0/src/utils/huffman_encode_utils.c",
-            "libwebp-1.5.0/src/utils/huffman_utils.c",
-            "libwebp-1.5.0/src/utils/palette.c",
-            "libwebp-1.5.0/src/utils/quant_levels_dec_utils.c",
-            "libwebp-1.5.0/src/utils/quant_levels_utils.c",
-            "libwebp-1.5.0/src/utils/random_utils.c",
-            "libwebp-1.5.0/src/utils/rescaler_utils.c",
-            "libwebp-1.5.0/src/utils/thread_utils.c",
-            "libwebp-1.5.0/src/utils/utils.c",
-            "libwebp-1.5.0/sharpyuv/sharpyuv.c",
-            "libwebp-1.5.0/sharpyuv/sharpyuv_cpu.c",
-            "libwebp-1.5.0/sharpyuv/sharpyuv_csp.c",
-            "libwebp-1.5.0/sharpyuv/sharpyuv_dsp.c",
-            "libwebp-1.5.0/sharpyuv/sharpyuv_gamma.c",
-            "libwebp-1.5.0/sharpyuv/sharpyuv_neon.c",
-            "libwebp-1.5.0/sharpyuv/sharpyuv_sse2.c",
-        },
-        targets      = { ["webp"] = { kind = "lib" } },
-        deps         = { },
+        include_dirs = { "*", "*/src", "mcpp_generated" },
+        -- The header libwebp's autotools build generates and its tarball does
+        -- not ship. Sources reach it as `#include "src/webp/config.h"`, so it
+        -- has to sit under a root that spells that path.
+        --
+        -- Defining HAVE_CONFIG_H flips EVERY `(!defined(HAVE_CONFIG_H) ||
+        -- defined(WEBP_HAVE_x))` gate in src/dsp/cpu.h from "on unless denied"
+        -- to "off unless allowed", so this file is the allow-list — which is
+        -- exactly the control upstream's configure script exercises.
+        generated_files = {
+            ["mcpp_generated/src/webp/config.h"] = [==[
+#ifndef MCPP_COMPAT_LIBWEBP_CONFIG_H
+#define MCPP_COMPAT_LIBWEBP_CONFIG_H
 
-        -- 静态库对系统 C 运行时的依赖，交由最终链接补齐（dsp 用 libm；
-        -- 线程池路径用 pthread）。均属工具链 sysroot 组件，非 host 第三方库。
-        linux = {
-            ldflags = { "-lpthread", "-lm" },
+/* The SIMD families this package compiles. Both are the BASELINE of their
+   architecture and need no target flag: SSE2 on x86-64, NEON on aarch64. Each
+   is still guarded by the compiler's own macro first, so naming both here is
+   safe on either architecture. */
+#define WEBP_HAVE_SSE2
+#define WEBP_HAVE_NEON
+
+/* WEBP_HAVE_SSE41 is deliberately absent — see the descriptor header. Leaving
+   it out turns dec_sse41.c and friends into WEBP_DSP_INIT_STUB and removes the
+   `if (VP8GetCPUInfo(kSSE4_1)) VP8DspInitSSE41();` call, so the library still
+   links and still dispatches, one tier lower. */
+
+/* MIPS/MSA are likewise absent: nothing here targets them, and under
+   HAVE_CONFIG_H silence means off. */
+
+#if defined(__GNUC__) || defined(__clang__)
+#define HAVE_BUILTIN_BSWAP16
+#define HAVE_BUILTIN_BSWAP32
+#define HAVE_BUILTIN_BSWAP64
+#endif
+
+#endif  /* MCPP_COMPAT_LIBWEBP_CONFIG_H */
+]==],
         },
-        macosx = {
-            ldflags = { "-lpthread", "-lm" },
+        cflags = { "-DHAVE_CONFIG_H" },
+        -- 117 translation units, as five directory globs. Each directory holds
+        -- only library code; the tools live in examples/ extras/ imageio/ swig/
+        -- and the container libraries in src/demux src/mux, none of which are
+        -- matched here.
+        sources = {
+            "*/src/dec/*.c",
+            "*/src/enc/*.c",
+            "*/src/dsp/*.c",
+            "*/src/utils/*.c",
+            "*/sharpyuv/*.c",
         },
+        targets = { ["webp"] = { kind = "lib" } },
+        deps    = { },
+
+        -- libm for the dsp math, pthread for utils/thread_utils.c's worker pool.
+        -- Both are sysroot components, not third-party host libraries. Windows
+        -- needs neither: the CRT carries the math and thread_utils uses the Win32
+        -- thread API directly.
+        linux  = { ldflags = { "-lpthread", "-lm" } },
+        macosx = { ldflags = { "-lpthread", "-lm" } },
     },
 }
