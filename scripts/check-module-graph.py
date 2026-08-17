@@ -288,7 +288,11 @@ _CONCEPT = re.compile(r"\bconcept\s+(\w+)\s*=")
 _VAR = re.compile(r"^\s*(?:export\s+)?"
                   r"(?:(?:inline|constexpr|const|static|extern)\s+)+"
                   r"[\w:]+(?:\s*<[^;]*>)?\s*[*&]?\s*(\w+)\s*(?:=|\[)")
-_FUNC = re.compile(r"\bauto\s+(\w+)\s*\(?\s*$")
+# `auto name(...)` — the project writes every function in trailing-return form,
+# so this one spelling covers declarations and definitions alike. Tried last, so
+# `constexpr auto kFoo = …` is a variable and `using Fn = auto (*)(int) -> void`
+# is an alias.
+_FUNC = re.compile(r"\bauto\s+(\w+)\s*\(")
 
 # Preceded by one of these, an identifier is a DECLARATOR (a member, a
 # parameter, a loop variable), not a use — `bool is_initialized = false;` must
@@ -398,6 +402,13 @@ def entity_missing_imports(units: list[Unit]) -> list[str]:
         for ns, names in _namespace_entities(text, NS_BLOCK).items():
             for name in names:
                 provider[name].add((ns, u.provides))
+        # Two entities live at global scope with a per-declaration `export`
+        # rather than inside an `export namespace` block — `Application` and
+        # `Logger`. Nothing encloses them, so `""` stands for the global
+        # namespace and every unit has it open.
+        for m in re.finditer(r"^export\s+(?:class|struct|enum(?:\s+class)?|union)\s+(\w+)",
+                             text, re.MULTILINE):
+            provider[m.group(1)].add(("", u.provides))
 
     def visible(seeds: set[str]) -> set[str]:
         seen: set[str] = set()
@@ -423,6 +434,17 @@ def entity_missing_imports(units: list[Unit]) -> list[str]:
         mine: set[str] = set()
         for names in _namespace_entities(text, NS_OPEN).values():
             mine |= names
+        # …and names bound LOCALLY anywhere in the unit — a parameter
+        # `SQLite::Statement& query`, a loop variable `for (int stop : …)`. An
+        # unqualified use of one of those is not a namespace lookup at all, and
+        # some of them collide with a real export elsewhere in the tree. There is
+        # no scope analysis here, so a name used as a declarator even once is
+        # dropped from the unqualified half. The qualified half is unaffected and
+        # stays exact.
+        mine |= {mm.group(1) for mm in
+                 re.finditer(r"(?:[\w>&*\]]|\b(?:" + "|".join(sorted(_BUILTIN_TYPE))
+                             + r"))\s+([A-Za-z_]\w*)\b\s*(?:[=;,)\[:]|\{)", text)
+                 if mm.group(1) not in _NOT_A_TYPE}
         lines = text.splitlines()
         reported: set[tuple[str, str]] = set()
         for m in re.finditer(r"(?<![\w:.])(?<!->)((?:\w+::)*)([A-Za-z_]\w*)\b(?!\s*::)", text):
@@ -440,9 +462,11 @@ def entity_missing_imports(units: list[Unit]) -> list[str]:
                         continue        # `std::atomic<bool> x`, `T& p`, `int i`
                     if word.group(0) not in _NOT_A_TYPE:
                         continue        # `SomeType name` — a declarator
-                # Unqualified lookup only escapes into an ENCLOSING namespace.
+                # Unqualified lookup only escapes into an ENCLOSING namespace —
+                # and the global one (ns == "") encloses everything.
                 cands = [(ns, mod) for ns, mod in provider[name]
-                         if any(o == ns or o.startswith(ns + "::") for o in opened)]
+                         if not ns or any(o == ns or o.startswith(ns + "::")
+                                          for o in opened)]
                 how = "unqualified"
             else:
                 # Written in full, or relative to a namespace this unit has open.
