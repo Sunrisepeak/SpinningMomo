@@ -9,7 +9,7 @@ import sm.core.events.events;
 import sm.core.state.app_state;
 
 // 主应用程序类
-class Application {
+export class Application {
  public:
   Application();
   ~Application();

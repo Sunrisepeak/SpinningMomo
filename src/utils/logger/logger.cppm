@@ -15,7 +15,7 @@ auto set_level(std::string_view level) -> std::expected<void, std::string>;
 }  // namespace utils::logging
 
 // Logger类 - 使用构造函数捕获source_location
-class Logger {
+export class Logger {
  public:
   Logger(std::source_location loc = std::source_location::current());
 

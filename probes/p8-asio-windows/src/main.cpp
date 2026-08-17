@@ -13,10 +13,8 @@
 // ── ROUND 1: macro state.  REFUTED. ─────────────────────────────────────────
 // The package build had no `_WIN32_WINNT`, so asio/detail/config.hpp fell back
 // to its own default of 0x0601 while this TU asks for 0x0A00. Pinning the
-// package to 0x0A00 (mcpp/pkgs/a/sm.asio.lua) put the define on the asio.cppm
-// compile line — and the error did not move. So the API level is not it. The
-// pin stays anyway: two parses of the platform SDK SHOULD agree, and the next
-// hypothesis is only testable on top of that.
+// package to 0x0A00 put the define on the asio.cppm compile line — and the error
+// did not move. So the API level is not it.
 //
 // ── ROUND 2: order.  What this file now tests. ──────────────────────────────
 // The three failing functions have one thing in common — their parameter type:
@@ -34,8 +32,15 @@
 //
 // A pass here means the project-wide rule is "all #include before all import"
 // in a plain translation unit, which the conversion script can enforce.
-// A failure means order is not it either, and p9-win-module is the next
-// variable: reach Win32 through a MODULE too, so there is only ever one parse.
+// (It passed. The rule is now enforced by scripts/check-cpp-architecture.py.)
+//
+// ── ROUND 3: is the pin needed AT ALL? ──────────────────────────────────────
+// Rounds 1 and 2 both carried the pin, so ordering was only ever shown to be
+// sufficient WITH it. This round drops it: the manifest now depends on the
+// published `chriskohlhoff.asio` rather than the project's override. Green means
+// the include-before-import rule does all the work and the override can go,
+// which is what P7 needs before the project can delete its `[indices]` table.
+//
 #include <windows.h>
 
 import std;

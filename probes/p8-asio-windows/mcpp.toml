@@ -6,10 +6,13 @@ platforms = ["windows"]
 
 # No [toolchain] pin: the matrix chooses.
 
-[indices]
-sm = { path = "../../mcpp" }
-
-[dependencies.sm]
+# The OFFICIAL package, not the project's override. That is the point: the
+# override pins `_WIN32_WINNT=0x0A00` into asio's own compile so its BMI parses
+# <windows.h> the way this project does, and the published descriptor has no way
+# to say that. If this probe is green WITHOUT the pin, the include-before-import
+# rule is doing all the work and the override can be deleted — which is what P7
+# needs to know before the project can drop its `[indices]` table.
+[dependencies.chriskohlhoff]
 asio = "1.38.1"
 
 [build]

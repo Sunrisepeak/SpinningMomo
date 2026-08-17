@@ -47,7 +47,7 @@ import sm.ui.photography_panel.state;
 import sm.ui.shared_render_resources.state;
 import sm.ui.tray_icon.state;
 
-namespace core {
+export namespace core {
 
 struct AppState {
   AppState();

@@ -143,6 +143,27 @@ UNQUALIFIED_C_TYPE = re.compile(
     r")\b"
 )
 
+# A top-level declaration in a module interface that nobody exported.
+#
+# The conversion put `export` on the FIRST top-level namespace of each header,
+# which is right for the 260 files whose content is one namespace and wrong for
+# the three whose content is not. `class Logger` sits at global scope AFTER
+# `namespace utils::logging { … }` in utils/logger/logger.cppm, and `AppState`
+# ended up in a `namespace core {` that followed the (now deleted) forward
+# declarations — both compiled fine and were simply invisible to importers:
+#
+#   utils/timer/timeout.cpp:35: error: use of undeclared identifier 'Logger'
+#
+# A module that exports nothing anyone needs is not a compile error in itself,
+# which is exactly why this needs checking rather than waiting for a consumer.
+DECL_AT_TOP_LEVEL = re.compile(
+    r"^(?:export\s+)?("
+    r"namespace|class|struct|enum|union|using|template|typedef|inline|constexpr"
+    r"|consteval|extern|auto|void|int|bool|char|unsigned|signed|long|short|float"
+    r"|double|std::|[A-Z][\w:]*\s+\w+\s*[;({=]"
+    r")"
+)
+
 # A free function DEFINITION at namespace scope inside a module interface.
 # Templates, `inline`, `constexpr`/`consteval` and class-member definitions are
 # all legitimately part of an interface and are not matched: the target is the
@@ -285,6 +306,25 @@ def validate_file(path: Path, errors: list[str]) -> None:
                    f"自别名在模块里是重定义（C1117），删掉它: {match.group(0).strip()}")
 
     if path.suffix in MODULE_SUFFIXES:
+        code_lines = code.splitlines()
+        after_decl = 0
+        for n, line in enumerate(code_lines):
+            if MODULE_DECLARATION.match(line):
+                after_decl = n + 1
+        depth = 0
+        for n in range(after_decl, len(code_lines)):
+            line = code_lines[n]
+            if depth == 0:
+                stripped = line.strip()
+                if (stripped
+                        and not stripped.startswith(("//", "/*", "*", "#",
+                                                     "import ", "export import "))
+                        and not stripped.startswith("export")
+                        and DECL_AT_TOP_LEVEL.match(stripped)):
+                    report(errors, path, n + 1,
+                           f"模块接口里的顶层声明没有 export，消费者看不见: {stripped[:60]}")
+            depth += line.count("{") - line.count("}")
+
         for match in IFACE_FUNCTION_BODY.finditer(code):
             line = text.count("\n", 0, match.start()) + 1
             report(errors, path, line,
