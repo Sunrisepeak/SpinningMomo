@@ -17,12 +17,13 @@
 #include "features/recording/state.hpp"
 #include "features/recording/time.hpp"
 #include "features/recording/types.hpp"
-#include "features/settings/state.hpp"
 #include "ui/floating_window/events.hpp"
 #include "ui/floating_window/floating_window.hpp"
 #include "utils/graphics/capture.hpp"
-#include "utils/logger/logger.hpp"
 #include "utils/media/audio_capture.hpp"
+
+import sm.features.settings.state;
+import sm.utils.logger.logger;
 import sm.utils.string.string;
 import sm.utils.system.system;
 

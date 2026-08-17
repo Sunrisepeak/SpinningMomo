@@ -6,10 +6,10 @@ module;
 #include "core/database/types.hpp"
 #include "features/gallery/asset/query_support.hpp"
 #include "features/gallery/asset/repository.hpp"
-#include "utils/logger/logger.hpp"
 
 module sm.extensions.infinity_nikki.asset_service;
 
+import sm.utils.logger.logger;
 import sm.core.database.database;
 import std;
 import asio;

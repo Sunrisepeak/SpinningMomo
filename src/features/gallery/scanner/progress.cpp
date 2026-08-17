@@ -3,7 +3,7 @@
 #include "vendor/std.hpp"
 
 #include "features/gallery/types.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 namespace features::gallery::scanner::progress {
 

@@ -1,9 +1,6 @@
-module;
-
-#include "vendor/uwebsockets.hpp"
-
 export module sm.core.http_server.types;
 
+import sm.vendor.uwebsockets;
 import std;
 import asio;
 

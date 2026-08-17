@@ -2,7 +2,7 @@
 
 #include "vendor/std.hpp"
 
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 namespace features::gallery::ignore::matcher {
 

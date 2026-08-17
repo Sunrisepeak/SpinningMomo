@@ -1,5 +1,4 @@
 
-
 #include "vendor/std.hpp"
 
 #include "vendor/windows.hpp"
@@ -19,11 +18,12 @@
 #include "features/recording/state.hpp"
 #include "features/recording/usecase.hpp"
 #include "features/screenshot/usecase.hpp"
-#include "features/settings/state.hpp"
 #include "features/window_control/usecase.hpp"
 #include "ui/floating_window/floating_window.hpp"
 #include "ui/webview_window/webview_window.hpp"
-#include "utils/logger/logger.hpp"
+
+import sm.features.settings.state;
+import sm.utils.logger.logger;
 import sm.utils.path.path;
 import sm.utils.system.system;
 

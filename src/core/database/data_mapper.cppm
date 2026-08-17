@@ -1,10 +1,10 @@
 module;
 
-#include "vendor/rfl.hpp"
 #include "core/database/types.hpp"
 
 export module sm.core.database.data_mapper;
 
+import sm.vendor.rfl;
 import std;
 import sm.vendor.sqlite;
 

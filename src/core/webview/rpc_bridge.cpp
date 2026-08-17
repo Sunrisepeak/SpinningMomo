@@ -5,10 +5,10 @@ module;
 #include "core/webview/events.hpp"
 #include "core/webview/state.hpp"
 #include "core/webview/webview.hpp"
-#include "utils/logger/logger.hpp"
 
 module sm.core.webview.rpc_bridge;
 
+import sm.utils.logger.logger;
 import std;
 import asio;
 import sm.core.async.async;

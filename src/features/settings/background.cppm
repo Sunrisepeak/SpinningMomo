@@ -1,11 +1,13 @@
-#pragma once
-
-#include "vendor/std.hpp"
+module;
 
 #include "core/state/app_state.hpp"
-#include "features/settings/types.hpp"
 
-namespace features::settings::background {
+export module sm.features.settings.background;
+
+import std;
+import sm.features.settings.types;
+
+export namespace features::settings::background {
 
 auto analyze_background(const BackgroundAnalysisParams& params)
     -> std::expected<BackgroundAnalysisResult, std::string>;

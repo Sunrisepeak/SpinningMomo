@@ -1,13 +1,14 @@
-#include "core/http_server/routes.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/uwebsockets.hpp"
-
-#include "core/build_config.hpp"
-#include "core/http_server/sse_manager.hpp"
 #include "core/state/app_state.hpp"
-#include "utils/logger/logger.hpp"
+#include "core/build_config.hpp"
+
+module sm.core.http_server.routes;
+
+import std;
+import sm.vendor.uwebsockets;
+import sm.core.http_server.sse_manager;
+import sm.utils.logger.logger;
 
 import asio;
 import sm.core.async.async;

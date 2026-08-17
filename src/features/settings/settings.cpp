@@ -1,18 +1,20 @@
-#include "features/settings/settings.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/rfl.hpp"
-#include "vendor/windows.hpp"
-
-#include "core/events/events.hpp"
 #include "core/state/app_state.hpp"
-#include "features/settings/background.hpp"
+#include "vendor/windows.hpp"
+#include "core/events/events.hpp"
 #include "features/settings/compute.hpp"
-#include "features/settings/events.hpp"
-#include "features/settings/state.hpp"
-#include "features/settings/types.hpp"
-#include "utils/logger/logger.hpp"
+
+module sm.features.settings.settings;
+
+import std;
+import sm.vendor.rfl;
+import sm.features.settings.background;
+import sm.features.settings.events;
+import sm.features.settings.state;
+import sm.features.settings.types;
+import sm.utils.logger.logger;
+
 import sm.utils.path.path;
 import sm.utils.system.system;
 

@@ -11,19 +11,19 @@ module;
 #include "core/notifications/types.hpp"
 #include "core/tasks/tasks.hpp"
 #include "core/version.hpp"
-#include "features/settings/state.hpp"
 #include "ui/floating_window/events.hpp"
 #include "ui/webview_window/webview_window.hpp"
 
 module sm.features.update.update;
 
+import sm.features.settings.state;
 import std;
 import asio;
 import sm.core.async.async;
 import sm.core.http_client.http_client;
 
 import sm.utils.crypto.crypto;
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 import sm.utils.path.path;
 import sm.utils.powershell.powershell;
 import sm.utils.string.string;

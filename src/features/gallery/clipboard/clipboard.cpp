@@ -10,7 +10,7 @@
 #include "features/gallery/types.hpp"
 #include "features/gallery/watcher/watcher.hpp"
 #include "utils/image/image.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 import sm.utils.path.path;
 import sm.utils.string.string;
 import sm.utils.system.system;

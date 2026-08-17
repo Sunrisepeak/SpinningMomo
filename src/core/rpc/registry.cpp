@@ -16,7 +16,7 @@
 #include "core/rpc/endpoints/webview/webview.hpp"
 #include "core/rpc/endpoints/window_control/window_control.hpp"
 #include "core/state/app_state.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 namespace core::rpc::registry {
 

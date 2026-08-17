@@ -2,12 +2,11 @@
 
 #include "vendor/std.hpp"
 
-#include "vendor/rfl.hpp"
-
 #include "core/state/app_state.hpp"
 #include "core/webview/state.hpp"
 #include "ui/webview_window/webview_window.hpp"
 
+import sm.vendor.rfl;
 import asio;
 import sm.core.rpc.rpc;
 import sm.core.rpc.state;

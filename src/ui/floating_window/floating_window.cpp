@@ -13,15 +13,16 @@
 #include "core/i18n/types.hpp"
 #include "core/state/app_state.hpp"
 #include "features/settings/menu.hpp"
-#include "features/settings/state.hpp"
-#include "features/settings/types.hpp"
 #include "ui/floating_window/layout.hpp"
 #include "ui/floating_window/message_handler.hpp"
 #include "ui/floating_window/painter.hpp"
 #include "ui/floating_window/render_context.hpp"
 #include "ui/floating_window/state.hpp"
 #include "ui/floating_window/types.hpp"
-#include "utils/logger/logger.hpp"
+
+import sm.features.settings.state;
+import sm.features.settings.types;
+import sm.utils.logger.logger;
 import sm.utils.string.string;
 
 namespace ui::floating_window {

@@ -8,7 +8,7 @@
 #include "core/webview/webview.hpp"
 #include "features/gallery/original_locator.hpp"
 #include "features/gallery/state.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 import sm.core.http_server.static_;
 import sm.core.http_server.types;

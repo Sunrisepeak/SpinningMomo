@@ -10,7 +10,7 @@
 #include "core/tasks/tasks.hpp"
 #include "features/gallery/gallery.hpp"
 #include "features/gallery/types.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 import asio;
 import sm.core.async.async;

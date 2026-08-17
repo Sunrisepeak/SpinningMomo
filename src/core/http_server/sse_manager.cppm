@@ -1,12 +1,13 @@
-#pragma once
-
-#include "vendor/std.hpp"
-
-#include "vendor/uwebsockets.hpp"
+module;
 
 #include "core/state/app_state.hpp"
 
-namespace core::http_server::sse_manager {
+export module sm.core.http_server.sse_manager;
+
+import std;
+import sm.vendor.uwebsockets;
+
+export namespace core::http_server::sse_manager {
 // 添加 SSE 连接
 auto add_connection(core::AppState& state, uWS::HttpResponse<false>* response,
                     std::string allowed_origin = "") -> void;
@@ -21,5 +22,5 @@ auto close_all_connections(core::AppState& state) -> void;
 auto broadcast_event(core::AppState& state, const std::string& event_data) -> void;
 
 // 获取 SSE 连接数量
-auto get_connection_count(const core::AppState& state) -> size_t;
+auto get_connection_count(const core::AppState& state) -> std::size_t;
 }  // namespace core::http_server::sse_manager

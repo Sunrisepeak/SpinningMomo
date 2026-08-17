@@ -17,15 +17,15 @@
 #include "features/preview/preview.hpp"
 #include "features/preview/state.hpp"
 #include "features/settings/menu.hpp"
-#include "features/settings/settings.hpp"
-#include "features/settings/state.hpp"
 #include "features/window_control/types.hpp"
 #include "features/window_control/window_control.hpp"
 #include "ui/floating_window/events.hpp"
 #include "ui/floating_window/floating_window.hpp"
 #include "ui/floating_window/state.hpp"
-#include "utils/logger/logger.hpp"
 
+import sm.features.settings.settings;
+import sm.features.settings.state;
+import sm.utils.logger.logger;
 import sm.utils.display.display;
 import sm.utils.string.string;
 

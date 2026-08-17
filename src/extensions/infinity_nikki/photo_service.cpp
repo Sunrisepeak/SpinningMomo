@@ -16,8 +16,8 @@
 #include "features/gallery/state.hpp"
 #include "features/gallery/types.hpp"
 #include "features/gallery/watcher/watcher.hpp"
-#include "features/settings/state.hpp"
-#include "utils/logger/logger.hpp"
+import sm.features.settings.state;
+import sm.utils.logger.logger;
 
 import sm.core.database.database;
 import sm.utils.path.path;

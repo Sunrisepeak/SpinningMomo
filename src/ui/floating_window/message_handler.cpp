@@ -22,7 +22,7 @@
 #include "ui/floating_window/types.hpp"
 #include "ui/tray_icon/tray_icon.hpp"
 #include "ui/tray_icon/types.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 namespace ui::floating_window::message_handler {
 

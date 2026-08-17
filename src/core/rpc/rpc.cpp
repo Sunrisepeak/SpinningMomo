@@ -1,12 +1,12 @@
 module;
 
-#include "vendor/rfl.hpp"
 #include "core/build_config.hpp"
 #include "core/state/app_state.hpp"
-#include "utils/logger/logger.hpp"
 
 module sm.core.rpc.rpc;
 
+import sm.vendor.rfl;
+import sm.utils.logger.logger;
 import std;
 import asio;
 import sm.core.rpc.state;

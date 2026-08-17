@@ -7,7 +7,7 @@
 #include "features/gallery/scanner/asset_pipeline.hpp"
 #include "features/gallery/scanner/progress.hpp"
 #include "features/gallery/types.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 namespace features::gallery::scanner::cleanup {
 

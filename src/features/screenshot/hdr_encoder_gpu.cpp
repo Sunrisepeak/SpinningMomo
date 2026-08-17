@@ -7,7 +7,7 @@
 
 #include "features/screenshot/hdr_encoder.hpp"
 #include "utils/graphics/d3d.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 namespace features::screenshot::hdr_encoder {
 

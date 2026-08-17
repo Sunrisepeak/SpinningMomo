@@ -4,7 +4,7 @@
 
 #include "core/database/state.hpp"
 #include "core/state/app_state.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 import sm.core.database.database;
 import sm.utils.path.path;

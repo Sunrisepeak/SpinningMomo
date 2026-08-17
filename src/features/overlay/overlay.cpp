@@ -16,7 +16,7 @@
 #include "features/overlay/types.hpp"
 #include "features/overlay/window.hpp"
 #include "ui/floating_window/state.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 import sm.utils.display.display;
 import sm.utils.graphics.hdr;

@@ -9,9 +9,9 @@
 #include "extensions/infinity_nikki/types.hpp"
 #include "features/gallery/gallery.hpp"
 #include "features/gallery/types.hpp"
-#include "features/settings/settings.hpp"
-#include "features/settings/state.hpp"
-#include "utils/logger/logger.hpp"
+import sm.features.settings.settings;
+import sm.features.settings.state;
+import sm.utils.logger.logger;
 
 // TaskService 实现：把无限暖暖相关的重活挂到 Asio 协程上，并对接 core::tasks（前端「后台任务」）。
 // 约定：对外只暴露 start_* / schedule_silent_*；launch_* 为内部 co_spawn

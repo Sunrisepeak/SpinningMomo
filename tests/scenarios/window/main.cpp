@@ -3,7 +3,7 @@
 #include "vendor/windows.hpp"
 #include "vendor/windows/shellapi.hpp"
 
-namespace {
+namespace detail {
 
 struct Options {
   std::wstring title = L"SpinningMomo Scenario Target";
@@ -211,7 +211,14 @@ auto run_window(const Options& options) -> int {
   return static_cast<int>(message.wParam);
 }
 
-}  // namespace
+}  // namespace detail
+
+// A named namespace instead of an anonymous one (AGENTS.md; the tree already
+// spells it `detail` in 20+ places). The names therefore gain EXTERNAL linkage,
+// which is the one real difference — they were TU-local before. Nothing else
+// in the project declares them, and the using-directive keeps unqualified
+// lookup at their call sites exactly as it was.
+using namespace detail;
 
 auto __stdcall wWinMain(HINSTANCE, HINSTANCE, PWSTR, int) -> int {
   const auto options = parse_options();

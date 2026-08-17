@@ -12,7 +12,7 @@
 #include "core/state/app_state.hpp"
 #include "core/webview/state.hpp"
 #include "core/webview/types.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 import sm.utils.file.mime;
 import sm.utils.string.string;

@@ -12,11 +12,11 @@ module;
 #include "vendor/windows/mfidl.hpp"
 #include "vendor/windows/mfreadwrite.hpp"
 #include "vendor/windows/strmif.hpp"
-#include "utils/logger/logger.hpp"
 #include "utils/media/hdr_convert.hpp"
 
 module sm.utils.media.encoder;
 
+import sm.utils.logger.logger;
 import std;
 
 namespace utils::media::encoder {

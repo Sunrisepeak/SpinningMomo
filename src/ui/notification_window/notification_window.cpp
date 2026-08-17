@@ -12,7 +12,7 @@
 #include "ui/notification_window/render_context.hpp"
 #include "ui/notification_window/state.hpp"
 #include "ui/notification_window/types.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 import sm.utils.display.display;
 

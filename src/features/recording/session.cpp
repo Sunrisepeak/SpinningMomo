@@ -12,7 +12,7 @@
 #include "utils/graphics/capture.hpp"
 #include "utils/graphics/capture_region.hpp"
 #include "utils/graphics/d3d.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 import sm.utils.string.string;
 
 namespace features::recording::session {

@@ -10,7 +10,7 @@
 #include "features/gallery/color/repository.hpp"
 #include "features/gallery/original_locator.hpp"
 #include "features/gallery/types.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 import sm.core.database.database;
 

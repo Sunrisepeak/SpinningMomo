@@ -1,10 +1,10 @@
 module;
 
 #include "core/state/app_state.hpp"
-#include "utils/logger/logger.hpp"
 
 module sm.core.async.async;
 
+import sm.utils.logger.logger;
 import std;
 import asio;
 import sm.core.async.state;

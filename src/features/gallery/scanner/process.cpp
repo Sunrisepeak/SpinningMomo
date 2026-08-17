@@ -13,7 +13,7 @@
 #include "features/gallery/scanner/common.hpp"
 #include "features/gallery/scanner/progress.hpp"
 #include "features/gallery/types.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 import sm.core.database.database;
 

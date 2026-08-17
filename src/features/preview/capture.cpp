@@ -13,7 +13,7 @@
 #include "features/preview/types.hpp"
 #include "features/preview/window.hpp"
 #include "utils/graphics/capture.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 namespace features::preview::capture {
 

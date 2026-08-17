@@ -7,7 +7,7 @@
 #include "vendor/windows/d3d11.hpp"
 
 #include "utils/graphics/d3d.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 namespace utils::graphics::photo_processing {
 

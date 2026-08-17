@@ -8,8 +8,9 @@
 #include "core/version.hpp"
 #include "core/webview/webview.hpp"
 #include "utils/graphics/capture.hpp"
-#include "utils/logger/logger.hpp"
 #include "utils/media/audio_capture.hpp"
+
+import sm.utils.logger.logger;
 import sm.utils.path.path;
 import sm.utils.system.system;
 

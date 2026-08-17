@@ -13,7 +13,7 @@
 #include "vendor/windows/winrt/windows_graphics_directx.hpp"
 #include "vendor/windows/winrt/windows_graphics_directx_direct3d11.hpp"
 
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 namespace utils::graphics::capture {
 

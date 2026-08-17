@@ -11,13 +11,14 @@
 #include "extensions/infinity_nikki/photo_service.hpp"
 #include "extensions/infinity_nikki/task_service.hpp"
 #include "features/gallery/gallery.hpp"
-#include "features/settings/events.hpp"
-#include "features/settings/types.hpp"
 #include "ui/floating_window/floating_window.hpp"
 #include "ui/floating_window/state.hpp"
 #include "ui/photography_panel/photography_panel.hpp"
 #include "ui/webview_window/webview_window.hpp"
-#include "utils/logger/logger.hpp"
+
+import sm.features.settings.events;
+import sm.features.settings.types;
+import sm.utils.logger.logger;
 
 namespace core::events::handlers {
 

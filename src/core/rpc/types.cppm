@@ -1,9 +1,6 @@
-module;
-
-#include "vendor/rfl.hpp"
-
 export module sm.core.rpc.types;
 
+import sm.vendor.rfl;
 import std;
 import asio;
 

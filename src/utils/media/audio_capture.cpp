@@ -11,7 +11,7 @@
 #include "vendor/windows/wrl/implements.hpp"
 
 #include "AudioSessionTypes.h"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 namespace utils::media::audio_capture::detail {
 

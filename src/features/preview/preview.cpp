@@ -17,7 +17,7 @@
 #include "ui/floating_window/state.hpp"
 #include "utils/graphics/capture.hpp"
 #include "utils/graphics/d3d.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 import sm.utils.display.display;
 import sm.utils.graphics.hdr;

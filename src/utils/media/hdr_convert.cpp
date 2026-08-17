@@ -8,7 +8,7 @@
 #include "vendor/windows/d3d11_4.hpp"
 
 #include "utils/graphics/d3d.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 namespace utils::media::hdr_convert {
 

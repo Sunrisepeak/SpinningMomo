@@ -9,10 +9,10 @@ module;
 #include "vendor/windows/mfreadwrite.hpp"
 #include "vendor/windows/propvarutil.hpp"
 #include "utils/image/image.hpp"
-#include "utils/logger/logger.hpp"
 
 module sm.utils.media.video_asset;
 
+import sm.utils.logger.logger;
 import std;
 import sm.utils.file.mime;
 

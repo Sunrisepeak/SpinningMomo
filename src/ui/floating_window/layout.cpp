@@ -6,8 +6,9 @@
 #include "vendor/windows/dwmapi.hpp"
 
 #include "core/state/app_state.hpp"
-#include "features/settings/state.hpp"
 #include "ui/floating_window/state.hpp"
+
+import sm.features.settings.state;
 
 namespace ui::floating_window::layout {
 

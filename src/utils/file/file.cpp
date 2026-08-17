@@ -1,10 +1,10 @@
 module;
 
 #include "vendor/windows.hpp"
-#include "utils/logger/logger.hpp"
 
 module sm.utils.file.file;
 
+import sm.utils.logger.logger;
 import asio;
 import std;
 import sm.utils.file.mime;

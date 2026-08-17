@@ -18,7 +18,7 @@
 #include "features/gallery/scanner/progress.hpp"
 #include "features/gallery/state.hpp"
 #include "features/gallery/types.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 import sm.utils.path.path;
 
 namespace features::gallery::scanner {

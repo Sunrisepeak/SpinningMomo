@@ -8,7 +8,7 @@
 #include "vendor/windows/wincodec.hpp"
 #include "vendor/windows/winerror.hpp"
 
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 import sm.vendor.dkm;
 import sm.vendor.webp;

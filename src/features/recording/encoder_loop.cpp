@@ -19,9 +19,9 @@
 #include "features/recording/types.hpp"
 #include "utils/graphics/capture.hpp"
 #include "utils/graphics/capture_region.hpp"
-#include "utils/logger/logger.hpp"
 #include "utils/media/types.hpp"
 
+import sm.utils.logger.logger;
 import sm.utils.media.encoder;
 import sm.utils.string.string;
 

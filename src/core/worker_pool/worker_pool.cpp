@@ -4,7 +4,7 @@
 
 #include "core/state/app_state.hpp"
 #include "core/worker_pool/state.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 namespace core::worker_pool {
 

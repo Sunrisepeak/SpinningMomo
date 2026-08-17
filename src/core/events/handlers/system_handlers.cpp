@@ -11,7 +11,7 @@
 #include "ui/floating_window/events.hpp"
 #include "ui/floating_window/floating_window.hpp"
 #include "ui/webview_window/webview_window.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 namespace core::events::handlers {
 

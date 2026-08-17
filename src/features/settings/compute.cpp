@@ -7,9 +7,9 @@
 #include "core/state/app_state.hpp"
 #include "features/settings/menu.hpp"
 #include "features/settings/registry.hpp"
-#include "features/settings/state.hpp"
-#include "features/settings/types.hpp"
-#include "utils/logger/logger.hpp"
+import sm.features.settings.state;
+import sm.features.settings.types;
+import sm.utils.logger.logger;
 import sm.utils.string.string;
 
 namespace features::settings::compute {

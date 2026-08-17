@@ -2,16 +2,15 @@
 
 #include "vendor/std.hpp"
 
-#include "vendor/rfl.hpp"
-
 #include "core/rpc/notification_hub.hpp"
 #include "core/state/app_state.hpp"
 #include "extensions/infinity_nikki/game_directory.hpp"
 #include "extensions/infinity_nikki/task_service.hpp"
 #include "extensions/infinity_nikki/types.hpp"
 #include "features/gallery/types.hpp"
-#include "utils/logger/logger.hpp"
 
+import sm.vendor.rfl;
+import sm.utils.logger.logger;
 import asio;
 import sm.core.rpc.rpc;
 import sm.core.rpc.state;

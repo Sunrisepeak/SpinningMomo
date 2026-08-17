@@ -5,7 +5,7 @@
 #include "core/state/app_state.hpp"
 #include "features/gallery/tag/repository.hpp"
 #include "features/gallery/types.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 namespace features::gallery::tag::service {
 

@@ -1,10 +1,9 @@
-#pragma once
+export module sm.features.settings.types;
 
-#include "vendor/std.hpp"
+import std;
+import sm.vendor.rfl;
 
-#include "vendor/rfl.hpp"
-
-namespace features::settings {
+export namespace features::settings {
 
 // 当前设置版本
 constexpr int CURRENT_SETTINGS_VERSION = 1;

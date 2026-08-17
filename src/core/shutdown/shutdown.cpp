@@ -24,7 +24,7 @@
 #include "ui/photography_panel/photography_panel.hpp"
 #include "ui/tray_icon/tray_icon.hpp"
 #include "ui/webview_window/webview_window.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 import sm.core.async.async;
 import sm.core.database.database;

@@ -7,7 +7,7 @@
 #include "features/gallery/ignore/matcher.hpp"
 #include "features/gallery/ignore/repository.hpp"
 #include "features/gallery/types.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 namespace features::gallery::ignore::service {
 

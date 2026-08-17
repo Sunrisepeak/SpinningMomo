@@ -1,11 +1,13 @@
-#pragma once
-
-#include "vendor/std.hpp"
+module;
 
 #include "core/state/app_state.hpp"
-#include "features/settings/types.hpp"
 
-namespace features::settings {
+export module sm.features.settings.settings;
+
+import std;
+import sm.features.settings.types;
+
+export namespace features::settings {
 
 // 启动期仅依赖的最小设置子集。
 // 用于在完整 AppState 初始化之前，先决定提权策略和初始日志级别。

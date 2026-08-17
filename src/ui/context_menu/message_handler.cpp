@@ -13,7 +13,7 @@
 #include "ui/context_menu/render_context.hpp"
 #include "ui/context_menu/state.hpp"
 #include "ui/context_menu/types.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 namespace ui::context_menu::message_handler {
 

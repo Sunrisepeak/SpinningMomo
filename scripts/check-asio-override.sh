@@ -15,6 +15,15 @@
 #   exit 0  -> the published index has it. Delete mcpp/pkgs/a/sm.asio.lua and
 #              flip the root mcpp.toml back to [dependencies.chriskohlhoff].
 #   exit 1  -> not yet. Keep the override.
+#
+# FALSE NEGATIVE TO KNOW ABOUT. A descriptor can change WITHOUT its version
+# changing — an export-surface amendment is exactly that — and an already
+# installed package payload is not invalidated by it. `mcpp index update`
+# refreshes the index and the answer here does not move, because resolution
+# reuses what is already in the store. On a fresh runner this cannot happen; on
+# a developer machine, clear the payload first:
+#
+#   rm -rf ~/.mcpp/registry/data/xpkgs/chriskohlhoff-x-asio
 set -uo pipefail
 
 MCPP=${MCPP:-mcpp}

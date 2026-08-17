@@ -5,11 +5,11 @@
 #include "vendor/windows.hpp"
 
 #include "core/state/app_state.hpp"
-#include "features/settings/state.hpp"
 #include "features/window_control/state.hpp"
 #include "ui/floating_window/state.hpp"
-#include "utils/logger/logger.hpp"
 
+import sm.features.settings.state;
+import sm.utils.logger.logger;
 import sm.utils.display.display;
 import sm.utils.string.string;
 

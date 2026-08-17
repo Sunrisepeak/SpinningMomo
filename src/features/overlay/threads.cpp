@@ -9,7 +9,7 @@
 #include "features/overlay/state.hpp"
 #include "features/overlay/types.hpp"
 #include "features/overlay/window.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 namespace features::overlay::threads {
 

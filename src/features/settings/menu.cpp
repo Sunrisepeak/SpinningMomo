@@ -3,7 +3,7 @@
 #include "vendor/std.hpp"
 
 #include "core/state/app_state.hpp"
-#include "features/settings/state.hpp"
+import sm.features.settings.state;
 
 namespace features::settings::menu {
 

@@ -3,10 +3,10 @@ module;
 #include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
 #include "vendor/windows/dxgi1_6.hpp"
-#include "utils/logger/logger.hpp"
 
 module sm.utils.graphics.hdr;
 
+import sm.utils.logger.logger;
 import std;
 
 namespace utils::graphics::hdr {

@@ -4,7 +4,7 @@
 
 #include "vendor/windows.hpp"
 
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 namespace utils::timeout {
 

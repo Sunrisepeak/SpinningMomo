@@ -12,13 +12,13 @@
 #include "core/state/runtime_info.hpp"
 #include "core/webview/state.hpp"
 #include "core/webview/webview.hpp"
-#include "features/settings/settings.hpp"
-#include "features/settings/state.hpp"
-#include "features/settings/types.hpp"
 #include "ui/floating_window/state.hpp"
 #include "ui/tray_icon/types.hpp"
-#include "utils/logger/logger.hpp"
 
+import sm.features.settings.settings;
+import sm.features.settings.state;
+import sm.features.settings.types;
+import sm.utils.logger.logger;
 import sm.core.http_server.state;
 
 namespace ui::webview_window {

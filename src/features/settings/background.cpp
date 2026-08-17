@@ -1,14 +1,16 @@
-#include "features/settings/background.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "core/build_config.hpp"
 #include "core/state/app_state.hpp"
+#include "core/build_config.hpp"
 #include "core/webview/state.hpp"
 #include "core/webview/webview.hpp"
-#include "features/settings/types.hpp"
 #include "utils/image/image.hpp"
-#include "utils/logger/logger.hpp"
+
+module sm.features.settings.background;
+
+import std;
+import sm.features.settings.types;
+import sm.utils.logger.logger;
 
 import sm.core.http_server.static_;
 import sm.core.http_server.types;

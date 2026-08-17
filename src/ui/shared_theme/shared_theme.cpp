@@ -6,7 +6,7 @@
 #include "vendor/windows/d2d1_3.hpp"
 
 #include "core/state/app_state.hpp"
-#include "features/settings/state.hpp"
+import sm.features.settings.state;
 
 namespace ui::shared_theme {
 

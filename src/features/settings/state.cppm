@@ -1,11 +1,13 @@
-#pragma once
-
-#include "vendor/std.hpp"
+module;
 
 #include "features/settings/menu_types.hpp"
-#include "features/settings/types.hpp"
 
-namespace features::settings {
+export module sm.features.settings.state;
+
+import std;
+import sm.features.settings.types;
+
+export namespace features::settings {
 
 // 计算后的预设状态
 struct ComputedPresets {

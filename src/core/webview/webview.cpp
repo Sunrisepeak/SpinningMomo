@@ -10,7 +10,7 @@
 #include "core/state/app_state.hpp"
 #include "core/webview/host.hpp"
 #include "core/webview/state.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 import sm.utils.string.string;
 
 namespace core::webview::detail {

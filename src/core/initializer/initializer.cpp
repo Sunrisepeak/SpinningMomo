@@ -23,8 +23,6 @@
 #include "features/gallery/gallery.hpp"
 #include "features/letterbox/state.hpp"
 #include "features/recording/recording.hpp"
-#include "features/settings/settings.hpp"
-#include "features/settings/state.hpp"
 #include "features/window_control/window_control.hpp"
 #include "ui/context_menu/context_menu.hpp"
 #include "ui/floating_window/floating_window.hpp"
@@ -32,8 +30,10 @@
 #include "ui/notification_window/notification_window.hpp"
 #include "ui/tray_icon/tray_icon.hpp"
 #include "ui/webview_window/webview_window.hpp"
-#include "utils/logger/logger.hpp"
 
+import sm.features.settings.settings;
+import sm.features.settings.state;
+import sm.utils.logger.logger;
 import sm.core.async.async;
 import sm.core.http_client.http_client;
 import sm.features.update.update;

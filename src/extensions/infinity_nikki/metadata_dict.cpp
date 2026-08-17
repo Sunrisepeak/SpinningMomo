@@ -2,12 +2,12 @@ module;
 
 #include "core/state/app_state.hpp"
 #include "extensions/infinity_nikki/types.hpp"
-#include "vendor/rfl.hpp"
 #include "core/http_client/types.hpp"
-#include "utils/logger/logger.hpp"
 
 module sm.extensions.infinity_nikki.metadata_dict;
 
+import sm.vendor.rfl;
+import sm.utils.logger.logger;
 import std;
 import asio;
 import sm.core.http_client.http_client;

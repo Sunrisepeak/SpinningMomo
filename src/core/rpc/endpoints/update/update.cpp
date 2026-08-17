@@ -2,11 +2,10 @@
 
 #include "vendor/std.hpp"
 
-#include "vendor/rfl.hpp"
-
 #include "core/state/app_state.hpp"
 #include "features/update/types.hpp"
 
+import sm.vendor.rfl;
 import asio;
 import sm.core.rpc.rpc;
 import sm.core.rpc.state;

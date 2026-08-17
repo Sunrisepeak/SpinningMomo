@@ -12,7 +12,7 @@
 #include "ui/floating_window/state.hpp"
 #include "ui/photography_panel/render_context.hpp"
 #include "ui/photography_panel/state.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 import sm.utils.string.string;
 
 namespace ui::photography_panel::painter {

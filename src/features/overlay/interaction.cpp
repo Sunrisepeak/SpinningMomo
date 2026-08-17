@@ -14,7 +14,7 @@
 #include "features/overlay/types.hpp"
 #include "features/overlay/window.hpp"
 #include "utils/graphics/capture.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 namespace features::overlay::interaction {
 

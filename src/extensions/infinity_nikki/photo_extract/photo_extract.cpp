@@ -4,10 +4,10 @@ module;
 #include "extensions/infinity_nikki/types.hpp"
 #include "core/worker_pool/worker_pool.hpp"
 #include "extensions/infinity_nikki/photo_extract/scan.hpp"
-#include "utils/logger/logger.hpp"
 
 module sm.extensions.infinity_nikki.photo_extract.photo_extract;
 
+import sm.utils.logger.logger;
 import std;
 import asio;
 import sm.extensions.infinity_nikki.photo_extract.infra;

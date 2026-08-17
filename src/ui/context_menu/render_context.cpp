@@ -11,11 +11,12 @@
 #include "vendor/windows/dxgi1_2.hpp"
 
 #include "core/state/app_state.hpp"
-#include "features/settings/state.hpp"
 #include "ui/context_menu/state.hpp"
 #include "ui/shared_render_resources/shared_render_resources.hpp"
 #include "ui/shared_render_resources/state.hpp"
-#include "utils/logger/logger.hpp"
+
+import sm.features.settings.state;
+import sm.utils.logger.logger;
 
 namespace ui::context_menu::render_context {
 

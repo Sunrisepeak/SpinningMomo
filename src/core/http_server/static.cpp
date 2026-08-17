@@ -1,10 +1,10 @@
 module;
 
-#include "vendor/uwebsockets.hpp"
 #include "core/state/app_state.hpp"
 
 module sm.core.http_server.static_;
 
+import sm.vendor.uwebsockets;
 import std;
 import asio;
 import sm.core.async.async;
@@ -12,7 +12,7 @@ import sm.core.http_server.types;
 
 import sm.utils.file.file;
 import sm.utils.file.mime;
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 import sm.utils.path.path;
 import sm.utils.time;
 

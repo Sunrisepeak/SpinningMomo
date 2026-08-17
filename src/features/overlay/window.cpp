@@ -10,7 +10,7 @@
 #include "features/overlay/interaction.hpp"
 #include "features/overlay/state.hpp"
 #include "features/overlay/types.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 namespace features::overlay::window {
 

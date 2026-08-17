@@ -78,6 +78,9 @@ VENDOR_MODULES = {
     "vendor/webp.hpp":   "sm.vendor.webp",
     "vendor/dkm.hpp":    "sm.vendor.dkm",
     "vendor/sqlite.hpp": "sm.vendor.sqlite",
+    "vendor/spdlog.hpp": "sm.vendor.spdlog",
+    "vendor/rfl.hpp":    "sm.vendor.rfl",
+    "vendor/uwebsockets.hpp": "sm.vendor.uwebsockets",
 }
 
 
@@ -439,6 +442,16 @@ def normalize_module_units() -> int:
             out.append(l)
         path.write_text("\n".join(strip_empty_gmf(out)).rstrip() + "\n", encoding="utf-8")
         fixed += 1
+
+    # A `module;` that introduces nothing can also come from a conversion whose
+    # source had no vendor includes at all, so the sweep is over every unit
+    # rather than only the ones touched above.
+    for path in list(SRC.rglob("*.cppm")) + list(SRC.rglob("*.cpp")):
+        lines = path.read_text(encoding="utf-8").splitlines()
+        out = strip_empty_gmf(lines)
+        if out != lines:
+            path.write_text("\n".join(out).rstrip() + "\n", encoding="utf-8")
+            fixed += 1
     return fixed
 
 

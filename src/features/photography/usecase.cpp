@@ -7,7 +7,7 @@
 #include "core/state/app_state.hpp"
 #include "features/photography/state.hpp"
 #include "ui/photography_panel/photography_panel.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 namespace features::photography {
 

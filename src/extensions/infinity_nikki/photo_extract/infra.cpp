@@ -3,13 +3,13 @@ module;
 #include "core/state/app_state.hpp"
 #include "extensions/infinity_nikki/photo_extract/scan.hpp"
 #include "extensions/infinity_nikki/types.hpp"
-#include "vendor/rfl.hpp"
 #include "core/database/types.hpp"
 #include "core/http_client/types.hpp"
 #include "features/gallery/folder/repository.hpp"
 
 module sm.extensions.infinity_nikki.photo_extract.infra;
 
+import sm.vendor.rfl;
 import sm.core.database.database;
 import std;
 import asio;

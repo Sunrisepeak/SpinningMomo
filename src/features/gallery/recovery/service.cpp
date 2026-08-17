@@ -14,7 +14,7 @@
 #include "features/gallery/scanner/common.hpp"
 #include "features/gallery/state.hpp"
 #include "features/gallery/types.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 import sm.utils.path.path;
 import sm.utils.string.string;
 

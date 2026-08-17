@@ -3,10 +3,11 @@
 #include "vendor/std.hpp"
 
 #include "core/events/events.hpp"
-#include "core/http_server/sse_manager.hpp"
 #include "core/state/app_state.hpp"
 #include "core/webview/events.hpp"
-#include "utils/logger/logger.hpp"
+
+import sm.core.http_server.sse_manager;
+import sm.utils.logger.logger;
 
 namespace core::rpc::notification_hub {
 

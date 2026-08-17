@@ -1,10 +1,9 @@
-#pragma once
+export module sm.features.settings.events;
 
-#include "vendor/std.hpp"
+import std;
+import sm.features.settings.types;
 
-#include "features/settings/types.hpp"
-
-namespace features::settings::events {
+export namespace features::settings::events {
 
 // 设置变更事件
 struct SettingsChangeEvent {

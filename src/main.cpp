@@ -4,8 +4,8 @@
 #include "vendor/windows.hpp"
 
 #include "app.hpp"
-#include "features/settings/settings.hpp"
-#include "utils/logger/logger.hpp"
+import sm.features.settings.settings;
+import sm.utils.logger.logger;
 
 // Win32 入口
 

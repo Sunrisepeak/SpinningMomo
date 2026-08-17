@@ -7,8 +7,8 @@
 #include "core/commands/state.hpp"
 #include "core/commands/types.hpp"
 #include "core/state/app_state.hpp"
-#include "features/settings/state.hpp"
-#include "utils/logger/logger.hpp"
+import sm.features.settings.state;
+import sm.utils.logger.logger;
 
 namespace core::commands {
 

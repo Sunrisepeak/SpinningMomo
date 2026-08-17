@@ -2,17 +2,16 @@
 
 #include "vendor/std.hpp"
 
-#include "vendor/rfl.hpp"
-
 #include "core/http_client/types.hpp"
 #include "core/rpc/notification_hub.hpp"
 #include "core/state/app_state.hpp"
 #include "features/gallery/folder/repository.hpp"
 #include "features/gallery/folder/service.hpp"
 #include "features/gallery/types.hpp"
-#include "features/settings/state.hpp"
-#include "utils/logger/logger.hpp"
 
+import sm.vendor.rfl;
+import sm.features.settings.state;
+import sm.utils.logger.logger;
 import asio;
 import sm.core.async.async;
 import sm.core.http_client.http_client;

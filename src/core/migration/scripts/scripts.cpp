@@ -2,14 +2,13 @@
 
 #include "vendor/std.hpp"
 
-#include "vendor/rfl.hpp"
-
 #include "core/migration/generated/schema.hpp"
 #include "core/state/app_state.hpp"
-#include "features/settings/settings.hpp"
-#include "features/settings/types.hpp"
-#include "utils/logger/logger.hpp"
 
+import sm.vendor.rfl;
+import sm.features.settings.settings;
+import sm.features.settings.types;
+import sm.utils.logger.logger;
 import sm.core.database.database;
 
 namespace core::migration::scripts {

@@ -12,14 +12,14 @@
 #include "core/state/runtime_info.hpp"
 #include "features/screenshot/hdr_encoder.hpp"
 #include "features/screenshot/state.hpp"
-#include "features/settings/state.hpp"
 #include "utils/graphics/capture.hpp"
 #include "utils/graphics/capture_region.hpp"
 #include "utils/graphics/d3d.hpp"
 #include "utils/graphics/photo_processing.hpp"
 #include "utils/image/image.hpp"
-#include "utils/logger/logger.hpp"
 
+import sm.features.settings.state;
+import sm.utils.logger.logger;
 import sm.utils.graphics.hdr;
 import sm.utils.path.path;
 import sm.utils.string.string;

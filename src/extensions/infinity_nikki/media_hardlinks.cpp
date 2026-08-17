@@ -6,8 +6,8 @@
 #include "extensions/infinity_nikki/types.hpp"
 #include "features/gallery/types.hpp"
 #include "features/gallery/watcher/watcher.hpp"
-#include "features/settings/state.hpp"
-#include "utils/logger/logger.hpp"
+import sm.features.settings.state;
+import sm.utils.logger.logger;
 import sm.utils.string.string;
 import sm.utils.system.system;
 

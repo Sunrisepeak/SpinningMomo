@@ -9,7 +9,7 @@
 #include "vendor/windows/dxgi.hpp"
 #include "vendor/windows/dxgi1_4.hpp"
 
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 namespace utils::graphics::d3d {
 

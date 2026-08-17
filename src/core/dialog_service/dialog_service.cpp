@@ -8,7 +8,7 @@
 #include "core/dialog_service/state.hpp"
 #include "core/state/app_state.hpp"
 #include "utils/dialog/dialog.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 namespace core::dialog_service {
 

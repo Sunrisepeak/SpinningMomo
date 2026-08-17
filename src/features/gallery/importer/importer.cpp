@@ -9,11 +9,11 @@
 #include "features/gallery/scanner/scanner.hpp"
 #include "features/gallery/types.hpp"
 #include "features/gallery/watcher/watcher.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 import sm.utils.path.path;
 
 namespace features::gallery::importer {
-namespace {
+namespace detail {
 
 std::atomic<std::uint64_t> import_temp_file_sequence = 0;
 
@@ -133,7 +133,14 @@ auto cleanup_import_temp_file(const std::filesystem::path& temporary_path) -> vo
   }
 }
 
-}  // namespace
+}  // namespace detail
+
+// A named namespace instead of an anonymous one (AGENTS.md; the tree already
+// spells it `detail` in 20+ places). The names therefore gain EXTERNAL linkage,
+// which is the one real difference — they were TU-local before. Nothing else
+// in the project declares them, and the using-directive keeps unqualified
+// lookup at their call sites exactly as it was.
+using namespace detail;
 
 // 将一批外部媒体复制到已索引文件夹：校验 → 临时复制 → 原子提交 → 同步入库。
 auto import_files_to_folder(core::AppState& app_state, std::int64_t folder_id,

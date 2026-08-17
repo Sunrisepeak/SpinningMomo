@@ -18,7 +18,6 @@
 #include "features/preview/state.hpp"
 #include "features/recording/state.hpp"
 #include "features/screenshot/state.hpp"
-#include "features/settings/state.hpp"
 #include "features/update/state.hpp"
 #include "features/window_control/state.hpp"
 #include "ui/context_menu/state.hpp"
@@ -28,6 +27,7 @@
 #include "ui/shared_render_resources/state.hpp"
 #include "ui/tray_icon/state.hpp"
 
+import sm.features.settings.state;
 import sm.core.async.state;
 import sm.core.http_client.state;
 import sm.core.http_server.state;

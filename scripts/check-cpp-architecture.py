@@ -41,6 +41,66 @@ FORBIDDEN_TEXT = {
 
 EXTERNAL_INCLUDE = re.compile(r"^\s*#include\s*<[^>]+>")
 
+# `using X = ns::X;` — the same name on both sides.
+#
+# In the header world this is a redeclaration of one entity and does nothing. In
+# a module it is a redefinition, and MSVC says so: `C1117: symbol 'TaskProgress'
+# has already been defined`. Two of these sat in core/tasks/tasks.hpp and were
+# what made that file untranslatable.
+SELF_ALIAS = re.compile(r"^\s*using\s+(\w+)\s*=\s*[\w:]+::(\w+)\s*;", re.MULTILINE)
+
+
+def blank_out_literals(text: str) -> str:
+    """Replace comments and string literals with spaces, preserving offsets.
+
+    Needed because several headers embed HLSL in raw string literals, and shader
+    source looks exactly like C++ function definitions to a regex — three false
+    positives on the "module interfaces hold declarations only" rule before this
+    existed. Line and column numbers stay correct because every replaced
+    character becomes a space (newlines survive)."""
+    out = list(text)
+    i, n = 0, len(text)
+
+    def blank(a: int, b: int) -> None:
+        for k in range(a, min(b, n)):
+            if out[k] != "\n":
+                out[k] = " "
+
+    while i < n:
+        c = text[i]
+        if c == "/" and i + 1 < n and text[i + 1] == "/":
+            j = text.find("\n", i)
+            j = n if j < 0 else j
+        elif c == "/" and i + 1 < n and text[i + 1] == "*":
+            j = text.find("*/", i + 2)
+            j = n if j < 0 else j + 2
+        elif c == "R" and i + 1 < n and text[i + 1] == '"':
+            # raw string: R"delim( … )delim"
+            k = text.find("(", i + 2)
+            if k < 0:
+                i += 1
+                continue
+            delim = text[i + 2:k]
+            close = ')' + delim + '"'
+            j = text.find(close, k)
+            j = n if j < 0 else j + len(close)
+        elif c in "\"'":
+            j = i + 1
+            while j < n:
+                if text[j] == "\\":
+                    j += 2
+                    continue
+                if text[j] == c:
+                    j += 1
+                    break
+                j += 1
+        else:
+            i += 1
+            continue
+        blank(i, j)
+        i = j
+    return "".join(out)
+
 MODULE_DECLARATION = re.compile(r"^(?:export\s+)?module\s+[A-Za-z_][\w.]*\s*;", re.MULTILINE)
 
 NAMESPACE_DECLARATION = re.compile(
@@ -129,6 +189,10 @@ def report(errors: list[str], path: Path, line: int, message: str) -> None:
 
 def validate_file(path: Path, errors: list[str]) -> None:
     text = path.read_text(encoding="utf-8-sig", errors="strict")
+    # Comments and string literals blanked out, offsets preserved. Pattern rules
+    # that look for CODE run against this; rules that look for directives or
+    # raw text still use `text`.
+    code = blank_out_literals(text)
     lines = text.splitlines()
     vendor_root = SRC / "vendor"
     is_vendor_facade = vendor_root in path.parents
@@ -201,8 +265,27 @@ def validate_file(path: Path, errors: list[str]) -> None:
             report(errors, path, line,
                    f"模块单元里的 C 类型要写全: {match.group(1)} -> std::{match.group(1)}")
 
+    # A self-alias is only a self-alias when the alias sits in the SAME namespace
+    # as the entity it names. `using Direct3D11CaptureFrame =
+    # winrt::Windows::Graphics::Capture::Direct3D11CaptureFrame;` inside
+    # `utils::graphics` imports a name from elsewhere and is perfectly fine — the
+    # last segment matching is not enough to judge.
+    for match in SELF_ALIAS.finditer(code):
+        if match.group(1) != match.group(2):
+            continue
+        enclosing = ""
+        for ns in NAMESPACE_DECLARATION.finditer(code):
+            if ns.start() > match.start():
+                break
+            enclosing = ns.group(1)
+        qualifier = match.group(0).split("=", 1)[1].strip().rstrip(";").rsplit("::", 1)[0]
+        if enclosing and qualifier == enclosing:
+            line = text.count("\n", 0, match.start()) + 1
+            report(errors, path, line,
+                   f"自别名在模块里是重定义（C1117），删掉它: {match.group(0).strip()}")
+
     if path.suffix in MODULE_SUFFIXES:
-        for match in IFACE_FUNCTION_BODY.finditer(text):
+        for match in IFACE_FUNCTION_BODY.finditer(code):
             line = text.count("\n", 0, match.start()) + 1
             report(errors, path, line,
                    f"模块接口只放声明，实现移到同名 .cpp: {match.group(1)}(...)")
@@ -246,6 +329,16 @@ def validate_file(path: Path, errors: list[str]) -> None:
 
 
 def main() -> int:
+    # The findings are written in Chinese and this runs on a Windows runner,
+    # where stdout defaults to the ANSI code page (cp1252) and `print` dies with
+    # UnicodeEncodeError before showing a single one. A check that crashes
+    # instead of reporting is worse than no check.
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, ValueError):
+            pass
+
     errors: list[str] = []
 
     module_interfaces = sorted(SRC.rglob("*.ixx")) + sorted(TESTS.rglob("*.ixx"))

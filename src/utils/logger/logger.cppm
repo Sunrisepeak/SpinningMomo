@@ -1,10 +1,9 @@
-#pragma once
+export module sm.utils.logger.logger;
 
-#include "vendor/std.hpp"
+import std;
+import sm.vendor.spdlog;
 
-#include "vendor/spdlog.hpp"
-
-namespace utils::logging {
+export namespace utils::logging {
 
 // 日志管理函数
 auto initialize(const std::optional<std::string>& configured_level = std::nullopt)

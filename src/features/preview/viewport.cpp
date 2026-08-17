@@ -11,7 +11,7 @@
 #include "features/preview/state.hpp"
 #include "features/preview/types.hpp"
 #include "utils/graphics/d3d.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 namespace features::preview::viewport {
 

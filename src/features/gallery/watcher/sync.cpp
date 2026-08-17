@@ -17,7 +17,7 @@
 #include "features/gallery/state.hpp"
 #include "features/gallery/types.hpp"
 #include "features/gallery/watcher/watcher.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 import sm.utils.string.string;
 import sm.utils.time;
 

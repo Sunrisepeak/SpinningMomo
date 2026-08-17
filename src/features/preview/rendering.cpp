@@ -13,7 +13,7 @@
 #include "features/preview/types.hpp"
 #include "features/preview/viewport.hpp"
 #include "utils/graphics/d3d.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 namespace features::preview::rendering {
 

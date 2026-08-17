@@ -14,7 +14,7 @@
 #include "features/gallery/root_availability.hpp"
 #include "features/gallery/types.hpp"
 #include "features/gallery/watcher/watcher.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 import sm.core.database.database;
 import sm.utils.path.path;

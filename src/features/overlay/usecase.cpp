@@ -11,9 +11,10 @@
 #include "features/overlay/state.hpp"
 #include "features/preview/preview.hpp"
 #include "features/preview/state.hpp"
-#include "features/settings/state.hpp"
 #include "features/window_control/window_control.hpp"
-#include "utils/logger/logger.hpp"
+
+import sm.features.settings.state;
+import sm.utils.logger.logger;
 import sm.utils.string.string;
 
 namespace features::overlay {

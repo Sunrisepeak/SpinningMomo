@@ -12,7 +12,7 @@
 #include "features/overlay/state.hpp"
 #include "features/overlay/types.hpp"
 #include "utils/graphics/d3d.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 namespace features::overlay::rendering {
 

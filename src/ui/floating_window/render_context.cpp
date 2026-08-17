@@ -11,12 +11,13 @@
 #include "vendor/windows/dxgi1_2.hpp"
 
 #include "core/state/app_state.hpp"
-#include "features/settings/state.hpp"
 #include "ui/floating_window/state.hpp"
 #include "ui/floating_window/types.hpp"
 #include "ui/shared_render_resources/shared_render_resources.hpp"
 #include "ui/shared_render_resources/state.hpp"
 #include "ui/shared_theme/shared_theme.hpp"
+
+import sm.features.settings.state;
 
 namespace ui::floating_window::render_context {
 

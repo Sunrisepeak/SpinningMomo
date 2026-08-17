@@ -3,9 +3,9 @@
 #include "vendor/std.hpp"
 
 #include "core/state/app_state.hpp"
-#include "features/settings/background.hpp"
-#include "features/settings/settings.hpp"
-#include "features/settings/types.hpp"
+import sm.features.settings.background;
+import sm.features.settings.settings;
+import sm.features.settings.types;
 
 import asio;
 import sm.core.rpc.rpc;

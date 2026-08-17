@@ -7,9 +7,6 @@
 
 namespace core::tasks {
 
-using TaskProgress = core::tasks::TaskProgress;
-using TaskSnapshot = core::tasks::TaskSnapshot;
-
 auto create_task(core::AppState& state, const std::string& type,
                  const std::optional<std::string>& context = std::nullopt) -> std::string;
 
