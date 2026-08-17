@@ -121,15 +121,34 @@ jobs:
       # starts — far less than compiling MSVC's std.ixx takes. The completion
       # signal itself is what is wrong, so no amount of ordering fixes it.
       #
-      # Since `xmake.lua` now adds std.ixx through `add_files`, it is an ordinary
-      # target source file and `--files` can select it. One invocation builds
-      # that BMI and its objectfile with nothing else in flight; the next
-      # invocation finds it up to date and never re-enters the race.
-      - name: Build the std module first (xmake std completion signal)
-        run: xmake build -y -v --files="**/std.ixx"
-
+      # `--files="**/std.ixx"` does not help: it scans the file and reports
+      # "build ok" in 22s without ever compiling it, because `--files` filters
+      # source jobs and the module BMI jobs are scheduled separately.
+      #
+      # So: retry. Every BMI that DID compile is written to
+      # build/.gens/.../interfaces/ and survives the failed invocation, so each
+      # attempt starts from where the last one stopped and only the racing
+      # units are re-attempted. It converges, and it converges quickly — the
+      # work is not repeated, only the scheduling.
+      #
+      # This is a workaround, and it is shaped like one on purpose: if it ever
+      # needs more than three attempts, that is a different problem and it
+      # should fail loudly rather than loop.
       - name: Build
-        run: xmake build -y -v
+        shell: bash
+        run: |
+          for attempt in 1 2 3; do
+            echo "::group::xmake build (attempt $attempt)"
+            if xmake build -y -v; then
+              echo "::endgroup::"
+              echo "build succeeded on attempt $attempt"
+              exit 0
+            fi
+            echo "::endgroup::"
+            echo "attempt $attempt hit the std scheduling defect; retrying"
+          done
+          echo "still failing after 3 attempts — this is not the known std race"
+          exit 1
 
       # The backend regression suite (doctest). It is a separate target with
       # `set_default(false)`, so `xmake build` does not touch it — and until now
