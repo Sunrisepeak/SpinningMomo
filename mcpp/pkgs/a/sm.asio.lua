@@ -322,6 +322,32 @@ using ::asio::ssl::error::make_error_code;
             },
         },
         deps = {},
+
+        -- THE CONSUMER'S WINDOWS API LEVEL, baked into this package's BMI.
+        --
+        -- asio pulls <windows.h> into the module's global module fragment, so
+        -- the BMI carries a parse of the whole Win32 surface — configured by
+        -- whatever `_WIN32_WINNT` was in effect WHEN THE PACKAGE WAS COMPILED.
+        -- Left unset, asio/detail/config.hpp falls back to 0x0601 (Windows 7).
+        -- A consumer that targets 0x0A00 and also includes <windows.h> textually
+        -- then has two incompatible parses of the same header in one TU, and
+        -- clang refuses to merge them:
+        --
+        --   winuser.h:3835: error: conflicting types for 'BroadcastSystemMessageExA'
+        --   winuser.h:3835: note: previous declaration is here    <- same line
+        --
+        -- (WIN32_LEAN_AND_MEAN and NOMINMAX need no help: asio defines both
+        -- itself, so those two already agree with the project.)
+        --
+        -- This is a general hazard for any module package that reaches the
+        -- platform SDK, and mcpp has no channel for a consumer to configure a
+        -- dependency's compile. Upstreaming it means giving
+        -- `chriskohlhoff.asio` a way to say which API level it was built for.
+        -- probes/p8-asio-windows is the regression test.
+        windows = {
+            cflags   = { "-D_WIN32_WINNT=0x0A00" },
+            cxxflags = { "-D_WIN32_WINNT=0x0A00" },
+        },
         -- POSIX threading is detected by asio from unistd.h feature macros;
         -- retain the portable driver-level thread link contract on Linux.
         linux = {

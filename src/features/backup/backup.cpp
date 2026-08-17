@@ -4,7 +4,7 @@
 
 #include "vendor/windows.hpp"
 
-#include "core/database/database.hpp"
+import sm.core.database.database;
 #include "core/state/app_state.hpp"
 #include "core/state/runtime_info.hpp"
 #include "features/backup/types.hpp"

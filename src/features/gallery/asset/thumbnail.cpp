@@ -2,7 +2,7 @@
 
 #include "vendor/std.hpp"
 
-#include "core/database/database.hpp"
+import sm.core.database.database;
 #include "core/state/app_state.hpp"
 #include "features/gallery/asset/service.hpp"
 #include "features/gallery/state.hpp"

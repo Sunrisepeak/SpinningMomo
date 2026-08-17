@@ -5,7 +5,7 @@
 #include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
 
-#include "core/database/database.hpp"
+import sm.core.database.database;
 #include "core/state/app_state.hpp"
 #include "core/worker_pool/worker_pool.hpp"
 #include "features/gallery/asset/repository.hpp"

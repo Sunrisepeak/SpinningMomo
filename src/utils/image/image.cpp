@@ -2,8 +2,8 @@
 
 #include "vendor/std.hpp"
 
-#include "vendor/dkm.hpp"
-#include "vendor/webp.hpp"
+import sm.vendor.dkm;
+import sm.vendor.webp;
 #include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
 #include "vendor/windows/shlwapi.hpp"

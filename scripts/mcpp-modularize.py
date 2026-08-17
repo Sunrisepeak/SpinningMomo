@@ -67,7 +67,17 @@ MODULE_PREFIX = "sm."
 # unconverted header — a header cannot `import`. So every .hpp that includes one
 # must be in the same conversion batch. `--closure` computes that set.
 VENDOR_MODULES = {
+    # The library itself is a module package — no facade at all, because the
+    # module IS the interface.
     "vendor/asio.hpp": "asio",
+
+    # Facades that became modules in place. These still exist as the single
+    # place the project names an external library; what changed is that the
+    # third-party header is parsed ONCE instead of once per consumer.
+    "vendor/xxhash.hpp": "sm.vendor.xxhash",
+    "vendor/webp.hpp":   "sm.vendor.webp",
+    "vendor/dkm.hpp":    "sm.vendor.dkm",
+    "vendor/sqlite.hpp": "sm.vendor.sqlite",
 }
 
 
@@ -237,6 +247,79 @@ MODULE_DECL_RE = re.compile(r'^(?:export )?module\s+[A-Za-z_]')
 IMPORT_RE = re.compile(r'^\s*import\s')
 
 
+C_TYPES = ("size_t", "ptrdiff_t", "intptr_t", "uintptr_t",
+           "int8_t", "int16_t", "int32_t", "int64_t",
+           "uint8_t", "uint16_t", "uint32_t", "uint64_t")
+C_TYPE_RE = re.compile(r"(?<![\w:.>])(" + "|".join(C_TYPES) + r")\b")
+
+
+def _mask_comments_and_strings(text: str) -> bytearray:
+    """Positions that are inside a comment or a string/char literal."""
+    mask = bytearray(len(text))
+    i, n = 0, len(text)
+    while i < n:
+        c = text[i]
+        if c == "/" and i + 1 < n and text[i + 1] == "/":
+            j = text.find("\n", i)
+            j = n if j < 0 else j
+        elif c == "/" and i + 1 < n and text[i + 1] == "*":
+            j = text.find("*/", i + 2)
+            j = n if j < 0 else j + 2
+        elif c in "\"'":
+            j = i + 1
+            while j < n:
+                if text[j] == "\\":
+                    j += 2
+                    continue
+                if text[j] == c:
+                    j += 1
+                    break
+                j += 1
+        else:
+            i += 1
+            continue
+        for k in range(i, min(j, n)):
+            mask[k] = 1
+        i = j
+    return mask
+
+
+def qualify_c_types() -> int:
+    """`size_t` -> `std::size_t` in module units.
+
+    The unqualified spellings live in the GLOBAL namespace and only exist in a
+    translation unit that textually included <stddef.h> — which, in a module
+    unit, means some vendor facade in the global module fragment happened to
+    pull it in. `import std;` exports `std::size_t` and nothing else, so the
+    unqualified form is a dependency on the CONTENT of a header nobody named.
+
+    It held until `#include "vendor/asio.hpp"` became `import asio;`, at which
+    point `utils/file/file.cppm` stopped compiling on `int64_t last_modified;` —
+    a field that had never had anything to do with Asio.
+    """
+    changed = 0
+    for path in list(SRC.rglob("*.cppm")) + list(SRC.rglob("*.cpp")):
+        text = path.read_text(encoding="utf-8")
+        # MODULE_DECL_RE is anchored per LINE (it is used with .match on each
+        # line elsewhere), so searching the whole text would only ever test
+        # position 0 — and a module unit's first line is `module;`.
+        if not any(MODULE_DECL_RE.match(l) for l in text.splitlines()):
+            continue
+        mask = _mask_comments_and_strings(text)
+        out, last, hits = [], 0, 0
+        for m in C_TYPE_RE.finditer(text):
+            if mask[m.start()]:
+                continue
+            out.append(text[last:m.start()])
+            out.append("std::" + m.group(1))
+            last, hits = m.end(), hits + 1
+        if hits:
+            out.append(text[last:])
+            path.write_text("".join(out), encoding="utf-8")
+            changed += 1
+    return changed
+
+
 def normalize_module_units() -> int:
     """Move any `import` that landed in a global module fragment into the purview.
 
@@ -366,6 +449,7 @@ def main() -> int:
         return 2
     if args[0] == "--normalize":
         print(f"normalized {normalize_module_units()} module units")
+        print(f"qualified C types in {qualify_c_types()} module units")
         return 0
     if args[0] == "--rename-prefix":
         for top in args[1:]:
@@ -386,6 +470,7 @@ def main() -> int:
         print(f"{rel}: {h.relative_to(ROOT)}" + (f" + {i.relative_to(ROOT)}" if i else " (header-only)"))
     rewrite_consumers(args)
     normalize_module_units()
+    qualify_c_types()
     return 0
 
 

@@ -2,7 +2,7 @@
 
 #include "vendor/std.hpp"
 
-#include "core/database/database.hpp"
+import sm.core.database.database;
 #include "core/database/state.hpp"
 #include "core/state/app_state.hpp"
 #include "utils/logger/logger.hpp"

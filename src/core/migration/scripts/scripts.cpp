@@ -4,7 +4,7 @@
 
 #include "vendor/rfl.hpp"
 
-#include "core/database/database.hpp"
+import sm.core.database.database;
 #include "core/migration/generated/schema.hpp"
 #include "core/state/app_state.hpp"
 #include "features/settings/settings.hpp"

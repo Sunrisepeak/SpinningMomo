@@ -1,14 +1,15 @@
-#pragma once
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/sqlite.hpp"
-
-#include "core/database/data_mapper.hpp"
 #include "core/database/types.hpp"
 #include "core/state/app_state.hpp"
 
-namespace core::database {
+export module sm.core.database.database;
+
+import std;
+import sm.vendor.sqlite;
+import sm.core.database.data_mapper;
+
+export namespace core::database {
 
 // 同步执行数据库任务。调用方会等待任务完成；事务内重入时由实现复用当前 worker 连接。
 auto run_database_job(core::AppState& app_state,
@@ -68,7 +69,7 @@ inline auto query(core::AppState& app_state, const std::string& sql,
           SQLite::Statement query(connection, sql);
 
           // 绑定参数
-          for (size_t i = 0; i < params.size(); ++i) {
+          for (std::size_t i = 0; i < params.size(); ++i) {
             const auto& param = params[i];
             int param_index = static_cast<int>(i + 1);  // SQLite 参数是 1-based 索引
 
@@ -135,7 +136,7 @@ inline auto query_scalar(core::AppState& app_state, const std::string& sql,
         try {
           SQLite::Statement query(connection, sql);
 
-          for (size_t i = 0; i < params.size(); ++i) {
+          for (std::size_t i = 0; i < params.size(); ++i) {
             const auto& param = params[i];
             int param_index = static_cast<int>(i + 1);
             std::visit(
@@ -159,7 +160,7 @@ inline auto query_scalar(core::AppState& app_state, const std::string& sql,
             }
             if constexpr (std::is_same_v<T, int>) {
               return col.getInt();
-            } else if constexpr (std::is_same_v<T, int64_t>) {
+            } else if constexpr (std::is_same_v<T, std::int64_t>) {
               return col.getInt64();
             } else if constexpr (std::is_same_v<T, double>) {
               return col.getDouble();
@@ -184,31 +185,31 @@ inline auto query_scalar(core::AppState& app_state, const std::string& sql,
 template <typename T, typename ParamExtractor>
 inline auto execute_batch_insert(core::AppState& app_state, const std::string& insert_prefix,
                                  const std::string& values_placeholder, const std::vector<T>& items,
-                                 ParamExtractor param_extractor, size_t max_params_per_batch = 999)
-    -> std::expected<std::vector<int64_t>, std::string> {
+                                 ParamExtractor param_extractor, std::size_t max_params_per_batch = 999)
+    -> std::expected<std::vector<std::int64_t>, std::string> {
   if (items.empty()) {
-    return std::vector<int64_t>{};
+    return std::vector<std::int64_t>{};
   }
 
   // 计算每个item需要的参数数量
   auto sample_params = param_extractor(items[0]);
-  size_t params_per_item = sample_params.size();
-  size_t max_items_per_batch = max_params_per_batch / params_per_item;
+  std::size_t params_per_item = sample_params.size();
+  std::size_t max_items_per_batch = max_params_per_batch / params_per_item;
 
   if (max_items_per_batch == 0) {
     return std::unexpected("Single item exceeds maximum parameter limit");
   }
 
-  std::vector<int64_t> all_inserted_ids;
+  std::vector<std::int64_t> all_inserted_ids;
   all_inserted_ids.reserve(items.size());
 
   return execute_transaction(
       app_state,
-      [&](core::AppState& txn_app_state) -> std::expected<std::vector<int64_t>, std::string> {
-        for (size_t batch_start = 0; batch_start < items.size();
+      [&](core::AppState& txn_app_state) -> std::expected<std::vector<std::int64_t>, std::string> {
+        for (std::size_t batch_start = 0; batch_start < items.size();
              batch_start += max_items_per_batch) {
-          size_t batch_end = std::min(batch_start + max_items_per_batch, items.size());
-          size_t batch_size = batch_end - batch_start;
+          std::size_t batch_end = std::min(batch_start + max_items_per_batch, items.size());
+          std::size_t batch_size = batch_end - batch_start;
 
           // 构建当前批次的SQL
           std::string batch_sql = insert_prefix;
@@ -218,14 +219,14 @@ inline auto execute_batch_insert(core::AppState& app_state, const std::string& i
           value_clauses.reserve(batch_size);
           all_params.reserve(batch_size * params_per_item);
 
-          for (size_t i = batch_start; i < batch_end; ++i) {
+          for (std::size_t i = batch_start; i < batch_end; ++i) {
             value_clauses.push_back(values_placeholder);
             auto item_params = param_extractor(items[i]);
             all_params.insert(all_params.end(), item_params.begin(), item_params.end());
           }
 
           // 合并VALUES子句
-          for (size_t i = 0; i < value_clauses.size(); ++i) {
+          for (std::size_t i = 0; i < value_clauses.size(); ++i) {
             if (i > 0) batch_sql += ", ";
             batch_sql += value_clauses[i];
           }

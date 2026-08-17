@@ -1,0 +1,27 @@
+[package]
+name      = "p8asiowindows"
+version   = "0.1.0"
+standard  = "c++23"
+platforms = ["windows"]
+
+# No [toolchain] pin: the matrix chooses.
+
+[indices]
+sm = { path = "../../mcpp" }
+
+[dependencies.sm]
+asio = "1.38.1"
+
+[build]
+cxx_runtime = "self-contained"
+
+# EXACTLY the project's Windows macro state. That is the point of this probe:
+# the asio PACKAGE is compiled with its own defines, and if the two disagree
+# about how <windows.h> is configured, the two parses of it produce declarations
+# clang refuses to merge.
+defines = [
+  "NOMINMAX", "UNICODE", "_UNICODE", "WIN32_LEAN_AND_MEAN", "_WIN32_WINNT=0x0A00",
+  "ASIO_STANDALONE", "ASIO_SEPARATE_COMPILATION",
+  "ASIO_DISABLE_BOOST_CONTEXT_FIBER", "ASIO_HAS_THREADS", "ASIO_NO_IOSTREAM",
+]
+ldflags = ["-luser32"]

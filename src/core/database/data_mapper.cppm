@@ -1,13 +1,14 @@
-#pragma once
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/rfl.hpp"
-#include "vendor/sqlite.hpp"
-
 #include "core/database/types.hpp"
 
-namespace core::database::data_mapper {
+export module sm.core.database.data_mapper;
+
+import std;
+import sm.vendor.sqlite;
+
+export namespace core::database::data_mapper {
 
 enum class MappingErrorType {
   field_not_found,
@@ -63,8 +64,8 @@ struct SqliteTypeConverter<int> {
 };
 
 template <>
-struct SqliteTypeConverter<int64_t> {
-  static auto from_column(const SQLite::Column& col) -> std::expected<int64_t, std::string> {
+struct SqliteTypeConverter<std::int64_t> {
+  static auto from_column(const SQLite::Column& col) -> std::expected<std::int64_t, std::string> {
     if (col.isNull()) {
       return std::unexpected("Column is NULL");
     }
@@ -170,7 +171,7 @@ inline auto from_statement(SQLite::Statement& query) -> std::expected<T, std::st
   // 如果有错误，合并错误信息
   if (!errors.empty()) {
     std::string error_message = "Found " + std::to_string(errors.size()) + " errors:\n";
-    for (size_t i = 0; i < errors.size(); ++i) {
+    for (std::size_t i = 0; i < errors.size(); ++i) {
       error_message += std::to_string(i + 1) + ") " + errors[i].to_string() + "\n";
     }
     return std::unexpected(error_message);

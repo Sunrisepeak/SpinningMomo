@@ -4,7 +4,7 @@
 
 import sm.core.async.async;
 #include "core/commands/registry.hpp"
-#include "core/database/database.hpp"
+import sm.core.database.database;
 #include "core/dialog_service/dialog_service.hpp"
 import sm.core.http_client.http_client;
 #include "core/http_server/http_server.hpp"

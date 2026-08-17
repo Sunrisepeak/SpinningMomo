@@ -4,13 +4,13 @@ module;
 #include "extensions/infinity_nikki/photo_extract/scan.hpp"
 #include "extensions/infinity_nikki/types.hpp"
 #include "vendor/rfl.hpp"
-#include "core/database/database.hpp"
 #include "core/database/types.hpp"
 #include "core/http_client/types.hpp"
 #include "features/gallery/folder/repository.hpp"
 
 module sm.extensions.infinity_nikki.photo_extract.infra;
 
+import sm.core.database.database;
 import std;
 import asio;
 import sm.core.http_client.http_client;

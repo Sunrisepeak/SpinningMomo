@@ -3,7 +3,6 @@ module;
 #include "core/state/app_state.hpp"
 #include "extensions/infinity_nikki/types.hpp"
 #include "features/gallery/types.hpp"
-#include "core/database/database.hpp"
 #include "core/database/types.hpp"
 #include "features/gallery/asset/query_support.hpp"
 #include "features/gallery/asset/repository.hpp"
@@ -11,6 +10,7 @@ module;
 
 module sm.extensions.infinity_nikki.asset_service;
 
+import sm.core.database.database;
 import std;
 import asio;
 import sm.extensions.infinity_nikki.metadata_dict;

@@ -1,9 +1,6 @@
-module;
-
-#include "vendor/xxhash.hpp"
-
 export module sm.utils.hash.xxhash;
 
+import sm.vendor.xxhash;
 import std;
 
 export namespace utils::hash {
