@@ -254,6 +254,16 @@ WIN32_BARE_TYPE = re.compile(
 WINDOWS_FACADES = ("vendor/windows.hpp", "vendor/windows/", "vendor/wil.hpp",
                    "vendor/webview2.hpp")
 
+# WebView2 has the same shape as the Win32 types above and needs its own facade
+# rather than any windows one: bare global identifiers, no namespace to key on.
+#
+#   ui/webview_window/webview_window.cpp:644:13: error: use of undeclared
+#   identifier 'COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC'
+#
+# The prefixes are unmistakable, so this one can be a pattern rather than a list.
+WEBVIEW2_IDENT = re.compile(
+    r"(?<![\w:.])(COREWEBVIEW2_\w+|ICoreWebView2\w*|CreateCoreWebView2\w*)\b")
+
 # A top-level declaration in a module interface that nobody exported.
 #
 # The conversion put `export` on the FIRST top-level namespace of each header,
@@ -408,6 +418,12 @@ def validate_file(path: Path, errors: list[str]) -> None:
                 report(errors, path, code.count("\n", 0, m.start()) + 1,
                        f"用到 Win32 的 {m.group(1)} 却没有包含 vendor/windows 门面 —— "
                        f"它以前是靠某个传递 include 进来的")
+
+        if "vendor/webview2.hpp" not in text:
+            m = WEBVIEW2_IDENT.search(code)
+            if m:
+                report(errors, path, code.count("\n", 0, m.start()) + 1,
+                       f"用到 WebView2 的 {m.group(1)} 却没有包含 vendor/webview2.hpp")
 
     for symbol, providers in REQUIRED_SYMBOL_PROVIDERS.items():
         if symbol in text and not any(p in text for p in providers):

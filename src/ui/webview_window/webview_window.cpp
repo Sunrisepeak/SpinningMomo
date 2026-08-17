@@ -4,6 +4,7 @@ module;
 #include "vendor/windows/dwmapi.hpp"
 #include "vendor/windows/shellapi.hpp"
 #include "vendor/windows/windowsx.hpp"
+#include "vendor/webview2.hpp"
 
 module sm.ui.webview_window.webview_window;
 

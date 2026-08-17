@@ -110,10 +110,24 @@ jobs:
       - name: Configure (release, clang-cl)
         run: xmake f -m release --toolchain=clang-cl -y -v
 
-      # `scripts/patch-xmake-std-module-order.js` above is what makes this step
-      # work; without it a handful of units — always the ones whose only module
-      # dependency is `std` — die with `fatal error: module 'std' not found`.
-      # The full evidence is in that script's header.
+      # Build the `std` module on its own first.
+      #
+      # Every round, a handful of units — always exactly the ones whose only
+      # module dependency is `std` — die with `fatal error: module 'std' not
+      # found`, and it is a different handful each time. The explicit ordering
+      # edges added by scripts/patch-xmake-std-module-order.js DO create the
+      # barrier the log confirms it ("445 edges added", one synchronised
+      # release), but `std`'s job is considered finished 4.4 seconds after it
+      # starts — far less than compiling MSVC's std.ixx takes. The completion
+      # signal itself is what is wrong, so no amount of ordering fixes it.
+      #
+      # Since `xmake.lua` now adds std.ixx through `add_files`, it is an ordinary
+      # target source file and `--files` can select it. One invocation builds
+      # that BMI and its objectfile with nothing else in flight; the next
+      # invocation finds it up to date and never re-enters the race.
+      - name: Build the std module first (xmake std completion signal)
+        run: xmake build -y -v --files="**/std.ixx"
+
       - name: Build
         run: xmake build -y -v
 
