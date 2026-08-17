@@ -52,6 +52,18 @@ set_policy("build.c++.modules", true)
 -- 文件就是 MSVC 自带的 std.ixx，位置按 xmake 自己 get_stdmodules() 的算法取。
 set_policy("build.c++.modules.std", false)
 
+-- 两阶段编译（先出 BMI、再出 objectfile）关掉，模块复用也关掉。
+--
+-- 这两个开关正好套住出问题的那台机器：`std` 的 BMI 作业在下发 4.4 秒后被判定
+-- 完成，而盘上没有可加载的 BMI —— 重试三次，每次都倒在同一批「唯一模块依赖就是
+-- std」的单元上，说明它根本没编出来，而不是编到一半被读了。
+--
+-- 单阶段编译一次调用同时产出 BMI 与 objectfile，BMI 与目标文件的产出/判定就不再
+-- 是两件可以各自出错的事。reuse 是 3.1.0 里刚改过 deps orders 的那套机制，
+-- 本工程跨 target 也没有复用的需要，一并关掉少一个变量。
+set_policy("build.c++.modules.two_phases", false)
+set_policy("build.c++.modules.reuse", false)
+
 -- 默认使用 LLVM 工具链，可通过 --toolchain 覆盖
 set_config("toolchain", "clang-cl[llvm]")
 
