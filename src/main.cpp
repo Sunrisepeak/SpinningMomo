@@ -3,6 +3,19 @@
 #include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
 
+// GUI subsystem, declared by the binary that needs it rather than by the build.
+//
+// `[build] ldflags` reaches EVERY link in the package, and mcpp has no
+// per-target ldflags — so `-Wl,/subsystem:windows` there also lands on the test
+// binaries built by `mcpp test`, which then want `WinMain` instead of `main`:
+//
+//   lld-link: error: undefined symbol: WinMain
+//
+// A linker directive in the entry translation unit reaches exactly the binary
+// that includes it. lld-link reads it out of `.drectve` the same way it reads
+// the command line.
+#pragma comment(linker, "/subsystem:windows")
+
 import sm.app;
 import sm.features.settings.settings;
 import sm.utils.logger.logger;

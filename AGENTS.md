@@ -27,7 +27,7 @@ anything that passes only one is a property of that build.
 ```
 # C++ backend — mcpp, dependencies from the official mcpp-index
 bash scripts/mcpp-prebuild.sh   # resources, C++/WinRT projection, WebView2 SDK
-mcpp build
+mcpp build --dev       # -O0 -g
 mcpp build --release
 mcpp test
 

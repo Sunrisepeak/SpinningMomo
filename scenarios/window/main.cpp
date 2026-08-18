@@ -3,6 +3,10 @@
 #include "vendor/windows.hpp"
 #include "vendor/windows/shellapi.hpp"
 
+// GUI subsystem — see src/main.cpp for why this is a directive rather than a
+// build flag.
+#pragma comment(linker, "/subsystem:windows")
+
 namespace detail {
 
 struct Options {

@@ -92,7 +92,7 @@ npm run build
 ```bash
 # C++ 后端
 bash scripts/mcpp-prebuild.sh
-mcpp build                 # debug
+mcpp build --dev           # -O0 -g
 mcpp build --release
 
 # Web 前端

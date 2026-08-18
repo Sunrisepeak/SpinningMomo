@@ -5,145 +5,74 @@ standard  = "c++23"
 platforms = ["windows"]
 license   = "GPL-3.0"
 
-# llvm targeting the MSVC ABI — mcpp's own default on Windows.
+# llvm targeting the MSVC ABI, not native cl.exe — `import asio;` does not
+# compile under cl.exe 19.51, which cannot round-trip `io_context::service`
+# (declared in-class, defined at namespace scope) through a BMI.
 #
-# It is NOT native cl.exe, and that is a decision with evidence rather than a
-# preference. `import asio;` does not compile under cl.exe 19.51:
-#
-#   asio/io_context.hpp(1041): error C2039: 'service': is not a member of
-#   'asio::io_context'   — while instantiating service_base<strand_service>
-#
-# asio declares `class service;` inside `io_context`, defines it at namespace
-# scope, and derives a class template from it; a consumer instantiating any
-# service has to find that nested class through the BMI, and cl.exe cannot.
-#
-# The module form of asio is not optional here — it is what stops asio's
-# template specializations from being re-instantiated per importing TU (C1116).
-# So the toolchain follows from it.
-#
-# CONSEQUENCE: this driver is `clang++`, not `clang-cl`. Flags are GNU-spelled
-# (`-luser32`, `-Wl,/subsystem:windows`), which is also why the official index's
-# Windows descriptors spell their link libs `-lpsapi` and friends.
+# The driver is therefore `clang++`, so every flag below is GNU-spelled.
 [toolchain]
 windows = "llvm@22.1.8"
 
-# EVERY dependency comes from the OFFICIAL index. There is no `[indices]` table
-# and no `mcpp/` directory: the eight packages this project needed and the index
-# did not have were contributed upstream, and the ninth — asio — was amended
-# there rather than forked here.
+# asio is consumed as a MODULE (`import asio;`), never as headers: that is what
+# keeps its template specializations instantiated once inside the asio module
+# instead of once per importing TU.
 #
-#   chriskohlhoff.asio   mcpplibs/mcpp-index#213   export surface: file I/O,
-#                                                  the four error enums,
-#                                                  async_connect, make_address
-#   compat.xxhash        #214
-#   compat.libwebp       #214
-#   compat.reflectcpp    #214
-#   compat.sqlitecpp     #215   (pulls compat.sqlite3)
-#   compat.usockets      #215   (pulls compat.libuv)
-#   compat.uwebsockets   #215   (pulls compat.usockets)
-#   compat.wil           #216   (Windows-only)
-#
-# WebView2 is the one thing not here, and deliberately: it is a NuGet BINARY
-# distribution (headers plus a prebuilt loader .lib), a shape the index's
-# A–H taxonomy has no slot for. `scripts/mcpp-prebuild.sh` unpacks it and it
-# reaches the build through include_dirs/ldflags — no index involved.
+# sqlite3 and libuv arrive transitively (via sqlitecpp and usockets).
+[dependencies]
+chriskohlhoff.asio = "1.38.1"
+compat.spdlog      = { version = "1.17.0", features = ["compiled"] }
+compat.xxhash      = "0.8.3"
+compat.sqlitecpp   = "3.3.3"
+compat.reflectcpp  = "0.25.0"
+compat.uwebsockets = "20.79.0"
+compat.libwebp     = "1.5.0"
 
-# Asio, as a C++23 MODULE (`import asio;`), never as headers. That is what keeps
-# its template specializations — `service_registry::use_service` and friends —
-# instantiated ONCE inside the asio module rather than once per importing TU's
-# global module fragment. The header form is what made `sm.core.rpc.*` die with
-# C1116 when those modules were first converted.
-[dependencies.chriskohlhoff]
-asio = "1.38.1"
+# WIL's package declares only a `windows` platform. Gating it keeps the manifest
+# resolvable off-Windows, which is what lets the module graph and the
+# architecture invariants be checked on Linux.
+[target.'cfg(windows)'.dependencies]
+compat.wil = "1.0.260126.7"
 
-# `compiled` for spdlog: it contributes SPDLOG_COMPILED_LIB to its own TUs, and
-# consumers must see it too (declared in [build] defines below) or their headers
-# re-emit inline what the package already compiled out-of-line.
-#
-# sqlite3 and libuv are not listed: they arrive transitively through sqlitecpp
-# and usockets. wil is Windows-only and gated below.
-[dependencies.compat]
-spdlog      = { version = "1.17.0", features = ["compiled"] }
-xxhash      = "0.8.3"
-sqlitecpp   = "3.3.3"
-reflectcpp  = "0.25.0"
-uwebsockets = "20.79.0"
-libwebp     = "1.5.0"
-
-# WIL is not a portable library with a Windows backend — it is a library ABOUT
-# Win32, and the package declares only a `windows` platform. Gating it keeps the
-# manifest resolvable off-Windows, which is what lets the module graph and the
-# architecture invariants be checked on Linux in seconds.
-[target.'cfg(windows)'.dependencies.compat]
-wil = "1.0.260126.7"
+# WebView2 is not in the index — it is a NuGet binary distribution.
+# `scripts/mcpp-prebuild.sh` unpacks it; it reaches the build through
+# include_dirs and ldflags below.
 
 [build]
-# The MSVC CRT model, for the WHOLE build — this project's TUs, the cached `std`
-# module object, AND every dependency package's TUs. `self-contained` is /MT on
-# the MSVC ABI.
-#
-# This key was INERT on the MSVC ABI until mcpp 2026.8.16 (it reported "not
-# implemented for the MSVC runtime yet" and fell back to /MD). That is the whole
-# reason this project used to own a descriptor for every dependency: a consumer
-# could not reach a dependency's compile line, so /MT had to be written into
-# each descriptor by hand. It is honoured now, so the descriptors carry no CRT
-# flags any more and the official index's packages became usable.
-#
-# Requires mcpp >= 2026.8.16 (.xlings.json pins 2026.8.17.1).
+# /MT on the MSVC ABI, for this project's TUs and every dependency package's.
 cxx_runtime = "self-contained"
 
-# Modules and their implementation units both live under src/. The migration
-# converts bottom-up: a leaf header becomes `<name>.cppm`, its consumers'
-# `#include "…hpp"` become `import …;`. `.hpp` files that have not been
-# converted yet keep working unchanged — a module and a header can coexist in
-# the same build, which is what makes an incremental migration possible at all.
 sources = ["src/**/*.cpp", "src/**/*.cppm"]
 
 include_dirs = [
   "src",
   "third_party/dkm/include",
-  # Both produced by scripts/mcpp-prebuild.sh. They must be project-relative
-  # and space-free: mcpp emits include_dirs unquoted, so a path under
-  # "C:/Program Files (x86)/..." reaches cl.exe as three arguments.
-  "gen/cppwinrt",          # C++/WinRT projection (not in mcpp's synthesised INCLUDE)
-  "gen/webview2/include",  # WebView2 SDK headers, unpacked from the NuGet package
+  # Produced by scripts/mcpp-prebuild.sh. Keep them project-relative and
+  # space-free: include_dirs are emitted unquoted, so a path under
+  # "C:/Program Files (x86)/..." arrives as three arguments.
+  "gen/cppwinrt",          # C++/WinRT projection
+  "gen/webview2/include",  # WebView2 SDK headers
 ]
 
+# Every define here describes how a DEPENDENCY was built. A consumer that
+# disagrees does not fail to build — it compiles a different program: spdlog
+# re-emits inline what the package compiled out-of-line, asio does the same for
+# ASIO_SEPARATE_COMPILATION, and the LIBUS_* pair changes struct layouts in
+# libusockets.h.
 defines = [
   "NOMINMAX", "UNICODE", "_UNICODE", "WIN32_LEAN_AND_MEAN", "_WIN32_WINNT=0x0A00",
   "yyjson_api_inline=yyjson_inline",
-  # spdlog compiled mode: consumers must see this too, or their headers
-  # re-emit the implementation inline instead of using the extern templates.
   "SPDLOG_COMPILED_LIB",
-  # Asio's package contract. An index descriptor's `features.<f>.defines` reach
-  # the PACKAGE's own TUs; a consumer that must agree with how the library was
-  # built declares them itself. These five are exactly what
-  # `chriskohlhoff.asio`'s default `separate-compilation` feature compiles with,
-  # and disagreeing on ASIO_SEPARATE_COMPILATION alone is enough to make the
-  # consumer re-emit inline what the package already compiled out-of-line.
   "ASIO_STANDALONE", "ASIO_SEPARATE_COMPILATION",
   "ASIO_DISABLE_BOOST_CONTEXT_FIBER", "ASIO_HAS_THREADS", "ASIO_NO_IOSTREAM",
-  # uSockets' backend/SSL shape changes struct layouts in libusockets.h, so
-  # every TU that sees a uWS header must agree with how the library was built.
   "LIBUS_USE_LIBUV", "LIBUS_NO_SSL", "UWS_NO_ZLIB",
 ]
 
-# GNU-spelled, because the driver is `clang++` (see [toolchain]). `-l<name>`
-# becomes `<name>.lib` on the lld-link line, and `-Wl,<x>` hands `<x>` to
-# lld-link untouched — which is how an MSVC-style linker switch still gets
-# through.
-#
-# This is also why `compat.libuv` writing `-lpsapi` now simply works: dependency
-# ldflags are propagated VERBATIM (only `-L` and `-Wl,-rpath` are rewritten), so
-# under cl.exe they used to arrive as an unrecognised option and be dropped with
-# LNK4044.
+# No `/subsystem:windows` here: ldflags reach every link in the package,
+# including the test binaries `mcpp test` builds. Each GUI binary declares it
+# itself with a linker directive in its entry TU.
 ldflags = [
-  "-Wl,/subsystem:windows",
-
-  # The linker runs with cwd = target/<triple>/<hash>/ and ldflags entries are
-  # passed verbatim, so file inputs have to climb back out to the project root.
-  # (`mcpp:link-search=` resolves relative paths against the project root;
-  # plain ldflags does not.)
+  # The linker runs with cwd = target/<triple>/<hash>/ and ldflags are passed
+  # verbatim, so file inputs have to climb back out to the project root.
   "-Wl,../../../gen/app.res",
   "-Wl,../../../gen/webview2/lib/WebView2LoaderStatic.lib",
 
@@ -160,31 +89,26 @@ ldflags = [
 ]
 
 [profile.release]
-# Release keeps full debug info so production crash dumps stay analysable, and
-# forces the dynamic UCRT.
+# Keep full debug info so production crash dumps stay analysable, and force the
+# dynamic UCRT.
 ldflags = ["-Wl,/debug:full", "-Wl,/nodefaultlib:libucrt.lib", "-Wl,/defaultlib:ucrt.lib"]
 
 [targets.SpinningMomo]
 kind = "bin"
 main = "src/main.cpp"
 
-# The window the scenario tests point the app at. It is a fixture, not a test:
-# `mcpp test` builds and RUNS every `tests/**/*.cpp`, and this one opens a window
-# and pumps messages until told to stop — so it lives outside `tests/` and is a
-# target of its own.
+# The window the scenario tests point the app at. A fixture, not a test —
+# `mcpp test` RUNS every `tests/**/*.cpp`, and this one opens a window and pumps
+# messages until told to stop, so it lives outside `tests/`.
 [targets.SpinningMomoScenarioWindow]
 kind = "bin"
 main = "scenarios/window/main.cpp"
 
-# No `/bigobj` equivalent here, and none is needed. reflect-cpp instantiates
-# enough templates per RPC endpoint to blow past COFF's 65,536-section limit,
-# but LLVM's COFF writer decides per object and emits the big-object format
-# automatically once the section count exceeds the 16-bit limit — which is also
-# why the GNU driver has no spelling for it (`error: unknown argument:
-# '-mbig-obj'`).
+# No `/bigobj` equivalent is needed: LLVM's COFF writer switches to the
+# big-object format on its own once an object exceeds the 16-bit section limit,
+# which reflect-cpp's per-endpoint instantiations do.
 #
-# -Wno-microsoft-include: the Windows SDK and the C++/WinRT projection both
-# resolve some includes the way MSVC does rather than the way the standard says,
-# and clang reports each one.
+# -Wno-microsoft-include: the Windows SDK and the C++/WinRT projection resolve
+# some includes the MSVC way rather than the standard way.
 [target.'cfg(windows)'.build]
 cxxflags = ["-Wno-microsoft-include"]

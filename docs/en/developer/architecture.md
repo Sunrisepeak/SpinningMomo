@@ -96,7 +96,7 @@ Output goes to `dist/`.
 ```bash
 # C++ backend
 bash scripts/mcpp-prebuild.sh
-mcpp build                 # debug
+mcpp build --dev           # -O0 -g
 mcpp build --release
 
 # Web frontend
