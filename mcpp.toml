@@ -89,6 +89,20 @@ ldflags = [
 ]
 
 [profile.release]
+# NDEBUG, because nothing else defines it. mcpp's release profile sets the
+# optimisation level but leaves the macro alone, and this project reads it:
+# `core::build_config::is_debug_build()` is what makes the gallery scanner hash
+# a file's CONTENT rather than its PATH. Without NDEBUG an optimised build still
+# takes the debug shortcut, two copies of one file get different hashes, and
+# duplicate detection silently stops working — a wrong program, not a failed
+# build. `[profile.*]` has no `defines` key, so it goes through the documented
+# cxxflags passthrough.
+#
+# It reaches the compile of `sm.core.build_config` itself, and every consumer
+# reads the answer out of that BMI — so the whole build cannot disagree with
+# itself about it the way a header could.
+cxxflags = ["-DNDEBUG"]
+
 # Keep full debug info so production crash dumps stay analysable, and force the
 # dynamic UCRT.
 ldflags = ["-Wl,/debug:full", "-Wl,/nodefaultlib:libucrt.lib", "-Wl,/defaultlib:ucrt.lib"]
