@@ -10,12 +10,6 @@ inputs:
     description: xlings release to install.
     required: false
     default: '2026.8.17.2'
-  cache-key-suffix:
-    description: >
-      Appended to the sandbox cache key. Give workflows that build different
-      things their own suffix so one cannot poison another's sandbox.
-    required: false
-    default: 'default'
 
 runs:
   using: composite
@@ -34,8 +28,12 @@ runs:
         # registered and mcpp registers each one once, so a prefix-restored
         # sandbox from before an index change keeps searching the old name and
         # every package misses no matter how often the build is retried.
+        # Shared by every workflow on purpose: what lands in the sandbox is
+        # decided by .xlings.json + mcpp.toml, and both are in the key. Giving
+        # each workflow its own suffix would just mean three cold dependency
+        # builds where one will do.
         key: >-
-          mcpp-sandbox-windows-${{ inputs.cache-key-suffix }}-xl${{ inputs.xlings-version }}-${{
+          mcpp-sandbox-windows-xl${{ inputs.xlings-version }}-${{
           hashFiles('.xlings.json', 'mcpp.toml') }}
 
     - name: Bootstrap xlings + mcpp

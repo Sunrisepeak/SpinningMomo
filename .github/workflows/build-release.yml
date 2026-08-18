@@ -41,8 +41,6 @@ jobs:
             web/package-lock.json
 
       - uses: ./.github/actions/setup-mcpp
-        with:
-          cache-key-suffix: release
 
       - name: Setup .NET (for WiX)
         if: ${{ inputs.publish_release }}
