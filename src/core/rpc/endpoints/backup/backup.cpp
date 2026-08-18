@@ -1,18 +1,17 @@
-#include "core/rpc/endpoints/backup/backup.hpp"
+module sm.core.rpc.endpoints.backup.backup;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.events.events;
+import sm.core.state.app_state;
+import sm.features.backup.backup;
+import sm.features.backup.types;
+import sm.ui.floating_window.events;
 
-#include "vendor/asio.hpp"
-
-#include "core/async/async.hpp"
-#include "core/events/events.hpp"
-#include "core/rpc/rpc.hpp"
-#include "core/rpc/state.hpp"
-#include "core/rpc/types.hpp"
-#include "core/state/app_state.hpp"
-#include "features/backup/backup.hpp"
-#include "features/backup/types.hpp"
-#include "ui/floating_window/events.hpp"
+import asio;
+import sm.core.async.async;
+import sm.core.rpc.rpc;
+import sm.core.rpc.state;
+import sm.core.rpc.types;
 
 namespace core::rpc::endpoints::backup {
 

@@ -8,6 +8,7 @@ import {
   rm,
   writeFile,
 } from "node:fs/promises";
+import { existsSync, readdirSync, statSync } from "node:fs";
 import { createConnection } from "node:net";
 import { tmpdir } from "node:os";
 import { basename, dirname, join, relative, resolve, sep } from "node:path";
@@ -15,23 +16,53 @@ import { fileURLToPath } from "node:url";
 
 const SCENARIO_DIRECTORY = dirname(fileURLToPath(import.meta.url));
 export const REPOSITORY_ROOT = resolve(SCENARIO_DIRECTORY, "..", "..", "..");
+
+// mcpp 把产物写在 target/<triple>/<fingerprint>/bin/ 下。fingerprint 覆盖了
+// 所有会改变输出的东西（profile、工具链、feature 集），所以一个 triple 目录里
+// 可能同时躺着好几份 —— 没有稳定软链接，也没有 --print-path，只能找。
+// 取最新的那个：同时构建过 debug 与 release 的仓库有两份，调用者要的是刚出炉的。
+function findBuiltExecutable(name: string): string | undefined {
+  const targetDirectory = join(REPOSITORY_ROOT, "target");
+  if (!existsSync(targetDirectory)) {
+    return undefined;
+  }
+
+  const candidates: { path: string; mtime: number }[] = [];
+  for (const triple of readdirSync(targetDirectory, { withFileTypes: true })) {
+    if (!triple.isDirectory()) {
+      continue;
+    }
+    const tripleDirectory = join(targetDirectory, triple.name);
+    for (const fingerprint of readdirSync(tripleDirectory, { withFileTypes: true })) {
+      if (!fingerprint.isDirectory()) {
+        continue;
+      }
+      const candidate = join(tripleDirectory, fingerprint.name, "bin", name);
+      if (existsSync(candidate)) {
+        candidates.push({ path: candidate, mtime: statSync(candidate).mtimeMs });
+      }
+    }
+  }
+
+  candidates.sort((left, right) => right.mtime - left.mtime);
+  return candidates[0]?.path;
+}
+
 // 场景测试是回归测试，默认验证发布给用户的实际构建（Release）。
-export const DEFAULT_EXECUTABLE_PATH = join(
-  REPOSITORY_ROOT,
-  "build",
-  "windows",
-  "x64",
-  "release",
-  "SpinningMomo.exe",
-);
-export const DEFAULT_SCENARIO_WINDOW_EXECUTABLE_PATH = join(
-  REPOSITORY_ROOT,
-  "build",
-  "windows",
-  "x64",
-  "release",
-  "SpinningMomoScenarioWindow.exe",
-);
+// 找不到时给出一个可读的占位路径，让缺失在报错信息里说得清楚。
+export const DEFAULT_EXECUTABLE_PATH =
+  findBuiltExecutable("SpinningMomo.exe") ??
+  join(REPOSITORY_ROOT, "target", "<triple>", "<fingerprint>", "bin", "SpinningMomo.exe");
+export const DEFAULT_SCENARIO_WINDOW_EXECUTABLE_PATH =
+  findBuiltExecutable("SpinningMomoScenarioWindow.exe") ??
+  join(
+    REPOSITORY_ROOT,
+    "target",
+    "<triple>",
+    "<fingerprint>",
+    "bin",
+    "SpinningMomoScenarioWindow.exe",
+  );
 
 const RPC_URL = "http://127.0.0.1:51206/rpc";
 const RPC_PORT = 51206;
@@ -211,7 +242,7 @@ export async function createScenarioEnvironment(
 ): Promise<ScenarioEnvironment> {
   await access(sourceExecutablePath).catch(() => {
     throw new Error(
-      `找不到被测程序：${sourceExecutablePath}\n请先自行构建，场景脚本不会自动运行 Xmake。`,
+      `找不到被测程序：${sourceExecutablePath}\n请先自行构建，场景脚本不会自动构建。`,
     );
   });
 
@@ -322,7 +353,7 @@ export class TargetWindowHarness {
     await access(this.executablePath).catch(() => {
       throw new Error(
         `找不到场景目标窗口程序：${this.executablePath}\n` +
-          "请先自行构建 SpinningMomoScenarioWindow，场景脚本不会自动运行 Xmake。",
+          "请先自行构建 SpinningMomoScenarioWindow，场景脚本不会自动构建。",
       );
     });
 

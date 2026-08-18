@@ -30,11 +30,6 @@ CMakeFiles/
 cmake_install.cmake
 compile_commands.json
 
-# Xmake generated files
-.xmake/
-vsxmake2022/
-vsxmake2026/
-
 # WiX generated files
 *.msi
 *.wixpdb
@@ -54,6 +49,7 @@ docs/node_modules/
 ehthumbs.db
 Thumbs.db 
 
+# Fetched third-party sources (scripts/fetch-third-party.js clones into here).
 third_party/
 test/
 /playground/
@@ -91,3 +87,14 @@ web/src/assets/fonts/harmonyos-sans-sc/*.woff2
 web/src/assets/fonts/harmonyos-sans-sc/charset-generated.txt
 web/src/assets/fonts/harmonyos-sans-sc/manifest.json
 web/src/assets/fonts/harmonyos-sans-sc/LICENSE.txt
+
+# mcpp build outputs and the per-project index sandbox
+target/
+.mcpp/
+mcpp.lock
+# xlings' per-project scratch dir, created by any local `mcpp build`
+.xlings/
+
+# Python bytecode from the migration scripts
+__pycache__/
+*.pyc

@@ -1,6 +1,4 @@
-#include "utils/graphics/d3d.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
@@ -9,7 +7,11 @@
 #include "vendor/windows/dxgi.hpp"
 #include "vendor/windows/dxgi1_4.hpp"
 
-#include "utils/logger/logger.hpp"
+module sm.utils.graphics.d3d;
+
+import std;
+
+import sm.utils.logger.logger;
 
 namespace utils::graphics::d3d {
 
@@ -301,8 +303,8 @@ auto create_viewport_shader_resources(ID3D11Device* device, const std::string& v
   return resources;
 }
 
-auto create_vertex_buffer(ID3D11Device* device, const void* vertices, size_t vertex_count,
-                          size_t vertex_size, bool dynamic)
+auto create_vertex_buffer(ID3D11Device* device, const void* vertices, std::size_t vertex_count,
+                          std::size_t vertex_size, bool dynamic)
     -> std::expected<wil::com_ptr<ID3D11Buffer>, std::string> {
   D3D11_BUFFER_DESC bd = {};
   bd.Usage = dynamic ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT;

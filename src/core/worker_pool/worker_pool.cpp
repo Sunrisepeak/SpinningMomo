@@ -1,14 +1,14 @@
-#include "core/worker_pool/worker_pool.hpp"
+module sm.core.worker_pool.worker_pool;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.state.app_state;
+import sm.core.worker_pool.state;
 
-#include "core/state/app_state.hpp"
-#include "core/worker_pool/state.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 namespace core::worker_pool {
 
-auto start(core::AppState& state, size_t thread_count) -> std::expected<void, std::string> {
+auto start(core::AppState& state, std::size_t thread_count) -> std::expected<void, std::string> {
   if (!state.worker_pool) {
     return std::unexpected("WorkerPoolState is not initialized");
   }
@@ -31,7 +31,7 @@ auto start(core::AppState& state, size_t thread_count) -> std::expected<void, st
 
     // 创建工作线程池
     pool.worker_threads.reserve(thread_count);
-    for (size_t i = 0; i < thread_count; ++i) {
+    for (std::size_t i = 0; i < thread_count; ++i) {
       pool.worker_threads.emplace_back([&pool, i]() {
         try {
           // 工作线程主循环：关闭后继续排空已接收任务，避免遗弃任务持有的同步计数。
@@ -164,7 +164,7 @@ auto submit_task(core::AppState& state, std::move_only_function<void()> task) ->
   }
 }
 
-auto get_thread_count(const core::AppState& state) -> size_t {
+auto get_thread_count(const core::AppState& state) -> std::size_t {
   if (!state.worker_pool) {
     return 0;
   }
@@ -172,7 +172,7 @@ auto get_thread_count(const core::AppState& state) -> size_t {
   return pool.worker_threads.size();
 }
 
-auto get_pending_tasks(core::AppState& state) -> size_t {
+auto get_pending_tasks(core::AppState& state) -> std::size_t {
   if (!state.worker_pool) {
     return 0;
   }

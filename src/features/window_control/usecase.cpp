@@ -1,32 +1,35 @@
-#include "features/window_control/usecase.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 
-#include "core/async/ui_awaitable.hpp"
-#include "core/i18n/state.hpp"
-#include "core/notifications/notifications.hpp"
-#include "core/state/app_state.hpp"
-#include "features/letterbox/letterbox.hpp"
-#include "features/letterbox/state.hpp"
-#include "features/overlay/geometry.hpp"
-#include "features/overlay/interaction.hpp"
-#include "features/overlay/overlay.hpp"
-#include "features/overlay/state.hpp"
-#include "features/preview/preview.hpp"
-#include "features/preview/state.hpp"
-#include "features/settings/menu.hpp"
-#include "features/settings/settings.hpp"
-#include "features/settings/state.hpp"
-#include "features/window_control/types.hpp"
-#include "features/window_control/window_control.hpp"
-#include "ui/floating_window/events.hpp"
-#include "ui/floating_window/floating_window.hpp"
-#include "ui/floating_window/state.hpp"
-#include "utils/display/display.hpp"
-#include "utils/logger/logger.hpp"
-#include "utils/string/string.hpp"
+module sm.features.window_control.usecase;
+
+import std;
+import sm.core.async.ui_awaitable;
+import sm.core.i18n.state;
+import sm.core.notifications.notifications;
+import sm.core.state.app_state;
+import sm.features.letterbox.letterbox;
+import sm.features.letterbox.state;
+import sm.features.overlay.geometry;
+import sm.features.overlay.interaction;
+import sm.features.overlay.overlay;
+import sm.features.overlay.state;
+import sm.features.preview.preview;
+import sm.features.preview.state;
+import sm.features.settings.menu;
+import sm.features.settings.menu_types;
+import sm.features.window_control.types;
+import sm.features.window_control.window_control;
+import sm.ui.floating_window.events;
+import sm.ui.floating_window.floating_window;
+import sm.ui.floating_window.state;
+
+import sm.features.settings.settings;
+import sm.features.settings.state;
+import sm.utils.logger.logger;
+import sm.utils.display.display;
+import sm.utils.string.string;
 
 namespace features::window_control {
 
@@ -70,7 +73,7 @@ auto get_current_resolution_preset(const core::AppState& state)
 }
 
 // 分辨率切换时使用事件指定的预设；越界时回退为 Default。
-auto get_resolution_preset_by_index(const core::AppState& state, size_t resolution_index)
+auto get_resolution_preset_by_index(const core::AppState& state, std::size_t resolution_index)
     -> features::window_control::ResolutionPresetInput {
   const auto& resolutions = features::settings::menu::get_resolutions(state);
   if (resolution_index < resolutions.size()) {
@@ -176,7 +179,7 @@ auto post_transform_actions(core::AppState& state, HWND target_window,
 }
 
 // 比例变换的完整协程流程
-auto transform_ratio_async(core::AppState& state, size_t ratio_index, double ratio_value)
+auto transform_ratio_async(core::AppState& state, std::size_t ratio_index, double ratio_value)
     -> core::async::ui_task {
   Logger().debug("[Coroutine] Transforming ratio to index {}, ratio: {}", ratio_index, ratio_value);
 
@@ -237,7 +240,7 @@ auto transform_ratio_async(core::AppState& state, size_t ratio_index, double rat
 
   // 更新当前比例索引
   const auto& ratios = features::settings::menu::get_ratios(state);
-  if (ratio_index < ratios.size() || ratio_index == std::numeric_limits<size_t>::max()) {
+  if (ratio_index < ratios.size() || ratio_index == std::numeric_limits<std::size_t>::max()) {
     state.floating_window->ui.current_ratio_index = ratio_index;
   }
 
@@ -253,7 +256,7 @@ auto handle_ratio_changed(core::AppState& state,
 }
 
 // 分辨率变换的完整协程流程
-auto transform_resolution_async(core::AppState& state, size_t resolution_index)
+auto transform_resolution_async(core::AppState& state, std::size_t resolution_index)
     -> core::async::ui_task {
   Logger().debug("[Coroutine] Transforming resolution to index {}", resolution_index);
 
@@ -412,7 +415,7 @@ auto reset_window_transform(core::AppState& state) -> void {
   }
 
   // 重置后恢复浮窗选中状态：比例清空，分辨率回到 Default
-  state.floating_window->ui.current_ratio_index = std::numeric_limits<size_t>::max();
+  state.floating_window->ui.current_ratio_index = std::numeric_limits<std::size_t>::max();
   state.floating_window->ui.current_resolution_index = 0;
   ui::floating_window::request_repaint(state);
 }

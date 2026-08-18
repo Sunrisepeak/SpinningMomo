@@ -26,8 +26,6 @@ jobs:
   build:
     runs-on: windows-latest
     env:
-      # Keep xmake/vcpkg caches in workspace for reliable cache restore on GitHub runners.
-      XMAKE_GLOBALDIR: ${{ github.workspace }}\.xmake-global
     
     steps:
       - name: Checkout
@@ -44,40 +42,9 @@ jobs:
           cache-dependency-path: |
             web/package-lock.json
 
-      - name: Setup xmake
-        uses: xmake-io/github-action-setup-xmake@v1
+      - uses: ./.github/actions/setup-mcpp
         with:
-          xmake-version: latest
-
-      - name: Patch xmake #7554
-        run: node scripts/patch-xmake-7554.js
-
-      - name: Cache xmake/vcpkg dependencies
-        id: cache_xmake_vcpkg
-        uses: actions/cache@v4
-        with:
-          path: |
-            .xmake
-            .xmake-global
-            build/.packages/v
-          key: ${{ runner.os }}-${{ runner.arch }}-xmake-vcpkg-${{ hashFiles('xmake.lua', 'xmake-requires.lock', 'scripts/patch-vcpkg.js') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ runner.arch }}-xmake-vcpkg-
-
-      - name: Ensure cache directories exist
-        shell: pwsh
-        run: |
-          New-Item -ItemType Directory -Force -Path ".xmake" | Out-Null
-          New-Item -ItemType Directory -Force -Path ".xmake-global" | Out-Null
-          New-Item -ItemType Directory -Force -Path "build/.packages/v" | Out-Null
-
-      - name: Cache diagnostics (concise)
-        shell: pwsh
-        run: |
-          Write-Host "xmake/vcpkg cache hit: ${{ steps.cache_xmake_vcpkg.outputs.cache-hit }}"
-          Write-Host ".xmake -> $((Test-Path '.xmake') ? 'exists' : 'missing')"
-          Write-Host ".xmake-global -> $((Test-Path '.xmake-global') ? 'exists' : 'missing')"
-          Write-Host "build/.packages/v -> $((Test-Path 'build/.packages/v') ? 'exists' : 'missing')"
+          cache-key-suffix: release
 
       - name: Setup .NET (for WiX)
         if: ${{ inputs.publish_release }}
@@ -161,11 +128,15 @@ jobs:
           npm install
           npm ci --prefix web
 
-      - name: Prepare xmake release dependencies
-        run: xmake f -m release --toolchain=msvc -y
+      - name: Pre-build (resources, cppwinrt, WebView2)
+        shell: bash
+        run: bash scripts/mcpp-prebuild.sh
 
       - name: Build C++ backend (Release)
-        run: xmake build -y
+        shell: bash
+        run: |
+          set -uo pipefail
+          "$MCPP" build --release -v 2>&1 | tail -400
 
       - name: Build Web frontend
         run: npm run build:web

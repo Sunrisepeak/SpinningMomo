@@ -1,8 +1,10 @@
-#include "features/recording/time.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
+
+module sm.features.recording.time;
+
+import std;
 
 // Features.Recording.Time
 //

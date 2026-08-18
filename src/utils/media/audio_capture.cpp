@@ -1,17 +1,19 @@
-#include "utils/media/audio_capture.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
 #include "vendor/windows/audioclient.hpp"
-#include "vendor/windows/audioclientactivationparams.hpp"
 #include "vendor/windows/mmdeviceapi.hpp"
+#include "vendor/windows/audioclientactivationparams.hpp"
 #include "vendor/windows/mmreg.hpp"
 #include "vendor/windows/wrl/implements.hpp"
-
 #include "AudioSessionTypes.h"
-#include "utils/logger/logger.hpp"
+
+module sm.utils.media.audio_capture;
+
+import std;
+
+import sm.utils.logger.logger;
 
 namespace utils::media::audio_capture::detail {
 
@@ -45,7 +47,7 @@ class ProcessLoopbackActivator
 
     if (FAILED(m_activation_result)) {
       return std::unexpected(std::format("Audio activation failed: {:08X}",
-                                         static_cast<uint32_t>(m_activation_result)));
+                                         static_cast<std::uint32_t>(m_activation_result)));
     }
 
     if (!m_audio_client) {
@@ -75,26 +77,26 @@ auto finish_audio_client_setup(utils::media::audio_capture::AudioCaptureContext&
                                             0, format, nullptr);
   if (FAILED(hr)) {
     return std::unexpected(
-        std::format("Failed to initialize audio client: {:08X}", static_cast<uint32_t>(hr)));
+        std::format("Failed to initialize audio client: {:08X}", static_cast<std::uint32_t>(hr)));
   }
 
   hr = ctx.audio_client->SetEventHandle(ctx.audio_event.get());
   if (FAILED(hr)) {
     return std::unexpected(
-        std::format("Failed to set audio event handle: {:08X}", static_cast<uint32_t>(hr)));
+        std::format("Failed to set audio event handle: {:08X}", static_cast<std::uint32_t>(hr)));
   }
 
   hr = ctx.audio_client->GetService(__uuidof(IAudioCaptureClient),
                                     reinterpret_cast<void**>(ctx.capture_client.put()));
   if (FAILED(hr)) {
     return std::unexpected(
-        std::format("Failed to get capture client: {:08X}", static_cast<uint32_t>(hr)));
+        std::format("Failed to get capture client: {:08X}", static_cast<std::uint32_t>(hr)));
   }
 
   hr = ctx.audio_client->GetBufferSize(&ctx.buffer_frame_count);
   if (FAILED(hr)) {
     return std::unexpected(
-        std::format("Failed to get buffer size: {:08X}", static_cast<uint32_t>(hr)));
+        std::format("Failed to get buffer size: {:08X}", static_cast<std::uint32_t>(hr)));
   }
 
   return {};
@@ -149,7 +151,7 @@ auto initialize_process_loopback(utils::media::audio_capture::AudioCaptureContex
                                   &activate_params, activator.Get(), &async_op);
   if (FAILED(hr)) {
     return std::unexpected(
-        std::format("Failed to activate audio interface async: {:08X}", static_cast<uint32_t>(hr)));
+        std::format("Failed to activate audio interface async: {:08X}", static_cast<std::uint32_t>(hr)));
   }
 
   auto client_result = activator->wait_and_get_client();
@@ -196,20 +198,20 @@ auto initialize_system_loopback(utils::media::audio_capture::AudioCaptureContext
                                 IID_PPV_ARGS(enumerator.put()));
   if (FAILED(hr)) {
     return std::unexpected(
-        std::format("Failed to create device enumerator: {:08X}", static_cast<uint32_t>(hr)));
+        std::format("Failed to create device enumerator: {:08X}", static_cast<std::uint32_t>(hr)));
   }
 
   hr = enumerator->GetDefaultAudioEndpoint(eRender, eConsole, ctx.device.put());
   if (FAILED(hr)) {
     return std::unexpected(
-        std::format("Failed to get default audio endpoint: {:08X}", static_cast<uint32_t>(hr)));
+        std::format("Failed to get default audio endpoint: {:08X}", static_cast<std::uint32_t>(hr)));
   }
 
   hr = ctx.device->Activate(__uuidof(IAudioClient), CLSCTX_ALL, nullptr,
                             reinterpret_cast<void**>(ctx.audio_client.put()));
   if (FAILED(hr)) {
     return std::unexpected(
-        std::format("Failed to activate audio client: {:08X}", static_cast<uint32_t>(hr)));
+        std::format("Failed to activate audio client: {:08X}", static_cast<std::uint32_t>(hr)));
   }
 
   auto wave_format_result = create_pcm_wave_format(2, 48000, 16);
@@ -255,7 +257,7 @@ auto audio_capture_loop(utils::media::audio_capture::AudioCaptureContext& ctx,
 
     HRESULT hr = ctx.audio_client->Start();
     if (FAILED(hr)) {
-      Logger().error("Failed to start audio client: {:08X}", static_cast<uint32_t>(hr));
+      Logger().error("Failed to start audio client: {:08X}", static_cast<std::uint32_t>(hr));
       return;
     }
 
@@ -276,7 +278,7 @@ auto audio_capture_loop(utils::media::audio_capture::AudioCaptureContext& ctx,
       UINT32 packet_length = 0;
       hr = ctx.capture_client->GetNextPacketSize(&packet_length);
       if (FAILED(hr)) {
-        Logger().error("GetNextPacketSize failed: {:08X}", static_cast<uint32_t>(hr));
+        Logger().error("GetNextPacketSize failed: {:08X}", static_cast<std::uint32_t>(hr));
         break;
       }
 
@@ -290,7 +292,7 @@ auto audio_capture_loop(utils::media::audio_capture::AudioCaptureContext& ctx,
         hr = ctx.capture_client->GetBuffer(&data, &frames_available, &flags, &device_position,
                                            &qpc_position);
         if (FAILED(hr)) {
-          Logger().error("GetBuffer failed: {:08X}", static_cast<uint32_t>(hr));
+          Logger().error("GetBuffer failed: {:08X}", static_cast<std::uint32_t>(hr));
           break;
         }
 
@@ -301,13 +303,13 @@ auto audio_capture_loop(utils::media::audio_capture::AudioCaptureContext& ctx,
 
         hr = ctx.capture_client->ReleaseBuffer(frames_available);
         if (FAILED(hr)) {
-          Logger().error("ReleaseBuffer failed: {:08X}", static_cast<uint32_t>(hr));
+          Logger().error("ReleaseBuffer failed: {:08X}", static_cast<std::uint32_t>(hr));
           break;
         }
 
         hr = ctx.capture_client->GetNextPacketSize(&packet_length);
         if (FAILED(hr)) {
-          Logger().error("GetNextPacketSize failed: {:08X}", static_cast<uint32_t>(hr));
+          Logger().error("GetNextPacketSize failed: {:08X}", static_cast<std::uint32_t>(hr));
           break;
         }
       }

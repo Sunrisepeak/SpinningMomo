@@ -1,11 +1,12 @@
-#include "core/events/events.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 
-#include "core/events/state.hpp"
-#include "core/state/app_state.hpp"
+module sm.core.events.events;
+
+import std;
+import sm.core.events.state;
+import sm.core.state.app_state;
 
 namespace core::events {
 

@@ -1,8 +1,7 @@
-#include "utils/file/mime.hpp"
+module sm.utils.file.mime;
 
-#include "vendor/std.hpp"
-
-#include "utils/string/string.hpp"
+import std;
+import sm.utils.string.string;
 
 namespace utils::file::mime {
 

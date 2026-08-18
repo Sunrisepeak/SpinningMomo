@@ -1,9 +1,11 @@
-#include "utils/crypto/crypto.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 #include "vendor/windows/bcrypt.hpp"
+
+module sm.utils.crypto.crypto;
+
+import std;
 
 namespace utils::crypto {
 

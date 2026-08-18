@@ -1,12 +1,13 @@
-#include "ui/context_menu/interaction.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 
-#include "core/state/app_state.hpp"
-#include "ui/context_menu/state.hpp"
-#include "ui/context_menu/types.hpp"
+module sm.ui.context_menu.interaction;
+
+import std;
+import sm.core.state.app_state;
+import sm.ui.context_menu.state;
+import sm.ui.context_menu.types;
 
 namespace ui::context_menu::interaction::detail {
 

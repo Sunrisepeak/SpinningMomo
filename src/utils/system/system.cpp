@@ -1,12 +1,13 @@
-#include "utils/system/system.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 #include "vendor/windows/shellapi.hpp"
 #include "vendor/windows/shlobj_core.hpp"
 
-#include "utils/string/string.hpp"
+module sm.utils.system.system;
+
+import std;
+import sm.utils.string.string;
 
 namespace utils::system {
 
@@ -396,7 +397,7 @@ auto copy_files_to_clipboard(const std::vector<std::filesystem::path>& paths)
   std::vector<std::wstring> normalized_paths;
   normalized_paths.reserve(paths.size());
 
-  size_t total_chars = 0;
+  std::size_t total_chars = 0;
   for (const auto& path : paths) {
     if (path.empty()) {
       continue;

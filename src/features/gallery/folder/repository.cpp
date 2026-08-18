@@ -1,15 +1,14 @@
-#include "features/gallery/folder/repository.hpp"
+module sm.features.gallery.folder.repository;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.database.types;
+import sm.core.state.app_state;
+import sm.features.gallery.types;
 
-#include "vendor/rfl.hpp"
-
-#include "core/database/database.hpp"
-#include "core/database/types.hpp"
-#include "core/state/app_state.hpp"
-#include "features/gallery/types.hpp"
-#include "utils/logger/logger.hpp"
-#include "utils/path/path.hpp"
+import sm.vendor.rfl;
+import sm.utils.logger.logger;
+import sm.core.database.database;
+import sm.utils.path.path;
 
 namespace features::gallery::folder::repository {
 
@@ -35,7 +34,7 @@ auto create_folder(core::AppState& app_state, const Folder& folder)
                        ? core::database::DbParam{folder.display_name.value()}
                        : core::database::DbParam{std::monostate{}});
 
-  params.push_back(static_cast<int64_t>(folder.sort_order));
+  params.push_back(static_cast<std::int64_t>(folder.sort_order));
   params.push_back(folder.is_hidden);
 
   auto result = core::database::query_scalar<std::int64_t>(app_state, sql, params);
@@ -112,7 +111,7 @@ auto update_folder(core::AppState& app_state, const Folder& folder)
                        ? core::database::DbParam{folder.cover_asset_id.value()}
                        : core::database::DbParam{std::monostate{}});
 
-  params.push_back(static_cast<int64_t>(folder.sort_order));
+  params.push_back(static_cast<std::int64_t>(folder.sort_order));
   params.push_back(folder.is_hidden);
   params.push_back(folder.id);
 

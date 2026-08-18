@@ -1,35 +1,34 @@
-#include "features/gallery/color/extractor.hpp"
+module sm.features.gallery.color.extractor;
 
-#include "vendor/std.hpp"
-
-#include "features/gallery/color/types.hpp"
-#include "utils/image/image.hpp"
+import std;
+import sm.features.gallery.color.types;
+import sm.utils.image.image;
 
 namespace features::gallery::color::extractor {
 
-auto parse_hex_nibble(char ch) -> std::optional<uint8_t> {
+auto parse_hex_nibble(char ch) -> std::optional<std::uint8_t> {
   if (ch >= '0' && ch <= '9') {
-    return static_cast<uint8_t>(ch - '0');
+    return static_cast<std::uint8_t>(ch - '0');
   }
   if (ch >= 'a' && ch <= 'f') {
-    return static_cast<uint8_t>(10 + (ch - 'a'));
+    return static_cast<std::uint8_t>(10 + (ch - 'a'));
   }
   if (ch >= 'A' && ch <= 'F') {
-    return static_cast<uint8_t>(10 + (ch - 'A'));
+    return static_cast<std::uint8_t>(10 + (ch - 'A'));
   }
   return std::nullopt;
 }
 
-auto parse_hex_byte(char high, char low) -> std::optional<uint8_t> {
+auto parse_hex_byte(char high, char low) -> std::optional<std::uint8_t> {
   auto high_value = parse_hex_nibble(high);
   auto low_value = parse_hex_nibble(low);
   if (!high_value || !low_value) {
     return std::nullopt;
   }
-  return static_cast<uint8_t>((*high_value << 4) | *low_value);
+  return static_cast<std::uint8_t>((*high_value << 4) | *low_value);
 }
 
-auto parse_hex_color(std::string_view hex) -> std::expected<std::array<uint8_t, 3>, std::string> {
+auto parse_hex_color(std::string_view hex) -> std::expected<std::array<std::uint8_t, 3>, std::string> {
   if (!hex.empty() && hex.front() == '#') {
     hex.remove_prefix(1);
   }
@@ -44,7 +43,7 @@ auto parse_hex_color(std::string_view hex) -> std::expected<std::array<uint8_t, 
     return std::unexpected("Invalid hex color characters");
   }
 
-  return std::array<uint8_t, 3>{*r, *g, *b};
+  return std::array<std::uint8_t, 3>{*r, *g, *b};
 }
 
 // 将 Lab 坐标量化到 bin，供按色筛选 SQL 做粗匹配
@@ -64,7 +63,7 @@ auto bin_lab_color(const utils::image::LabColor& lab, float l_bin_size, float ab
   };
 }
 
-auto rgb_to_lab_color(uint8_t r, uint8_t g, uint8_t b, float l_bin_size, float ab_bin_size)
+auto rgb_to_lab_color(std::uint8_t r, std::uint8_t g, std::uint8_t b, float l_bin_size, float ab_bin_size)
     -> LabColor {
   return bin_lab_color(utils::image::rgb_to_lab_color(r, g, b), l_bin_size, ab_bin_size);
 }
@@ -124,13 +123,13 @@ auto extract_main_colors_from_bgra(const utils::image::BGRABitmapData& bitmap_da
             return (lhs * lhs_weight + rhs * rhs_weight) / new_weight;
           };
 
-          uint8_t mixed_r = static_cast<uint8_t>(std::clamp(
+          std::uint8_t mixed_r = static_cast<std::uint8_t>(std::clamp(
               std::lround(mixed_channel(existing.r, existing.weight, color.r, color.weight)), 0l,
               255l));
-          uint8_t mixed_g = static_cast<uint8_t>(std::clamp(
+          std::uint8_t mixed_g = static_cast<std::uint8_t>(std::clamp(
               std::lround(mixed_channel(existing.g, existing.weight, color.g, color.weight)), 0l,
               255l));
-          uint8_t mixed_b = static_cast<uint8_t>(std::clamp(
+          std::uint8_t mixed_b = static_cast<std::uint8_t>(std::clamp(
               std::lround(mixed_channel(existing.b, existing.weight, color.b, color.weight)), 0l,
               255l));
           // Lab 从混合后的 RGB 重算，保证展示色与按色筛选坐标一致

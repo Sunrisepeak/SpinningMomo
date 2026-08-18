@@ -1,26 +1,28 @@
-#include "extensions/infinity_nikki/task_service.hpp"
+module sm.extensions.infinity_nikki.task_service;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.rpc.notification_hub;
+import sm.core.state.app_state;
+import sm.core.tasks.state;
+import sm.core.tasks.tasks;
+import sm.extensions.infinity_nikki.media_hardlinks;
+import sm.extensions.infinity_nikki.types;
+import sm.features.gallery.gallery;
+import sm.features.gallery.types;
 
-#include "vendor/asio.hpp"
-
-#include "core/async/async.hpp"
-#include "core/rpc/notification_hub.hpp"
-#include "core/state/app_state.hpp"
-#include "core/tasks/tasks.hpp"
-#include "extensions/infinity_nikki/media_hardlinks.hpp"
-#include "extensions/infinity_nikki/photo_extract/photo_extract.hpp"
-#include "extensions/infinity_nikki/types.hpp"
-#include "features/gallery/gallery.hpp"
-#include "features/gallery/types.hpp"
-#include "features/settings/settings.hpp"
-#include "features/settings/state.hpp"
-#include "utils/logger/logger.hpp"
+import sm.features.settings.settings;
+import sm.features.settings.state;
+import sm.utils.logger.logger;
 
 // TaskService 实现：把无限暖暖相关的重活挂到 Asio 协程上，并对接 core::tasks（前端「后台任务」）。
 // 约定：对外只暴露 start_* / schedule_silent_*；launch_* 为内部 co_spawn
 // 入口，不校验「是否已有同类任务」 （重复校验在各自的 start_* 里通过 has_active_task_of_type +
 // create_task 完成）。
+
+import asio;
+import sm.core.async.async;
+import sm.extensions.infinity_nikki.photo_extract.photo_extract;
+
 namespace extensions::infinity_nikki::task_service {
 
 // 与前端 AppHeader / taskStore 的 type 字段一致，勿随意改名。

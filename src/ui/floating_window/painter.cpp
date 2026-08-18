@@ -1,26 +1,27 @@
-#include "ui/floating_window/painter.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 #include "vendor/windows/d2d1_3.hpp"
 #include "vendor/windows/dwrite_3.hpp"
 
-#include "core/commands/registry.hpp"
-#include "core/commands/types.hpp"
-#include "core/state/app_state.hpp"
-#include "features/settings/menu.hpp"
-#include "ui/floating_window/layout.hpp"
-#include "ui/floating_window/render_context.hpp"
-#include "ui/floating_window/state.hpp"
-#include "ui/floating_window/types.hpp"
-#include "ui/shared_render_resources/state.hpp"
+module sm.ui.floating_window.painter;
+
+import std;
+import sm.core.commands.registry;
+import sm.core.commands.types;
+import sm.core.state.app_state;
+import sm.features.settings.menu;
+import sm.ui.floating_window.layout;
+import sm.ui.floating_window.render_context;
+import sm.ui.floating_window.state;
+import sm.ui.floating_window.types;
+import sm.ui.shared_render_resources.state;
 
 namespace ui::floating_window::painter {
 
 // 列数据结构：包含原始索引和项指针
 struct ColumnItems {
-  std::vector<size_t> indices;                              // 在原数组中的索引（用于 hover 判断）
+  std::vector<std::size_t> indices;                              // 在原数组中的索引（用于 hover 判断）
   std::vector<const ui::floating_window::MenuItem*> items;  // 项指针
 };
 
@@ -28,14 +29,14 @@ struct ColumnItems {
 struct ColumnDrawParams {
   float x_left;
   float x_right;
-  size_t scroll_offset;
-  size_t max_visible;
+  std::size_t scroll_offset;
+  std::size_t max_visible;
 };
 
 constexpr float kWidthCacheScale = 10.0f;
 constexpr float kFontCacheScale = 100.0f;
-constexpr size_t kMaxTextMeasureCacheEntries = 256;
-constexpr size_t kMaxAdjustedFormatEntries = 32;
+constexpr std::size_t kMaxTextMeasureCacheEntries = 256;
+constexpr std::size_t kMaxAdjustedFormatEntries = 32;
 
 auto to_cache_key(float value, float scale) -> int {
   return static_cast<int>(std::lround(value * scale));
@@ -94,7 +95,7 @@ auto group_items_by_column(const std::vector<ui::floating_window::MenuItem>& ite
     -> std::tuple<ColumnItems, ColumnItems, ColumnItems> {
   ColumnItems ratio, resolution, feature;
 
-  for (size_t i = 0; i < items.size(); ++i) {
+  for (std::size_t i = 0; i < items.size(); ++i) {
     switch (items[i].category) {
       case ui::floating_window::MenuItemCategory::AspectRatio:
         ratio.indices.push_back(i);
@@ -120,13 +121,13 @@ auto draw_single_column(core::AppState& state, const D2D1_RECT_F& rect, const Co
   const auto& render = state.floating_window->layout;
   float y = rect.top + static_cast<float>(render.title_height + render.separator_height);
 
-  const size_t start_index = params.scroll_offset;
-  const size_t end_index = std::min(start_index + params.max_visible, column.items.size());
+  const std::size_t start_index = params.scroll_offset;
+  const std::size_t end_index = std::min(start_index + params.max_visible, column.items.size());
 
   // 绘制可见项
-  for (size_t i = start_index; i < end_index; ++i) {
+  for (std::size_t i = start_index; i < end_index; ++i) {
     const auto& item = *column.items[i];
-    const size_t original_index = column.indices[i];
+    const std::size_t original_index = column.indices[i];
 
     D2D1_RECT_F item_rect = ui::floating_window::make_d2d_rect(
         params.x_left, y, params.x_right, y + static_cast<float>(render.item_height));
@@ -141,10 +142,10 @@ auto draw_single_column(core::AppState& state, const D2D1_RECT_F& rect, const Co
 
 // 绘制滚动条指示器
 auto draw_scroll_indicator(const core::AppState& state, const D2D1_RECT_F& column_rect,
-                           size_t total_items, size_t scroll_offset, bool is_hovered,
+                           std::size_t total_items, std::size_t scroll_offset, bool is_hovered,
                            bool is_last_column) -> void {
   const auto& render = state.floating_window->layout;
-  if (!is_hovered || total_items <= static_cast<size_t>(render.max_visible_rows)) {
+  if (!is_hovered || total_items <= static_cast<std::size_t>(render.max_visible_rows)) {
     return;  // 不需要显示滚动条
   }
 
@@ -348,7 +349,7 @@ auto draw_items(core::AppState& state, const D2D1_RECT_F& rect) -> void {
   // 按类别分组
   auto [ratio_col, resolution_col, feature_col] = group_items_by_column(items);
 
-  const size_t max_visible = static_cast<size_t>(render.max_visible_rows);
+  const std::size_t max_visible = static_cast<std::size_t>(render.max_visible_rows);
 
   // 绘制比例列
   draw_single_column(state, rect, ratio_col,

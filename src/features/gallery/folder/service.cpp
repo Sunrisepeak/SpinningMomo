@@ -1,24 +1,27 @@
-#include "features/gallery/folder/service.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 
-#include "core/database/database.hpp"
-#include "core/state/app_state.hpp"
-#include "core/webview/state.hpp"
-#include "core/webview/webview.hpp"
-#include "features/gallery/asset/thumbnail.hpp"
-#include "features/gallery/folder/repository.hpp"
-#include "features/gallery/ignore/service.hpp"
-#include "features/gallery/original_locator.hpp"
-#include "features/gallery/root_availability.hpp"
-#include "features/gallery/types.hpp"
-#include "features/gallery/watcher/watcher.hpp"
-#include "utils/logger/logger.hpp"
-#include "utils/path/path.hpp"
-#include "utils/string/string.hpp"
-#include "utils/system/system.hpp"
+module sm.features.gallery.folder.service;
+
+import std;
+import sm.core.state.app_state;
+import sm.core.webview.state;
+import sm.core.webview.webview;
+import sm.features.gallery.asset.thumbnail;
+import sm.features.gallery.folder.repository;
+import sm.features.gallery.ignore.service;
+import sm.features.gallery.original_locator;
+import sm.features.gallery.root_availability;
+import sm.features.gallery.types;
+import sm.features.gallery.watcher.watcher;
+
+import sm.utils.logger.logger;
+
+import sm.core.database.database;
+import sm.utils.path.path;
+import sm.utils.string.string;
+import sm.utils.system.system;
 
 namespace features::gallery::folder::service {
 

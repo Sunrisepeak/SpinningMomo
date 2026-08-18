@@ -1,8 +1,8 @@
-#include "features/gallery/ignore/matcher.hpp"
+module sm.features.gallery.ignore.matcher;
 
-#include "vendor/std.hpp"
+import std;
 
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 namespace features::gallery::ignore::matcher {
 
@@ -33,7 +33,7 @@ auto match_glob_pattern(const std::string& pattern, const std::string& path) -> 
 
     bool in_bracket = false;
 
-    for (size_t i = 0; i < pattern.size(); ++i) {
+    for (std::size_t i = 0; i < pattern.size(); ++i) {
       char c = pattern[i];
 
       switch (c) {

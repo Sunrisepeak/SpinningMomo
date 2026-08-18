@@ -1,27 +1,31 @@
-#include "core/webview/host.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/rfl.hpp"
+#include "vendor/windows.hpp"
 #include "vendor/webview2.hpp"
 #include "vendor/wil.hpp"
-#include "vendor/windows.hpp"
 #include "vendor/windows/d3d11.hpp"
 #include "vendor/windows/dcomp.hpp"
 #include "vendor/windows/dxgi.hpp"
 #include "vendor/windows/shellapi.hpp"
 #include "vendor/windows/wrl.hpp"
+#include "vendor/windows/wrl/client.hpp"
+#include "vendor/windows/wrl/implements.hpp"
 
-#include "core/build_config.hpp"
-#include "core/rpc/types.hpp"
-#include "core/state/app_state.hpp"
-#include "core/webview/rpc_bridge.hpp"
-#include "core/webview/state.hpp"
-#include "core/webview/static.hpp"
-#include "features/settings/state.hpp"
-#include "utils/logger/logger.hpp"
-#include "utils/path/path.hpp"
-#include "utils/string/string.hpp"
+module sm.core.webview.host;
+
+import std;
+import sm.core.build_config;
+import sm.core.state.app_state;
+import sm.core.webview.state;
+import sm.core.webview.static_;
+
+import sm.vendor.rfl;
+import sm.features.settings.state;
+import sm.utils.logger.logger;
+import sm.core.rpc.types;
+import sm.core.webview.rpc_bridge;
+import sm.utils.path.path;
+import sm.utils.string.string;
 
 namespace core::webview::host::detail {
 
@@ -310,7 +314,7 @@ auto is_http_or_https_uri(std::wstring_view uri) -> bool {
     if (hay.size() < needle.size()) {
       return false;
     }
-    for (size_t i = 0; i < needle.size(); ++i) {
+    for (std::size_t i = 0; i < needle.size(); ++i) {
       wchar_t a = hay[i];
       wchar_t b = needle[i];
       if (a >= L'A' && a <= L'Z') {

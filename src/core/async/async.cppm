@@ -1,0 +1,21 @@
+export module sm.core.async.async;
+
+import std;
+import sm.core.state.app_state;
+import asio;
+
+export namespace core::async {
+
+// 启动异步运行时（包含初始化）
+auto start(core::AppState& state, std::size_t thread_count = 0) -> std::expected<void, std::string>;
+
+// 停止异步运行时（包含清理）
+auto stop(core::AppState& state) -> void;
+
+// 检查运行时是否正在运行
+auto is_running(const core::AppState& state) -> bool;
+
+// 获取io_context用于提交任务
+auto get_io_context(core::AppState& state) -> asio::io_context*;
+
+}  // namespace core::async

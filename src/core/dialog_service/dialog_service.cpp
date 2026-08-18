@@ -1,14 +1,16 @@
-#include "core/dialog_service/dialog_service.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
+#include "vendor/wil.hpp"
 
-#include "core/dialog_service/state.hpp"
-#include "core/state/app_state.hpp"
-#include "utils/dialog/dialog.hpp"
-#include "utils/logger/logger.hpp"
+module sm.core.dialog_service.dialog_service;
+
+import std;
+import sm.core.dialog_service.state;
+import sm.core.state.app_state;
+import sm.utils.dialog.dialog;
+
+import sm.utils.logger.logger;
 
 namespace core::dialog_service {
 
@@ -57,7 +59,8 @@ template <typename Result>
 using DialogResult = std::expected<Result, std::string>;
 
 template <typename Result, typename Task>
-  requires std::invocable<Task&> && std::same_as<std::invoke_result_t<Task&>, DialogResult<Result>>
+  requires std::is_invocable_v<Task&> &&
+           std::is_same_v<std::invoke_result_t<Task&>, DialogResult<Result>>
 auto submit_dialog_task(core::dialog_service::DialogServiceState& service, Task&& task)
     -> DialogResult<Result> {
   if (!service.is_running.load()) {

@@ -1,22 +1,23 @@
-#include "ui/photography_panel/render_context.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
+#include "vendor/wil.hpp"
 #include "vendor/windows/d2d1_3.hpp"
 #include "vendor/windows/d3d11.hpp"
 #include "vendor/windows/dcomp.hpp"
 #include "vendor/windows/dwrite_3.hpp"
 #include "vendor/windows/dxgi1_2.hpp"
 
-#include "core/state/app_state.hpp"
-#include "ui/floating_window/render_context.hpp"
-#include "ui/floating_window/state.hpp"
-#include "ui/photography_panel/state.hpp"
-#include "ui/shared_render_resources/shared_render_resources.hpp"
-#include "ui/shared_render_resources/state.hpp"
-#include "ui/shared_theme/shared_theme.hpp"
+module sm.ui.photography_panel.render_context;
+
+import std;
+import sm.core.state.app_state;
+import sm.ui.floating_window.render_context;
+import sm.ui.floating_window.state;
+import sm.ui.photography_panel.state;
+import sm.ui.shared_render_resources.shared_render_resources;
+import sm.ui.shared_render_resources.state;
+import sm.ui.shared_theme.shared_theme;
 
 namespace ui::photography_panel::render_context {
 

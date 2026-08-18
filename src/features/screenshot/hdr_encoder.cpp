@@ -1,9 +1,14 @@
-#include "features/screenshot/hdr_encoder.hpp"
+module;
 
-#include "vendor/std.hpp"
+#include "vendor/windows.hpp"
+#include "vendor/windows/d3d11.hpp"
 
-#include "utils/logger/logger.hpp"
-#include "utils/string/string.hpp"
+module sm.features.screenshot.hdr_encoder;
+
+import std;
+
+import sm.utils.logger.logger;
+import sm.utils.string.string;
 
 namespace features::screenshot::hdr_encoder {
 
