@@ -1,17 +1,18 @@
-#include "features/gallery/asset/service.hpp"
+module sm.features.gallery.asset.service;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.database.types;
+import sm.core.state.app_state;
+import sm.features.gallery.asset.query_support;
+import sm.features.gallery.asset.repository;
+import sm.features.gallery.asset.thumbnail;
+import sm.features.gallery.color.repository;
+import sm.features.gallery.original_locator;
+import sm.features.gallery.types;
 
-#include "core/database/database.hpp"
-#include "core/database/types.hpp"
-#include "core/state/app_state.hpp"
-#include "features/gallery/asset/query_support.hpp"
-#include "features/gallery/asset/repository.hpp"
-#include "features/gallery/asset/thumbnail.hpp"
-#include "features/gallery/color/repository.hpp"
-#include "features/gallery/original_locator.hpp"
-#include "features/gallery/types.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
+
+import sm.core.database.database;
 
 namespace features::gallery::asset::service {
 

@@ -1,14 +1,13 @@
-#include "core/rpc/rpc.hpp"
+module sm.core.rpc.rpc;
 
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
-#include "vendor/rfl.hpp"
-
-#include "core/rpc/state.hpp"
-#include "core/rpc/types.hpp"
-#include "core/state/app_state.hpp"
-#include "utils/logger/logger.hpp"
+import std;
+import sm.core.build_config;
+import sm.core.state.app_state;
+import sm.vendor.rfl;
+import sm.utils.logger.logger;
+import asio;
+import sm.core.rpc.state;
+import sm.core.rpc.types;
 
 namespace core::rpc {
 

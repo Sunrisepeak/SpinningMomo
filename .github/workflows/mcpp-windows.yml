@@ -1,0 +1,94 @@
+name: mcpp-windows
+
+# The build of record: mcpp + the official package index + C++23 named modules.
+#
+# Two jobs, and the split is the point. Everything that can be decided from the
+# SOURCE TEXT runs on Linux in seconds; the Windows compile — the expensive half —
+# only starts once that has passed. A module-graph cycle or a missing import
+# costs a second here instead of forty minutes there.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: mcpp-windows-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ── Everything judgeable without a Windows runner ──────────────────────────
+  preflight:
+    name: preflight (linux)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      # The graph is a DAG, and every entity a unit names is exported by a
+      # module that unit can actually see. `import` is not transitive, so a unit
+      # that leans on someone else's import chain compiles for exactly as long
+      # as that chain happens to hold.
+      - name: Module graph
+        run: python3 scripts/check-module-graph.py --graph
+
+      - name: C++ architecture invariants
+        run: python3 scripts/check-cpp-architecture.py
+
+  build:
+    name: SpinningMomo (mcpp)
+    needs: preflight
+    runs-on: windows-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/setup-mcpp
+
+      - name: Cache build outputs
+        uses: actions/cache@v4
+        with:
+          path: target
+          key: mcpp-target-windows-${{ hashFiles('src/**', 'mcpp.toml') }}
+          restore-keys: mcpp-target-windows-
+
+      - name: Fetch header-only third-party (dkm)
+        shell: bash
+        run: node scripts/fetch-third-party.js
+
+      # Resources (.rc -> .res), the C++/WinRT projection, and the WebView2 SDK.
+      # None of the three is a compile input mcpp can derive from the manifest,
+      # so they are produced before the build rather than during it.
+      - name: Pre-build (resources, cppwinrt, WebView2)
+        shell: bash
+        run: bash scripts/mcpp-prebuild.sh
+
+      - name: Build
+        shell: bash
+        run: |
+          set -uo pipefail
+          "$MCPP" build -v 2>&1 | tail -400
+
+      - name: Unit tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          "$MCPP" test
+
+      - name: Report artefact
+        shell: bash
+        run: |
+          set -euo pipefail
+          exe=$(find target -name 'SpinningMomo.exe' | head -1)
+          test -n "$exe" || { echo "FAIL: no SpinningMomo.exe"; exit 1; }
+          ls -la "$exe"
+          powershell -NoProfile -Command \
+            "(Get-Item '$(cygpath -w "$exe")').VersionInfo | Format-List ProductName,ProductVersion,FileVersion"
+
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: SpinningMomo-mcpp
+          path: target/**/bin/SpinningMomo.exe
+          if-no-files-found: error

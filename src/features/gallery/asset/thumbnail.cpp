@@ -1,16 +1,17 @@
-#include "features/gallery/asset/thumbnail.hpp"
+module sm.features.gallery.asset.thumbnail;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.state.app_state;
+import sm.features.gallery.asset.service;
+import sm.features.gallery.state;
+import sm.features.gallery.types;
+import sm.utils.image.image;
 
-#include "core/database/database.hpp"
-#include "core/state/app_state.hpp"
-#include "features/gallery/asset/service.hpp"
-#include "features/gallery/state.hpp"
-#include "features/gallery/types.hpp"
-#include "utils/image/image.hpp"
-#include "utils/logger/logger.hpp"
-#include "utils/media/video_asset.hpp"
-#include "utils/path/path.hpp"
+import sm.utils.logger.logger;
+
+import sm.core.database.database;
+import sm.utils.media.video_asset;
+import sm.utils.path.path;
 
 namespace features::gallery::asset::thumbnail {
 

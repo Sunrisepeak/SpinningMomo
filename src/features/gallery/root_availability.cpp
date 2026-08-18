@@ -1,18 +1,18 @@
-#include "features/gallery/root_availability.hpp"
+module sm.features.gallery.root_availability;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.state.app_state;
+import sm.features.gallery.folder.repository;
+import sm.features.gallery.state;
+import sm.features.gallery.types;
 
-#include "vendor/asio.hpp"
+import sm.utils.logger.logger;
 
-#include "core/async/async.hpp"
-#include "core/state/app_state.hpp"
-#include "features/gallery/folder/repository.hpp"
-#include "features/gallery/state.hpp"
-#include "features/gallery/types.hpp"
-#include "utils/logger/logger.hpp"
-#include "utils/network/network.hpp"
-#include "utils/path/path.hpp"
-#include "utils/string/string.hpp"
+import asio;
+import sm.core.async.async;
+import sm.utils.network.network;
+import sm.utils.path.path;
+import sm.utils.string.string;
 
 namespace features::gallery::root_availability::detail {
 

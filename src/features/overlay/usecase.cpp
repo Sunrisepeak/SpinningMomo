@@ -1,20 +1,20 @@
-#include "features/overlay/usecase.hpp"
+module sm.features.overlay.usecase;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.i18n.state;
+import sm.core.notifications.notifications;
+import sm.core.state.app_state;
+import sm.features.letterbox.letterbox;
+import sm.features.letterbox.state;
+import sm.features.overlay.overlay;
+import sm.features.overlay.state;
+import sm.features.preview.preview;
+import sm.features.preview.state;
+import sm.features.window_control.window_control;
 
-#include "core/i18n/state.hpp"
-#include "core/notifications/notifications.hpp"
-#include "core/state/app_state.hpp"
-#include "features/letterbox/letterbox.hpp"
-#include "features/letterbox/state.hpp"
-#include "features/overlay/overlay.hpp"
-#include "features/overlay/state.hpp"
-#include "features/preview/preview.hpp"
-#include "features/preview/state.hpp"
-#include "features/settings/state.hpp"
-#include "features/window_control/window_control.hpp"
-#include "utils/logger/logger.hpp"
-#include "utils/string/string.hpp"
+import sm.features.settings.state;
+import sm.utils.logger.logger;
+import sm.utils.string.string;
 
 namespace features::overlay {
 

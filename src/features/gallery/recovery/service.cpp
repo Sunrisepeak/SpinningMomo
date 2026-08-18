@@ -1,22 +1,24 @@
-#include "features/gallery/recovery/service.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 #include "vendor/windows/winioctl.hpp"
 
-#include "core/state/app_state.hpp"
-#include "features/gallery/asset/repository.hpp"
-#include "features/gallery/ignore/repository.hpp"
-#include "features/gallery/recovery/repository.hpp"
-#include "features/gallery/recovery/types.hpp"
-#include "features/gallery/root_availability.hpp"
-#include "features/gallery/scanner/common.hpp"
-#include "features/gallery/state.hpp"
-#include "features/gallery/types.hpp"
-#include "utils/logger/logger.hpp"
-#include "utils/path/path.hpp"
-#include "utils/string/string.hpp"
+module sm.features.gallery.recovery.service;
+
+import std;
+import sm.core.state.app_state;
+import sm.features.gallery.asset.repository;
+import sm.features.gallery.ignore.repository;
+import sm.features.gallery.recovery.repository;
+import sm.features.gallery.recovery.types;
+import sm.features.gallery.root_availability;
+import sm.features.gallery.scanner.common;
+import sm.features.gallery.state;
+import sm.features.gallery.types;
+
+import sm.utils.logger.logger;
+import sm.utils.path.path;
+import sm.utils.string.string;
 
 namespace features::gallery::recovery::service::detail {
 

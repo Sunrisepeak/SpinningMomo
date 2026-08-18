@@ -1,17 +1,19 @@
-#include "features/gallery/scanner/analysis.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
 
-#include "core/state/app_state.hpp"
-#include "core/worker_pool/worker_pool.hpp"
-#include "features/gallery/asset/repository.hpp"
-#include "features/gallery/scanner/common.hpp"
-#include "features/gallery/scanner/progress.hpp"
-#include "features/gallery/types.hpp"
-#include "utils/logger/logger.hpp"
+module sm.features.gallery.scanner.analysis;
+
+import std;
+import sm.core.state.app_state;
+import sm.core.worker_pool.worker_pool;
+import sm.features.gallery.asset.repository;
+import sm.features.gallery.scanner.common;
+import sm.features.gallery.scanner.progress;
+import sm.features.gallery.types;
+
+import sm.utils.logger.logger;
 
 namespace features::gallery::scanner::analysis {
 
@@ -75,12 +77,12 @@ auto calculate_hash_for_targets(core::AppState& app_state,
     return 0;
   }
 
-  constexpr size_t HASH_BATCH_SIZE = 32;
+  constexpr std::size_t HASH_BATCH_SIZE = 32;
   auto batches =
       targets_with_index | std::views::chunk(HASH_BATCH_SIZE) | std::ranges::to<std::vector>();
 
   std::latch completion_latch(batches.size());
-  std::vector<std::pair<size_t, std::string>> all_hashes;
+  std::vector<std::pair<std::size_t, std::string>> all_hashes;
   std::mutex results_mutex;
   std::size_t submitted_batches = 0;
 
@@ -96,7 +98,7 @@ auto calculate_hash_for_targets(core::AppState& app_state,
                 return !stop_token.stop_requested();
               }) |
               std::views::transform([progress_tracker, stop_token](const auto& pair)
-                                        -> std::optional<std::pair<size_t, std::string>> {
+                                        -> std::optional<std::pair<std::size_t, std::string>> {
                 const auto& [idx, analysis] = pair;
                 auto hash_result = common::calculate_content_fingerprint(
                     analysis.file_info.path, analysis.file_info.size, stop_token);
@@ -104,7 +106,7 @@ auto calculate_hash_for_targets(core::AppState& app_state,
                   progress_tracker->mark_item_hashed();
                 }
                 if (hash_result) {
-                  return std::make_pair(static_cast<size_t>(idx), std::move(hash_result.value()));
+                  return std::make_pair(static_cast<std::size_t>(idx), std::move(hash_result.value()));
                 }
                 if (!stop_token.stop_requested()) {
                   Logger().warn("Failed to calculate hash for {}: {}",

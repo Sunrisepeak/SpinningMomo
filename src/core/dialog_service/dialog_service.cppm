@@ -1,0 +1,25 @@
+module;
+
+#include "vendor/windows.hpp"
+
+export module sm.core.dialog_service.dialog_service;
+
+import std;
+import sm.core.state.app_state;
+import sm.utils.dialog.dialog;
+
+export namespace core::dialog_service {
+
+auto start(core::AppState& state) -> std::expected<void, std::string>;
+
+auto stop(core::AppState& state) -> void;
+
+auto open_file(core::AppState& state, const utils::dialog::FileSelectorParams& params,
+               HWND hwnd = nullptr)
+    -> std::expected<utils::dialog::FileSelectorResult, std::string>;
+
+auto open_folder(core::AppState& state, const utils::dialog::FolderSelectorParams& params,
+                 HWND hwnd = nullptr)
+    -> std::expected<utils::dialog::FolderSelectorResult, std::string>;
+
+}  // namespace core::dialog_service

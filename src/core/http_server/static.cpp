@@ -1,18 +1,17 @@
-#include "core/http_server/static.hpp"
+module sm.core.http_server.static_;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.state.app_state;
+import sm.vendor.uwebsockets;
+import asio;
+import sm.core.async.async;
+import sm.core.http_server.types;
 
-#include "vendor/asio.hpp"
-#include "vendor/uwebsockets.hpp"
-
-#include "core/async/async.hpp"
-#include "core/http_server/types.hpp"
-#include "core/state/app_state.hpp"
-#include "utils/file/file.hpp"
-#include "utils/file/mime.hpp"
-#include "utils/logger/logger.hpp"
-#include "utils/path/path.hpp"
-#include "utils/time.hpp"
+import sm.utils.file.file;
+import sm.utils.file.mime;
+import sm.utils.logger.logger;
+import sm.utils.path.path;
+import sm.utils.time;
 
 namespace core::http_server::static_content {
 
@@ -120,8 +119,8 @@ auto get_web_root() -> std::filesystem::path {
 
 // ---- Range 请求：<video> 拖动进度、分片加载依赖 Accept-Ranges + 206 + Content-Range ----
 struct ByteRange {
-  size_t start = 0;
-  size_t end = 0;  // inclusive
+  std::size_t start = 0;
+  std::size_t end = 0;  // inclusive
 };
 
 struct RangeHeaderParseResult {
@@ -129,7 +128,7 @@ struct RangeHeaderParseResult {
   std::optional<ByteRange> range;
 };
 
-auto parse_range_header(std::string_view header_value, size_t file_size) -> RangeHeaderParseResult {
+auto parse_range_header(std::string_view header_value, std::size_t file_size) -> RangeHeaderParseResult {
   if (header_value.empty()) {
     return {};
   }
@@ -154,19 +153,19 @@ auto parse_range_header(std::string_view header_value, size_t file_size) -> Rang
   auto end_part = range_spec.substr(dash_pos + 1);
 
   if (start_part.empty()) {
-    size_t suffix_length = 0;
+    std::size_t suffix_length = 0;
     auto [ptr, ec] =
         std::from_chars(end_part.data(), end_part.data() + end_part.size(), suffix_length);
     if (ec != std::errc{} || ptr != end_part.data() + end_part.size() || suffix_length == 0) {
       return {.valid = false, .range = std::nullopt};
     }
 
-    size_t clamped_length = std::min(suffix_length, file_size);
+    std::size_t clamped_length = std::min(suffix_length, file_size);
     return {.valid = true,
             .range = ByteRange{.start = file_size - clamped_length, .end = file_size - 1}};
   }
 
-  size_t start = 0;
+  std::size_t start = 0;
   auto [start_ptr, start_ec] =
       std::from_chars(start_part.data(), start_part.data() + start_part.size(), start);
   if (start_ec != std::errc{} || start_ptr != start_part.data() + start_part.size() ||
@@ -178,7 +177,7 @@ auto parse_range_header(std::string_view header_value, size_t file_size) -> Rang
     return {.valid = true, .range = ByteRange{.start = start, .end = file_size - 1}};
   }
 
-  size_t end = 0;
+  std::size_t end = 0;
   auto [end_ptr, end_ec] = std::from_chars(end_part.data(), end_part.data() + end_part.size(), end);
   if (end_ec != std::errc{} || end_ptr != end_part.data() + end_part.size() || end < start) {
     return {.valid = false, .range = std::nullopt};
@@ -217,7 +216,7 @@ auto build_cache_control_header(std::chrono::seconds cache_duration) -> std::str
 }
 
 // 基于文件大小和最后修改时间构造条件缓存校验器，避免为原图额外计算内容哈希。
-auto build_cache_validators(const std::filesystem::path& file_path, size_t file_size)
+auto build_cache_validators(const std::filesystem::path& file_path, std::size_t file_size)
     -> std::expected<CacheValidators, std::string> {
   std::error_code ec;
   auto last_write_time = std::filesystem::last_write_time(file_path, ec);
@@ -276,7 +275,7 @@ auto is_not_modified_request(auto* req, const CacheValidators& validators, bool 
 // 写出文件响应的公共缓存/范围头；200 与 206 响应共用这套头部逻辑。
 auto write_common_file_headers(auto* res, const std::string& mime_type,
                                std::string_view cache_control, const CacheValidators& validators,
-                               std::optional<size_t> source_file_size = std::nullopt,
+                               std::optional<std::size_t> source_file_size = std::nullopt,
                                std::optional<ByteRange> range = std::nullopt) -> void {
   res->writeHeader("Content-Type", get_response_content_type(mime_type));
   res->writeHeader("Cache-Control", std::string(cache_control));
@@ -301,7 +300,7 @@ auto write_not_modified(auto* res, std::string_view cache_control,
   res->end();
 }
 
-auto write_range_not_satisfiable(auto* res, size_t file_size) -> void {
+auto write_range_not_satisfiable(auto* res, std::size_t file_size) -> void {
   res->writeStatus("416 Range Not Satisfiable");
   res->writeHeader("Accept-Ranges", "bytes");
   res->writeHeader("Content-Range", std::format("bytes */{}", file_size));
@@ -317,7 +316,7 @@ auto send_chunk_to_uws(std::shared_ptr<StreamContext> ctx, std::shared_ptr<std::
   }
 
   // 记录发送前的偏移量（用于处理背压）
-  size_t chunk_start_offset = ctx->bytes_sent;
+  std::size_t chunk_start_offset = ctx->bytes_sent;
 
   // tryEnd 的 total 必须为「整个 HTTP 响应体」长度；Range 时为片段长而非文件全长。
   auto [ok, done] = ctx->res->tryEnd(*chunk_data, ctx->response_size);
@@ -326,13 +325,13 @@ auto send_chunk_to_uws(std::shared_ptr<StreamContext> ctx, std::shared_ptr<std::
     // 背压：缓冲区满，需要等待可写
     Logger().debug("Backpressure detected, waiting for writable");
 
-    ctx->res->onWritable([ctx, chunk_data, chunk_start_offset](size_t) -> bool {
+    ctx->res->onWritable([ctx, chunk_data, chunk_start_offset](std::size_t) -> bool {
       if (ctx->is_aborted) {
         return false;  // 停止等待
       }
 
       // 计算已经发送的字节数
-      size_t already_sent = ctx->res->getWriteOffset() - chunk_start_offset;
+      std::size_t already_sent = ctx->res->getWriteOffset() - chunk_start_offset;
 
       if (already_sent >= chunk_data->size()) {
         // 这个块已经全部发送完成
@@ -389,12 +388,12 @@ auto read_and_send_next_chunk(std::shared_ptr<StreamContext> ctx) -> void {
   }
 
   // 计算本次读取大小
-  size_t to_read = std::min(STREAM_CHUNK_SIZE, ctx->file_end_offset - ctx->file_offset);
+  std::size_t to_read = std::min(STREAM_CHUNK_SIZE, ctx->file_end_offset - ctx->file_offset);
 
   // 异步读取文件块
   ctx->file.async_read_some_at(
       ctx->file_offset, asio::buffer(ctx->buffer.data(), to_read),
-      [ctx](std::error_code ec, size_t bytes_read) {
+      [ctx](std::error_code ec, std::size_t bytes_read) {
         if (ec || bytes_read == 0) {
           Logger().error("Failed to read file {}: {}", ctx->file_path.string(),
                          ec ? ec.message() : "EOF");
@@ -416,14 +415,14 @@ auto read_and_send_next_chunk(std::shared_ptr<StreamContext> ctx) -> void {
 // 流式传输文件
 auto handle_file_stream(core::AppState& state, std::filesystem::path file_path,
                         std::string mime_type, std::string cache_control,
-                        CacheValidators validators, size_t file_size,
+                        CacheValidators validators, std::size_t file_size,
                         std::optional<ByteRange> range, auto* res) -> void {
   auto* loop = uWS::Loop::get();
   auto io_context = core::async::get_io_context(state);
 
-  size_t range_start = range.has_value() ? range->start : 0;
-  size_t range_end = range.has_value() ? range->end : (file_size - 1);
-  size_t response_size = range_end >= range_start ? (range_end - range_start + 1) : 0;
+  std::size_t range_start = range.has_value() ? range->start : 0;
+  std::size_t range_end = range.has_value() ? range->end : (file_size - 1);
+  std::size_t response_size = range_end >= range_start ? (range_end - range_start + 1) : 0;
 
   // 对于大文件或分片请求，始终按偏移流式发送，避免把整段视频先读进内存。
   // 在 ASIO 线程中打开文件并初始化
@@ -506,7 +505,7 @@ auto serve_resolved_file_request(core::AppState& state, const std::filesystem::p
   }
 
   // 获取文件大小
-  size_t file_size = std::filesystem::file_size(file_path);
+  std::size_t file_size = std::filesystem::file_size(file_path);
 
   // 决定mime类型和缓存时间
   std::string mime_type = utils::file::mime::get_mime_type(file_path);
@@ -540,7 +539,7 @@ auto serve_resolved_file_request(core::AppState& state, const std::filesystem::p
     return;
   }
 
-  size_t content_length = range_parse.range.has_value()
+  std::size_t content_length = range_parse.range.has_value()
                               ? (range_parse.range->end - range_parse.range->start + 1)
                               : file_size;
 
@@ -586,9 +585,9 @@ auto serve_resolved_file_request(core::AppState& state, const std::filesystem::p
           }
 
           auto file_data = file_result.value();
-          size_t range_start = range.has_value() ? range->start : 0;
-          size_t range_end = range.has_value() ? range->end : (file_size - 1);
-          size_t content_length = range_end >= range_start ? (range_end - range_start + 1) : 0;
+          std::size_t range_start = range.has_value() ? range->start : 0;
+          std::size_t range_end = range.has_value() ? range->end : (file_size - 1);
+          std::size_t content_length = range_end >= range_start ? (range_end - range_start + 1) : 0;
 
           std::string response_body(
               reinterpret_cast<const char*>(file_data.data.data() + range_start), content_length);

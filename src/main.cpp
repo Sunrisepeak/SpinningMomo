@@ -3,13 +3,28 @@
 #include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
 
-#include "app.hpp"
-#include "features/settings/settings.hpp"
-#include "utils/crash_dump/crash_dump.hpp"
-#include "utils/logger/logger.hpp"
-#include "utils/system/system.hpp"
+// GUI subsystem, declared by the binary that needs it rather than by the build.
+//
+// `[build] ldflags` reaches EVERY link in the package, and mcpp has no
+// per-target ldflags — so `-Wl,/subsystem:windows` there also lands on the test
+// binaries built by `mcpp test`, which then want `WinMain` instead of `main`:
+//
+//   lld-link: error: undefined symbol: WinMain
+//
+// A linker directive in the entry translation unit reaches exactly the binary
+// that includes it. lld-link reads it out of `.drectve` the same way it reads
+// the command line.
+#pragma comment(linker, "/subsystem:windows")
+
+import sm.app;
+import sm.features.settings.settings;
+import sm.utils.logger.logger;
 
 // Win32 入口
+
+import sm.utils.crash_dump.crash_dump;
+import sm.utils.system.system;
+
 auto __stdcall wWinMain(HINSTANCE hInstance, [[maybe_unused]] HINSTANCE hPrevInstance,
                         LPWSTR lpCmdLine, [[maybe_unused]] int nCmdShow) -> int {
   auto ui_com_init = wil::CoInitializeEx(COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);

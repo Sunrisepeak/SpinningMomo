@@ -6,7 +6,7 @@ SpinningMomo（旋转吧大喵）的开发离不开以下优秀的开源项目�
 
 | 项目 | 协议 | 链接 |
 |------|------|------|
-| [xmake](https://github.com/xmake-io/xmake) | Apache-2.0 | https://github.com/xmake-io/xmake |
+| [mcpp](https://github.com/mcpp-community/mcpp) | Apache-2.0 | https://github.com/mcpp-community/mcpp |
 | [uWebSockets](https://github.com/uNetworking/uWebSockets) | Apache-2.0 | https://github.com/uNetworking/uWebSockets |
 | [uSockets](https://github.com/uNetworking/uSockets) | Apache-2.0 | https://github.com/uNetworking/uSockets |
 | [reflect-cpp](https://github.com/getml/reflect-cpp) | MIT | https://github.com/getml/reflect-cpp |

@@ -1,11 +1,12 @@
 const path = require("path");
 const fs = require("fs");
+const { findArtifact } = require("./mcpp-artifact");
 
 function main() {
   const projectDir = path.join(__dirname, "..");
   const distDir = path.join(projectDir, "dist");
   const webDist = path.join(projectDir, "web", "dist");
-  const exePath = path.join(projectDir, "build", "windows", "x64", "release", "SpinningMomo.exe");
+  const exePath = findArtifact("SpinningMomo.exe", projectDir);
   const licensePath = path.join(projectDir, "LICENSE");
 
   if (!fs.existsSync(webDist)) {
@@ -13,8 +14,8 @@ function main() {
     process.exit(1);
   }
 
-  if (!fs.existsSync(exePath)) {
-    console.error("SpinningMomo.exe not found. Run 'npm run build:cpp' first.");
+  if (!exePath) {
+    console.error("SpinningMomo.exe not found under target/. Run 'npm run build:cpp' first.");
     process.exit(1);
   }
   if (!fs.existsSync(licensePath)) {

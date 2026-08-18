@@ -141,9 +141,9 @@ function splitSqlStatements(sqlContent) {
  * @param {string[]} sqlStatements - SQL 语句数组
  * @returns {string} C++ 头文件内容
  */
-function generateCppHeader(migrationFile, version, sqlStatements) {
-  const moduleSuffix = `V${String(version).padStart(3, "0")}`;
-  const structName = moduleSuffix; // 结构体名称，如 V001
+function generateCppModule(migrationFile, version, sqlStatements) {
+  const paddedVersion = String(version).padStart(3, "0");
+  const structName = `V${paddedVersion}`; // 结构体名称，如 V001
 
   // 生成语句数组
   const statementsCode = sqlStatements.map((stmt) => {
@@ -161,15 +161,15 @@ ${stmt}
 
   const statementsArray = statementsCode.join(",\n");
 
-  return `#pragma once
+  return `export module sm.core.migration.generated.schema_${paddedVersion};
 
-#include "vendor/std.hpp"
+import std;
 
-// Auto-generated SQL schema header
+// Auto-generated SQL schema module
 // DO NOT EDIT - This file is generated from
 // src/migrations/${migrationFile}
 
-namespace core::migration::schema {
+export namespace core::migration::schema {
 
 struct ${structName} {
   static constexpr std::array<std::string_view, ${sqlStatements.length}> statements = {
@@ -220,12 +220,12 @@ function processMigrationFile(sqlFile) {
     console.log(`  Statements: ${statements.length}`);
 
     // 生成 C++ 代码
-    const cppContent = generateCppHeader(fileName, version, statements);
+    const cppContent = generateCppModule(fileName, version, statements);
 
     // 输出文件路径
     const outputFile = path.join(
       generatedDir,
-      `schema_${String(version).padStart(3, "0")}.hpp`
+      `schema_${String(version).padStart(3, "0")}.cppm`
     );
     fs.writeFileSync(outputFile, cppContent, "utf8");
 
@@ -253,26 +253,30 @@ function generateIndexHeader(processedVersions) {
 
   processedVersions.sort((a, b) => a - b);
 
-  const includes = processedVersions.map((ver) => {
-    return `#include "core/migration/generated/schema_${String(ver).padStart(
+  const imports = processedVersions.map((ver) => {
+    return `export import sm.core.migration.generated.schema_${String(ver).padStart(
       3,
       "0"
-    )}.hpp"`;
+    )};`;
   });
 
-  const includesCode = includes.join("\n");
+  const importsCode = imports.join("\n");
 
-  const indexContent = `#pragma once
+  const indexContent = `export module sm.core.migration.generated.schema;
 
-#include "vendor/std.hpp"
+import std;
 
 // Auto-generated schema index
-// DO NOT EDIT - This file includes all generated schema headers
+// DO NOT EDIT — regenerate with \`node scripts/generate-migrations.js\`
+//
+// \`export import\`, not \`import\`: this module's whole job is to gather the
+// per-version schema modules, and a plain import does not re-export what it
+// brought in — a consumer would import this and see nothing.
 
-${includesCode}
+${importsCode}
 `;
 
-  const indexFile = path.join(generatedDir, "schema.hpp");
+  const indexFile = path.join(generatedDir, "schema.cppm");
   fs.writeFileSync(indexFile, indexContent, "utf8");
 
   const relativePath = path

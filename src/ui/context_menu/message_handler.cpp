@@ -1,19 +1,21 @@
-#include "ui/context_menu/message_handler.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 #include "vendor/windows/windowsx.hpp"
 
-#include "core/state/app_state.hpp"
-#include "ui/context_menu/context_menu.hpp"
-#include "ui/context_menu/interaction.hpp"
-#include "ui/context_menu/layout.hpp"
-#include "ui/context_menu/painter.hpp"
-#include "ui/context_menu/render_context.hpp"
-#include "ui/context_menu/state.hpp"
-#include "ui/context_menu/types.hpp"
-#include "utils/logger/logger.hpp"
+module sm.ui.context_menu.message_handler;
+
+import std;
+import sm.core.state.app_state;
+import sm.ui.context_menu.context_menu;
+import sm.ui.context_menu.interaction;
+import sm.ui.context_menu.layout;
+import sm.ui.context_menu.painter;
+import sm.ui.context_menu.render_context;
+import sm.ui.context_menu.state;
+import sm.ui.context_menu.types;
+
+import sm.utils.logger.logger;
 
 namespace ui::context_menu::message_handler {
 
@@ -114,7 +116,7 @@ auto get_submenu_item_at_point(core::AppState& state, const POINT& pt) -> int {
   const auto& layout = menu_state.layout;
   const auto& current_submenu = menu_state.get_current_submenu();
   int current_y = layout.padding;
-  for (size_t i = 0; i < current_submenu.size(); ++i) {
+  for (std::size_t i = 0; i < current_submenu.size(); ++i) {
     const auto& item = current_submenu[i];
     int item_height = (item.type == ui::context_menu::MenuItemType::Separator)
                           ? layout.separator_height

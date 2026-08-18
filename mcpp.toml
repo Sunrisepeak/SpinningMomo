@@ -1,0 +1,128 @@
+[package]
+name      = "SpinningMomo"
+version   = "2.1.4"
+standard  = "c++23"
+platforms = ["windows"]
+license   = "GPL-3.0"
+
+# llvm targeting the MSVC ABI, not native cl.exe — `import asio;` does not
+# compile under cl.exe 19.51, which cannot round-trip `io_context::service`
+# (declared in-class, defined at namespace scope) through a BMI.
+#
+# The driver is therefore `clang++`, so every flag below is GNU-spelled.
+[toolchain]
+windows = "llvm@22.1.8"
+
+# asio is consumed as a MODULE (`import asio;`), never as headers: that is what
+# keeps its template specializations instantiated once inside the asio module
+# instead of once per importing TU.
+#
+# sqlite3 and libuv arrive transitively (via sqlitecpp and usockets).
+[dependencies]
+chriskohlhoff.asio = "1.38.1"
+compat.spdlog      = { version = "1.17.0", features = ["compiled"] }
+compat.xxhash      = "0.8.3"
+compat.sqlitecpp   = "3.3.3"
+compat.reflectcpp  = "0.25.0"
+compat.uwebsockets = "20.79.0"
+compat.libwebp     = "1.5.0"
+
+# WIL's package declares only a `windows` platform. Gating it keeps the manifest
+# resolvable off-Windows, which is what lets the module graph and the
+# architecture invariants be checked on Linux.
+[target.'cfg(windows)'.dependencies]
+compat.wil = "1.0.260126.7"
+
+# WebView2 is not in the index — it is a NuGet binary distribution.
+# `scripts/mcpp-prebuild.sh` unpacks it; it reaches the build through
+# include_dirs and ldflags below.
+
+[build]
+# /MT on the MSVC ABI, for this project's TUs and every dependency package's.
+cxx_runtime = "self-contained"
+
+sources = ["src/**/*.cpp", "src/**/*.cppm"]
+
+include_dirs = [
+  "src",
+  "third_party/dkm/include",
+  # Produced by scripts/mcpp-prebuild.sh. Keep them project-relative and
+  # space-free: include_dirs are emitted unquoted, so a path under
+  # "C:/Program Files (x86)/..." arrives as three arguments.
+  "gen/cppwinrt",          # C++/WinRT projection
+  "gen/webview2/include",  # WebView2 SDK headers
+]
+
+# Every define here describes how a DEPENDENCY was built. A consumer that
+# disagrees does not fail to build — it compiles a different program: spdlog
+# re-emits inline what the package compiled out-of-line, asio does the same for
+# ASIO_SEPARATE_COMPILATION, and the LIBUS_* pair changes struct layouts in
+# libusockets.h.
+defines = [
+  "NOMINMAX", "UNICODE", "_UNICODE", "WIN32_LEAN_AND_MEAN", "_WIN32_WINNT=0x0A00",
+  "yyjson_api_inline=yyjson_inline",
+  "SPDLOG_COMPILED_LIB",
+  "ASIO_STANDALONE", "ASIO_SEPARATE_COMPILATION",
+  "ASIO_DISABLE_BOOST_CONTEXT_FIBER", "ASIO_HAS_THREADS", "ASIO_NO_IOSTREAM",
+  "LIBUS_USE_LIBUV", "LIBUS_NO_SSL", "UWS_NO_ZLIB",
+]
+
+# No `/subsystem:windows` here: ldflags reach every link in the package,
+# including the test binaries `mcpp test` builds. Each GUI binary declares it
+# itself with a linker directive in its entry TU.
+ldflags = [
+  # The linker runs with cwd = target/<triple>/<hash>/ and ldflags are passed
+  # verbatim, so file inputs have to climb back out to the project root.
+  "-Wl,../../../gen/app.res",
+  "-Wl,../../../gen/webview2/lib/WebView2LoaderStatic.lib",
+
+  # Windows system libraries.
+  "-ldwmapi", "-ldcomp", "-lwindowsapp", "-lruntimeobject",
+  "-ld3d11", "-ldxgi", "-ld3dcompiler", "-ld2d1", "-ldwrite",
+  "-lshell32", "-lshlwapi", "-lgdi32", "-luser32", "-lws2_32",
+  "-lsecur32", "-ladvapi32", "-lbcrypt", "-ldbghelp", "-luserenv",
+  "-lmf", "-lmfplat", "-lmfreadwrite", "-lmfuuid", "-lstrmiids",
+  "-lole32", "-loleaut32", "-lversion", "-lpropsys",
+
+  # libuv's own Windows link set, minus what is already above.
+  "-lpsapi", "-liphlpapi",
+]
+
+[profile.release]
+# NDEBUG, because nothing else defines it. mcpp's release profile sets the
+# optimisation level but leaves the macro alone, and this project reads it:
+# `core::build_config::is_debug_build()` is what makes the gallery scanner hash
+# a file's CONTENT rather than its PATH. Without NDEBUG an optimised build still
+# takes the debug shortcut, two copies of one file get different hashes, and
+# duplicate detection silently stops working — a wrong program, not a failed
+# build. `[profile.*]` has no `defines` key, so it goes through the documented
+# cxxflags passthrough.
+#
+# It reaches the compile of `sm.core.build_config` itself, and every consumer
+# reads the answer out of that BMI — so the whole build cannot disagree with
+# itself about it the way a header could.
+cxxflags = ["-DNDEBUG"]
+
+# Keep full debug info so production crash dumps stay analysable, and force the
+# dynamic UCRT.
+ldflags = ["-Wl,/debug:full", "-Wl,/nodefaultlib:libucrt.lib", "-Wl,/defaultlib:ucrt.lib"]
+
+[targets.SpinningMomo]
+kind = "bin"
+main = "src/main.cpp"
+
+# The window the scenario tests point the app at. A fixture, not a test —
+# `mcpp test` RUNS every `tests/**/*.cpp`, and this one opens a window and pumps
+# messages until told to stop, so it lives outside `tests/`.
+[targets.SpinningMomoScenarioWindow]
+kind = "bin"
+main = "scenarios/window/main.cpp"
+
+# No `/bigobj` equivalent is needed: LLVM's COFF writer switches to the
+# big-object format on its own once an object exceeds the 16-bit section limit,
+# which reflect-cpp's per-endpoint instantiations do.
+#
+# -Wno-microsoft-include: the Windows SDK and the C++/WinRT projection resolve
+# some includes the MSVC way rather than the standard way.
+[target.'cfg(windows)'.build]
+cxxflags = ["-Wno-microsoft-include"]

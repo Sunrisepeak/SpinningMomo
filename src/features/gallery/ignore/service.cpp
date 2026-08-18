@@ -1,13 +1,13 @@
-#include "features/gallery/ignore/service.hpp"
+module sm.features.gallery.ignore.service;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.state.app_state;
+import sm.features.gallery.folder.repository;
+import sm.features.gallery.ignore.matcher;
+import sm.features.gallery.ignore.repository;
+import sm.features.gallery.types;
 
-#include "core/state/app_state.hpp"
-#include "features/gallery/folder/repository.hpp"
-#include "features/gallery/ignore/matcher.hpp"
-#include "features/gallery/ignore/repository.hpp"
-#include "features/gallery/types.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
 
 namespace features::gallery::ignore::service {
 

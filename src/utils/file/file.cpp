@@ -1,14 +1,15 @@
-#include "utils/file/file.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
 #include "vendor/windows.hpp"
 
-#include "utils/file/mime.hpp"
-#include "utils/logger/logger.hpp"
-#include "utils/string/string.hpp"
-#include "utils/time.hpp"
+module sm.utils.file.file;
+
+import std;
+import sm.utils.logger.logger;
+import asio;
+import sm.utils.file.mime;
+import sm.utils.string.string;
+import sm.utils.time;
 
 namespace utils::file {
 
@@ -213,7 +214,7 @@ auto write_file(const std::filesystem::path& file_path, const std::string& conte
       co_return FileWriteResult{};
     }
 
-    size_t bytes_written = 0;
+    std::size_t bytes_written = 0;
     if (is_binary) {
       // 二进制文件：从base64解码后写入
       auto binary_data = utils::string::FromBase64(content);

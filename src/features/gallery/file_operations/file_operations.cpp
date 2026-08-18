@@ -1,17 +1,18 @@
-#include "features/gallery/file_operations/file_operations.hpp"
+module sm.features.gallery.file_operations.file_operations;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.state.app_state;
+import sm.features.gallery.asset.repository;
+import sm.features.gallery.folder.repository;
+import sm.features.gallery.types;
+import sm.features.gallery.watcher.watcher;
 
-#include "core/state/app_state.hpp"
-#include "features/gallery/asset/repository.hpp"
-#include "features/gallery/folder/repository.hpp"
-#include "features/gallery/types.hpp"
-#include "features/gallery/watcher/watcher.hpp"
-#include "utils/file/file.hpp"
-#include "utils/logger/logger.hpp"
-#include "utils/path/path.hpp"
-#include "utils/string/string.hpp"
-#include "utils/system/system.hpp"
+import sm.utils.logger.logger;
+
+import sm.utils.file.file;
+import sm.utils.path.path;
+import sm.utils.string.string;
+import sm.utils.system.system;
 
 namespace features::gallery::file_operations {
 

@@ -1,21 +1,21 @@
-#include "features/screenshot/usecase.hpp"
+module sm.features.screenshot.usecase;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.i18n.state;
+import sm.core.notifications.notifications;
+import sm.core.notifications.types;
+import sm.core.state.app_state;
+import sm.features.photography.state;
+import sm.features.screenshot.screenshot;
+import sm.features.window_control.window_control;
+import sm.ui.floating_window.events;
+import sm.utils.image.image;
 
-#include "core/i18n/state.hpp"
-#include "core/notifications/notifications.hpp"
-#include "core/notifications/types.hpp"
-#include "core/state/app_state.hpp"
-#include "features/photography/state.hpp"
-#include "features/screenshot/screenshot.hpp"
-#include "features/settings/state.hpp"
-#include "features/window_control/window_control.hpp"
-#include "ui/floating_window/events.hpp"
-#include "utils/image/image.hpp"
-#include "utils/logger/logger.hpp"
-#include "utils/path/path.hpp"
-#include "utils/string/string.hpp"
-#include "utils/system/system.hpp"
+import sm.features.settings.state;
+import sm.utils.logger.logger;
+import sm.utils.path.path;
+import sm.utils.string.string;
+import sm.utils.system.system;
 
 namespace features::screenshot {
 
@@ -76,8 +76,8 @@ auto capture(core::AppState& state) -> void {
 
       core::notifications::NotificationAction view_action;
       view_action.label = utils::string::FromUtf8(state.i18n->texts["notification.action.view"]);
-      view_action.callback = [screenshot_path](core::AppState& app_state) {
-        handle_saved_file_view_action(app_state, screenshot_path, "screenshot");
+      view_action.callback = [&state, screenshot_path] {
+        handle_saved_file_view_action(state, screenshot_path, "screenshot");
       };
       options.action = std::move(view_action);
 

@@ -1,13 +1,11 @@
-#include "core/database/database.hpp"
+module sm.core.database.database;
 
-#include "vendor/std.hpp"
-
-#include "vendor/sqlite.hpp"
-
-#include "core/database/state.hpp"
-#include "core/database/types.hpp"
-#include "core/state/app_state.hpp"
-#include "utils/logger/logger.hpp"
+import std;
+import sm.core.database.types;
+import sm.core.state.app_state;
+import sm.core.database.state;
+import sm.utils.logger.logger;
+import sm.vendor.sqlite;
 
 namespace core::database {
 
@@ -36,7 +34,7 @@ auto validate_database_path(const std::filesystem::path& db_path) -> void {
 }
 
 auto bind_params(SQLite::Statement& query, const std::vector<DbParam>& params) -> void {
-  for (size_t i = 0; i < params.size(); ++i) {
+  for (std::size_t i = 0; i < params.size(); ++i) {
     const auto& param = params[i];
     int param_index = static_cast<int>(i + 1);  // SQLite 参数是 1-based 索引
 

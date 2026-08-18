@@ -1,27 +1,29 @@
-#include "features/screenshot/screenshot.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
+#include "vendor/wil.hpp"
 #include "vendor/windows/d3d11.hpp"
 #include "vendor/windows/wincodec.hpp"
 #include "vendor/windows/winrt/windows_graphics_capture.hpp"
 
-#include "core/state/app_state.hpp"
-#include "core/state/runtime_info.hpp"
-#include "features/screenshot/hdr_encoder.hpp"
-#include "features/screenshot/state.hpp"
-#include "features/settings/state.hpp"
-#include "utils/graphics/capture.hpp"
-#include "utils/graphics/capture_region.hpp"
-#include "utils/graphics/d3d.hpp"
-#include "utils/graphics/hdr.hpp"
-#include "utils/graphics/photo_processing.hpp"
-#include "utils/image/image.hpp"
-#include "utils/logger/logger.hpp"
-#include "utils/path/path.hpp"
-#include "utils/string/string.hpp"
+module sm.features.screenshot.screenshot;
+
+import std;
+import sm.core.state.app_state;
+import sm.core.state.runtime_info;
+import sm.features.screenshot.hdr_encoder;
+import sm.features.screenshot.state;
+import sm.utils.graphics.capture;
+import sm.utils.graphics.capture_region;
+import sm.utils.graphics.d3d;
+import sm.utils.graphics.photo_processing;
+import sm.utils.image.image;
+
+import sm.features.settings.state;
+import sm.utils.logger.logger;
+import sm.utils.graphics.hdr;
+import sm.utils.path.path;
+import sm.utils.string.string;
 
 namespace features::screenshot {
 
@@ -79,7 +81,7 @@ auto save_texture_with_wic(ID3D11Texture2D* texture, const std::wstring& file_pa
     auto wic_factory = wic_factory_result.value();
 
     auto save_result = utils::image::save_pixel_data_to_file(
-        wic_factory.get(), static_cast<const uint8_t*>(mapped.pData), desc.Width, desc.Height,
+        wic_factory.get(), static_cast<const std::uint8_t*>(mapped.pData), desc.Width, desc.Height,
         mapped.RowPitch, file_path, format, jpeg_quality);
 
     if (!save_result) {
@@ -126,8 +128,8 @@ auto save_capture_texture(ID3D11Texture2D* texture,
 // 截图完成收尾：恢复光标 → 停止捕获 → 回调 → 移除会话 → 检查是否启动空闲清理
 auto finish_screenshot_session(
     features::screenshot::ScreenshotState& state,
-    std::unordered_map<size_t, features::screenshot::SessionInfo>::iterator session_it,
-    size_t session_id, bool success) -> void {
+    std::unordered_map<std::size_t, features::screenshot::SessionInfo>::iterator session_it,
+    std::size_t session_id, bool success) -> void {
   auto& session_info = session_it->second;
 
   if (session_info.session.need_hide_cursor) {
@@ -347,7 +349,7 @@ auto process_single_request(features::screenshot::ScreenshotRequest request,
                             core::AppState& app_state) -> void {
   auto& state = *app_state.screenshot;
   Logger().debug("Processing screenshot request for window: {}",
-                 reinterpret_cast<uintptr_t>(request.target_window));
+                 reinterpret_cast<std::uintptr_t>(request.target_window));
 
   try {
     auto result = do_screenshot_capture(request, state);

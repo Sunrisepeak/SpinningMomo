@@ -1,28 +1,30 @@
-#include "ui/floating_window/floating_window.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 #include "vendor/windows/dwmapi.hpp"
 #include "vendor/windows/windowsx.hpp"
 
-#include "core/commands/registry.hpp"
-#include "core/commands/types.hpp"
-#include "core/events/events.hpp"
-#include "core/i18n/state.hpp"
-#include "core/i18n/types.hpp"
-#include "core/state/app_state.hpp"
-#include "features/settings/menu.hpp"
-#include "features/settings/state.hpp"
-#include "features/settings/types.hpp"
-#include "ui/floating_window/layout.hpp"
-#include "ui/floating_window/message_handler.hpp"
-#include "ui/floating_window/painter.hpp"
-#include "ui/floating_window/render_context.hpp"
-#include "ui/floating_window/state.hpp"
-#include "ui/floating_window/types.hpp"
-#include "utils/logger/logger.hpp"
-#include "utils/string/string.hpp"
+module sm.ui.floating_window.floating_window;
+
+import std;
+import sm.core.commands.registry;
+import sm.core.commands.types;
+import sm.core.events.events;
+import sm.core.i18n.state;
+import sm.core.i18n.types;
+import sm.core.state.app_state;
+import sm.features.settings.menu;
+import sm.ui.floating_window.layout;
+import sm.ui.floating_window.message_handler;
+import sm.ui.floating_window.painter;
+import sm.ui.floating_window.render_context;
+import sm.ui.floating_window.state;
+import sm.ui.floating_window.types;
+
+import sm.features.settings.state;
+import sm.features.settings.types;
+import sm.utils.logger.logger;
+import sm.utils.string.string;
 
 namespace ui::floating_window {
 
@@ -194,14 +196,14 @@ auto destroy_window(core::AppState& state) -> void {
   }
 }
 
-auto set_current_ratio(core::AppState& state, size_t index) -> void {
+auto set_current_ratio(core::AppState& state, std::size_t index) -> void {
   state.floating_window->ui.current_ratio_index = index;
   if (state.floating_window->window.hwnd) {
     request_repaint(state);
   }
 }
 
-auto set_current_resolution(core::AppState& state, size_t index) -> void {
+auto set_current_resolution(core::AppState& state, std::size_t index) -> void {
   const auto& resolutions = features::settings::menu::get_resolutions(state);
   if (index < resolutions.size()) {
     state.floating_window->ui.current_resolution_index = index;
@@ -233,7 +235,7 @@ auto get_text_by_i18n_key(const std::string& i18n_key, const core::i18n::TextDat
 }
 
 auto normalize_scroll_offsets(core::AppState& state) -> void {
-  const size_t page_size = static_cast<size_t>(state.floating_window->layout.max_visible_rows);
+  const std::size_t page_size = static_cast<std::size_t>(state.floating_window->layout.max_visible_rows);
   if (page_size == 0) {
     state.floating_window->ui.ratio_scroll_offset = 0;
     state.floating_window->ui.resolution_scroll_offset = 0;
@@ -241,9 +243,9 @@ auto normalize_scroll_offsets(core::AppState& state) -> void {
     return;
   }
 
-  size_t ratio_count = 0;
-  size_t resolution_count = 0;
-  size_t feature_count = 0;
+  std::size_t ratio_count = 0;
+  std::size_t resolution_count = 0;
+  std::size_t feature_count = 0;
   for (const auto& item : state.floating_window->data.menu_items) {
     switch (item.category) {
       case ui::floating_window::MenuItemCategory::AspectRatio:
@@ -258,13 +260,13 @@ auto normalize_scroll_offsets(core::AppState& state) -> void {
     }
   }
 
-  const auto clamp_offset = [page_size](size_t& offset, size_t item_count) -> void {
+  const auto clamp_offset = [page_size](std::size_t& offset, std::size_t item_count) -> void {
     if (item_count == 0) {
       offset = 0;
       return;
     }
-    const size_t max_page = (item_count - 1) / page_size;
-    const size_t current_page = offset / page_size;
+    const std::size_t max_page = (item_count - 1) / page_size;
+    const std::size_t current_page = offset / page_size;
     offset = std::min(current_page, max_page) * page_size;
   };
 
@@ -298,20 +300,20 @@ auto initialize_menu_items(core::AppState& state) -> void {
   const auto& texts = state.i18n->texts;
 
   // 添加比例选项
-  for (size_t i = 0; i < ratios.size(); ++i) {
+  for (std::size_t i = 0; i < ratios.size(); ++i) {
     state.floating_window->data.menu_items.emplace_back(
         ratios[i].name, ui::floating_window::MenuItemCategory::AspectRatio, static_cast<int>(i));
   }
 
   // 添加分辨率选项
-  for (size_t i = 0; i < resolutions.size(); ++i) {
+  for (std::size_t i = 0; i < resolutions.size(); ++i) {
     const auto& preset = resolutions[i];
     state.floating_window->data.menu_items.emplace_back(
         preset.name, ui::floating_window::MenuItemCategory::Resolution, static_cast<int>(i));
   }
 
   // 添加功能项（从命令注册表获取）
-  for (size_t i = 0; i < feature_config.size(); ++i) {
+  for (std::size_t i = 0; i < feature_config.size(); ++i) {
     const auto& command_id = feature_config[i];
     // 从注册表获取命令描述
     if (const auto* command = core::commands::get_command(state, command_id)) {

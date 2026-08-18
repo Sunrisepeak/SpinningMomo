@@ -1,11 +1,10 @@
-#include "utils/logger/logger.hpp"
+module sm.utils.logger.logger;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.build_config;
+import sm.vendor.spdlog;
 
-#include "vendor/spdlog.hpp"
-
-#include "core/build_config.hpp"
-#include "utils/path/path.hpp"
+import sm.utils.path.path;
 
 namespace utils::logging::detail {
 

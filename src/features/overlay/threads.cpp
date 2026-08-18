@@ -1,15 +1,17 @@
-#include "features/overlay/threads.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 
-#include "core/state/app_state.hpp"
-#include "features/overlay/interaction.hpp"
-#include "features/overlay/state.hpp"
-#include "features/overlay/types.hpp"
-#include "features/overlay/window.hpp"
-#include "utils/logger/logger.hpp"
+module sm.features.overlay.threads;
+
+import std;
+import sm.core.state.app_state;
+import sm.features.overlay.interaction;
+import sm.features.overlay.state;
+import sm.features.overlay.types;
+import sm.features.overlay.window;
+
+import sm.utils.logger.logger;
 
 namespace features::overlay::threads {
 

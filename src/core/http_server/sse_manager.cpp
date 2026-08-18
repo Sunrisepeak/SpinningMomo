@@ -1,13 +1,12 @@
-#include "core/http_server/sse_manager.hpp"
+module sm.core.http_server.sse_manager;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.state.app_state;
+import sm.vendor.uwebsockets;
+import sm.utils.logger.logger;
 
-#include "vendor/uwebsockets.hpp"
-
-#include "core/http_server/state.hpp"
-#include "core/http_server/types.hpp"
-#include "core/state/app_state.hpp"
-#include "utils/logger/logger.hpp"
+import sm.core.http_server.state;
+import sm.core.http_server.types;
 
 namespace core::http_server::sse_manager {
 
@@ -44,7 +43,7 @@ auto add_connection(core::AppState& state, uWS::HttpResponse<false>* response,
   }
   response->write(": connected\n\n");
 
-  size_t current_count = 0;
+  std::size_t current_count = 0;
   {
     std::lock_guard<std::mutex> lock(mtx);
     connections.push_back(connection);
@@ -103,7 +102,7 @@ auto close_all_connections(core::AppState& state) -> void {
     connections.clear();
   }
 
-  size_t closed_count = 0;
+  std::size_t closed_count = 0;
   for (const auto& conn : snapshot) {
     if (!conn || !conn->response) {
       continue;
@@ -164,7 +163,7 @@ auto broadcast_event(core::AppState& state, const std::string& event_data) -> vo
   });
 }
 
-auto get_connection_count(const core::AppState& state) -> size_t {
+auto get_connection_count(const core::AppState& state) -> std::size_t {
   if (!state.http_server) {
     return 0;
   }

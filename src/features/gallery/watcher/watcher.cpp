@@ -1,22 +1,25 @@
-#include "features/gallery/watcher/watcher.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
 
-#include "core/state/app_state.hpp"
-#include "features/gallery/asset/repository.hpp"
-#include "features/gallery/asset/thumbnail.hpp"
-#include "features/gallery/folder/repository.hpp"
-#include "features/gallery/recovery/service.hpp"
-#include "features/gallery/root_availability.hpp"
-#include "features/gallery/state.hpp"
-#include "features/gallery/types.hpp"
-#include "features/gallery/watcher/notify.hpp"
-#include "features/gallery/watcher/sync.hpp"
-#include "utils/logger/logger.hpp"
-#include "utils/path/path.hpp"
+module sm.features.gallery.watcher.watcher;
+
+import std;
+import sm.core.state.app_state;
+import sm.features.gallery.asset.repository;
+import sm.features.gallery.asset.thumbnail;
+import sm.features.gallery.folder.repository;
+import sm.features.gallery.recovery.service;
+import sm.features.gallery.recovery.types;
+import sm.features.gallery.root_availability;
+import sm.features.gallery.state;
+import sm.features.gallery.types;
+import sm.features.gallery.watcher.notify;
+import sm.features.gallery.watcher.sync;
+
+import sm.utils.logger.logger;
+import sm.utils.path.path;
 
 namespace features::gallery::watcher {
 
@@ -382,7 +385,7 @@ auto restore_watchers_from_db(core::AppState& app_state) -> std::expected<void, 
                            folders_result.error());
   }
 
-  size_t restored_count = 0;
+  std::size_t restored_count = 0;
   for (const auto& folder : folders_result.value()) {
     // 只恢复根目录；子目录已经会被递归监听到。
     if (folder.parent_id.has_value()) {
@@ -427,7 +430,7 @@ auto start_registered_watchers(core::AppState& app_state) -> std::expected<void,
     }
   }
 
-  size_t started_count = 0;
+  std::size_t started_count = 0;
   std::optional<std::string> first_error;
 
   // 公共 helper：启动 watcher 线程并统一处理计数和错误记录。

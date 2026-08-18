@@ -1,12 +1,13 @@
-#include "utils/graphics/hdr.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/wil.hpp"
 #include "vendor/windows.hpp"
 #include "vendor/windows/dxgi1_6.hpp"
 
-#include "utils/logger/logger.hpp"
+module sm.utils.graphics.hdr;
+
+import std;
+import sm.utils.logger.logger;
 
 namespace utils::graphics::hdr {
 

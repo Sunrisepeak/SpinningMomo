@@ -1,12 +1,14 @@
-#include "ui/shared_theme/shared_theme.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 #include "vendor/windows/d2d1_3.hpp"
 
-#include "core/state/app_state.hpp"
-#include "features/settings/state.hpp"
+module sm.ui.shared_theme.shared_theme;
+
+import std;
+import sm.core.state.app_state;
+
+import sm.features.settings.state;
 
 namespace ui::shared_theme {
 

@@ -1,15 +1,17 @@
-#include "app.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 
-#include "core/initializer/initializer.hpp"
-#include "core/runtime_info/runtime_info.hpp"
-#include "core/shutdown/shutdown.hpp"
-#include "core/state/app_state.hpp"
-#include "ui/floating_window/state.hpp"
-#include "utils/logger/logger.hpp"
+module sm.app;
+
+import std;
+import sm.core.initializer.initializer;
+import sm.core.runtime_info.runtime_info;
+import sm.core.shutdown.shutdown;
+import sm.core.state.app_state;
+import sm.ui.floating_window.state;
+
+import sm.utils.logger.logger;
 
 Application::Application() = default;
 

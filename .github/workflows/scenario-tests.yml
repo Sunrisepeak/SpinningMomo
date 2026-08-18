@@ -10,8 +10,9 @@ on:
       - 'src/**'
       - 'tests/**'
       - 'scripts/**'
-      - 'xmake.lua'
-      - 'xmake-requires.lock'
+      - 'scenarios/**'
+      - 'mcpp.toml'
+      - '.xlings.json'
       - 'version.json'
   workflow_dispatch:
 
@@ -26,10 +27,7 @@ concurrency:
 jobs:
   test:
     runs-on: windows-latest
-    timeout-minutes: 60
-    env:
-      XMAKE_GLOBALDIR: ${{ github.workspace }}\.xmake-global
-
+    timeout-minutes: 90
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -42,41 +40,20 @@ jobs:
         with:
           node-version: 24
 
-      - name: Setup xmake
-        uses: xmake-io/github-action-setup-xmake@v1
-        with:
-          xmake-version: latest
+      - uses: ./.github/actions/setup-mcpp
 
-      - name: Patch xmake #7554
-        run: node scripts/patch-xmake-7554.js
+      - name: Pre-build (resources, cppwinrt, WebView2)
+        shell: bash
+        run: bash scripts/mcpp-prebuild.sh
 
-      - name: Cache xmake/vcpkg dependencies
-        id: cache_xmake_vcpkg
-        uses: actions/cache@v4
-        with:
-          path: |
-            .xmake
-            .xmake-global
-            build/.packages/v
-          key: ${{ runner.os }}-${{ runner.arch }}-xmake-vcpkg-${{ hashFiles('xmake.lua', 'xmake-requires.lock', 'scripts/patch-vcpkg.js') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ runner.arch }}-xmake-vcpkg-
-
-      - name: Ensure cache directories exist
-        shell: pwsh
+      # Both binaries: the app under test and the window it is pointed at.
+      # mcpp compiles shared objects once and links each target's own entry, so
+      # asking for the whole build gives both.
+      - name: Build SpinningMomo + scenario window (Release)
+        shell: bash
         run: |
-          New-Item -ItemType Directory -Force -Path ".xmake" | Out-Null
-          New-Item -ItemType Directory -Force -Path ".xmake-global" | Out-Null
-          New-Item -ItemType Directory -Force -Path "build/.packages/v" | Out-Null
-
-      - name: Configure xmake release
-        run: xmake f -m release --toolchain=msvc -y
-
-      - name: Build SpinningMomo (Release)
-        run: xmake build -y
-
-      - name: Build SpinningMomoScenarioWindow (Release)
-        run: xmake build -y SpinningMomoScenarioWindow
+          set -uo pipefail
+          "$MCPP" build --release -v 2>&1 | tail -400
 
       - name: Run scenario tests
         run: npm run test:scenarios

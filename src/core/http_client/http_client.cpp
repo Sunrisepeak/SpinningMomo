@@ -1,16 +1,18 @@
-#include "core/http_client/http_client.hpp"
+module;
 
-#include "vendor/std.hpp"
-
-#include "vendor/asio.hpp"
 #include "vendor/windows.hpp"
 #include "vendor/windows/winhttp.hpp"
 
-#include "core/http_client/state.hpp"
-#include "core/http_client/types.hpp"
-#include "core/state/app_state.hpp"
-#include "utils/logger/logger.hpp"
-#include "utils/string/string.hpp"
+module sm.core.http_client.http_client;
+
+import std;
+import sm.core.http_client.types;
+import sm.core.state.app_state;
+import sm.utils.logger.logger;
+import asio;
+import sm.core.http_client.state;
+
+import sm.utils.string.string;
 
 namespace core::http_client::detail {
 
@@ -129,7 +131,7 @@ auto trim_wstring(std::wstring_view value) -> std::wstring_view {
 auto parse_raw_headers(std::wstring_view raw_headers) -> std::vector<Header> {
   std::vector<Header> headers;
 
-  size_t cursor = 0;
+  std::size_t cursor = 0;
   bool skipped_status_line = false;
   while (cursor < raw_headers.size()) {
     auto line_end = raw_headers.find(L"\r\n", cursor);

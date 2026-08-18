@@ -1,18 +1,18 @@
-#include "features/settings/background.hpp"
+module sm.features.settings.background;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.state.app_state;
+import sm.core.build_config;
+import sm.core.webview.state;
+import sm.core.webview.webview;
+import sm.utils.image.image;
+import sm.features.settings.types;
+import sm.utils.logger.logger;
 
-#include "core/build_config.hpp"
-#include "core/http_server/static.hpp"
-#include "core/http_server/types.hpp"
-#include "core/state/app_state.hpp"
-#include "core/webview/state.hpp"
-#include "core/webview/webview.hpp"
-#include "features/settings/types.hpp"
-#include "utils/image/image.hpp"
-#include "utils/logger/logger.hpp"
-#include "utils/path/path.hpp"
-#include "utils/string/string.hpp"
+import sm.core.http_server.static_;
+import sm.core.http_server.types;
+import sm.utils.path.path;
+import sm.utils.string.string;
 
 namespace features::settings::background {
 

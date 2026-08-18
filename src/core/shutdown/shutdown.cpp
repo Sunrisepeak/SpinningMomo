@@ -1,34 +1,35 @@
-#include "core/shutdown/shutdown.hpp"
+module sm.core.shutdown.shutdown;
 
-#include "vendor/std.hpp"
+import std;
+import sm.core.commands.registry;
+import sm.core.dialog_service.dialog_service;
+import sm.core.http_server.http_server;
+import sm.core.state.app_state;
+import sm.core.worker_pool.worker_pool;
+import sm.extensions.infinity_nikki.photo_service;
+import sm.features.gallery.gallery;
+import sm.features.letterbox.letterbox;
+import sm.features.overlay.overlay;
+import sm.features.photography.usecase;
+import sm.features.preview.preview;
+import sm.features.recording.usecase;
+import sm.features.screenshot.screenshot;
+import sm.features.update.state;
+import sm.features.window_control.window_control;
+import sm.ui.context_menu.context_menu;
+import sm.ui.floating_window.floating_window;
+import sm.ui.floating_window.state;
+import sm.ui.notification_window.notification_window;
+import sm.ui.photography_panel.photography_panel;
+import sm.ui.tray_icon.tray_icon;
+import sm.ui.webview_window.webview_window;
 
-#include "core/async/async.hpp"
-#include "core/commands/registry.hpp"
-#include "core/database/database.hpp"
-#include "core/dialog_service/dialog_service.hpp"
-#include "core/http_client/http_client.hpp"
-#include "core/http_server/http_server.hpp"
-#include "core/state/app_state.hpp"
-#include "core/worker_pool/worker_pool.hpp"
-#include "extensions/infinity_nikki/photo_service.hpp"
-#include "features/gallery/gallery.hpp"
-#include "features/letterbox/letterbox.hpp"
-#include "features/overlay/overlay.hpp"
-#include "features/photography/usecase.hpp"
-#include "features/preview/preview.hpp"
-#include "features/recording/usecase.hpp"
-#include "features/screenshot/screenshot.hpp"
-#include "features/update/state.hpp"
-#include "features/update/update.hpp"
-#include "features/window_control/window_control.hpp"
-#include "ui/context_menu/context_menu.hpp"
-#include "ui/floating_window/floating_window.hpp"
-#include "ui/floating_window/state.hpp"
-#include "ui/notification_window/notification_window.hpp"
-#include "ui/photography_panel/photography_panel.hpp"
-#include "ui/tray_icon/tray_icon.hpp"
-#include "ui/webview_window/webview_window.hpp"
-#include "utils/logger/logger.hpp"
+import sm.utils.logger.logger;
+
+import sm.core.async.async;
+import sm.core.database.database;
+import sm.core.http_client.http_client;
+import sm.features.update.update;
 
 namespace core::shutdown {
 

@@ -1,16 +1,17 @@
-#include "ui/notification_window/message_handler.hpp"
-
-#include "vendor/std.hpp"
+module;
 
 #include "vendor/windows.hpp"
 #include "vendor/windows/windowsx.hpp"
 
-#include "core/state/app_state.hpp"
-#include "ui/notification_window/notification_window.hpp"
-#include "ui/notification_window/painter.hpp"
-#include "ui/notification_window/render_context.hpp"
-#include "ui/notification_window/state.hpp"
-#include "ui/notification_window/types.hpp"
+module sm.ui.notification_window.message_handler;
+
+import std;
+import sm.core.state.app_state;
+import sm.ui.notification_window.notification_window;
+import sm.ui.notification_window.painter;
+import sm.ui.notification_window.render_context;
+import sm.ui.notification_window.state;
+import sm.ui.notification_window.types;
 
 auto window_procedure(core::AppState& state, HWND hwnd, UINT msg, WPARAM w_param, LPARAM l_param)
     -> LRESULT {
